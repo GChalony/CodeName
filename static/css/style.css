@@ -1,0 +1,26 @@
+body
+{
+    display: flex;
+
+}
+h1
+{
+    text-align: center;
+}
+// Navigation
+nav
+{
+    position: fixed;
+    left: 0;
+    border: 1px solid black;
+}
+nav ul
+{
+    list-style-type: none;
+}
+nav ul a
+{
+    color: #228;
+    font: 2em bold normal;
+    text-decoration: none;
+}

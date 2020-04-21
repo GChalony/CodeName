@@ -1,0 +1,55 @@
+body
+{
+    background: #228
+}
+h1
+{
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+table
+{
+    background: white;
+    border-collapse: collapse;
+    width: 70%;
+    height: 50%;
+    margin: auto;
+}
+
+td, th /* Mettre une bordure sur les td ET les th */
+{
+    border: 1px solid black;
+    text-align: center;
+    padding: 30px;
+}
+
+td:hover
+{
+    background: #eee;
+    cursor: pointer;
+}
+td[data-selected="true"]
+{
+    cursor: not-allowed;
+}
+td[data-code="0"]
+{
+    background: grey;
+}
+td[data-code="1"]
+{
+    background: red;
+}
+td[data-code="2"]
+{
+    background: blue;
+}
+td[data-code="3"]
+{
+    background: black;
+    color: white;
+    font: bold;
+}
