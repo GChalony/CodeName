@@ -4,14 +4,14 @@ import logging
 from flask import Flask, render_template, url_for, request
 from werkzeug.utils import redirect
 
-from app.utils import get_random_words, parse_cell_code, generate_response_grid, genid
+from app.utils import generate_random_words, parse_cell_code, generate_response_grid, genid
 
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 app = Flask(__name__)
 
-grid = get_random_words("ressources/words.csv")
+grid = generate_random_words("ressources/words.csv")
 grid_response = generate_response_grid()
 
 grids = {0: grid}
@@ -28,14 +28,19 @@ def get_grid(id):
     return render_template("grid.html", data=grids[id])
 
 
+@app.route("/<id>/room")
+def get_room(id):
+    return render_template("room.html")
+
+
 @app.route("/new")
 def new_game():
     id = genid()
-    grid = get_random_words("ressources/words.csv")
+    grid = generate_random_words("ressources/words.csv")
     grid_response = generate_response_grid()
     grids[id] = grid
     grids_response[id] = grid_response
-    return redirect(f"{id}/grid")
+    return redirect(f"{id}/room")
 
 
 @app.route("/cell")
