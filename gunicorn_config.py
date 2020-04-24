@@ -18,7 +18,7 @@
 #       range.
 #
 
-bind = '127.0.0.1:8000'
+# bind = '127.0.0.1:8000'
 backlog = 2048
 
 #
@@ -65,8 +65,8 @@ backlog = 2048
 #       A positive integer. Generally set in the 1-5 seconds range.
 #
 
-# workers = 1
-# worker_class = 'sync'
+workers = 1
+worker_class = 'eventlet'
 # worker_connections = 1000
 # timeout = 30
 # keepalive = 2
