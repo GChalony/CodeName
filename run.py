@@ -1,7 +1,6 @@
-import json
 import logging
 
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, request
 from werkzeug.utils import redirect
 
 from codenameapp.utils import generate_random_words, parse_cell_code, generate_response_grid, genid
