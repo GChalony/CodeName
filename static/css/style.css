@@ -1,26 +1,43 @@
 body
 {
     display: flex;
-
+    flex-direction: column;
+    justify-content: space-around;
 }
 h1
 {
     text-align: center;
+    margin: 100px 0;
 }
-// Navigation
 nav
 {
-    position: fixed;
-    left: 0;
-    border: 1px solid black;
+    margin: auto;
+    width: 50%;
+    height: 50%;
+    border: solid 2px black;
+    border-radius: 10px;
 }
 nav ul
 {
+    padding: 5px;
     list-style-type: none;
+}
+nav ul li
+{
+    text-align: center;
 }
 nav ul a
 {
     color: #228;
     font: 2em bold normal;
     text-decoration: none;
+}
+footer
+{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: right;
+    font-style: italic;
+    padding: 5px;
 }

@@ -12,18 +12,20 @@ h1
 
 table
 {
-    background: white;
-    border-collapse: collapse;
     width: 70%;
     height: 50%;
     margin: auto;
+    border-spacing: 30px;
+    table-layout: fixed ;
 }
 
 td, th /* Mettre une bordure sur les td ET les th */
 {
-    border: 1px solid black;
+    background: #fca;
     text-align: center;
-    padding: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: -15px 15px grey;
 }
 
 td:hover
@@ -46,6 +48,7 @@ td[data-code="1"]
 td[data-code="2"]
 {
     background: blue;
+    color: white;
 }
 td[data-code="3"]
 {
