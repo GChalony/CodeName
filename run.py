@@ -9,6 +9,8 @@ from codenameapp.utils import generate_random_words, parse_cell_code, generate_r
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+logger.error("Starting app !!!")
+
 app = Flask(__name__)
 
 grid = generate_random_words("ressources/words.csv")
