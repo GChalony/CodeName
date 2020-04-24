@@ -1,9 +1,6 @@
 # PyCharm
 .idea
-app/__pycache__
-
-# Pipenv
-Pipfile.lock
+codenameapp/__pycache__
 
 # Jupyter Lab
 notebook
