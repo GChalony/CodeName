@@ -1,6 +1,6 @@
 import numpy as np
 
-from app.utils import generate_random_words, generate_response_grid, parse_cell_code
+from codenameapp.utils import generate_random_words, generate_response_grid, parse_cell_code
 
 
 class Game:

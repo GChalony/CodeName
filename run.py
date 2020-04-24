@@ -4,7 +4,7 @@ import logging
 from flask import Flask, render_template, url_for, request
 from werkzeug.utils import redirect
 
-from app.utils import generate_random_words, parse_cell_code, generate_response_grid, genid
+from codenameapp.utils import generate_random_words, parse_cell_code, generate_response_grid, genid
 
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
