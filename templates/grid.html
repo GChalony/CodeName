@@ -58,9 +58,6 @@
                     <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
                     <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
                     <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
-                    <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
-                    <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
-                    <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
                 </ul>
                 <form id="msgform">
                     <input type="text" id="m">
@@ -74,5 +71,9 @@
         <input id="send-choice" type="submit">
     </div>
     <script src="{{ url_for('static', filename='js/grid.js') }}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"
+            integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I="
+            crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>

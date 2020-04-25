@@ -1,6 +1,7 @@
 import logging
 
 from flask import Flask, render_template, request
+from flask_socketio import SocketIO, emit
 from werkzeug.utils import redirect
 
 from codenameapp.utils import generate_random_words, parse_cell_code, generate_response_grid, genid
@@ -8,15 +9,16 @@ from codenameapp.utils import generate_random_words, parse_cell_code, generate_r
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-logger.error("Starting app !!!")
+logger.info("Starting app!")
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 grid = generate_random_words("ressources/words.csv")
 grid_response = generate_response_grid()
 
-grids = {0: grid}
-grids_response = {0: grid_response}
+grids = {"0": grid}
+grids_response = {"0": grid_response}
 
 
 @app.route("/")
@@ -52,6 +54,22 @@ def get_cell_data():
     logger.debug(f"Returning value for cell {cell_code} : {val}")
     return str(val)
 
+# Socket callbacks
+@socketio.on('connect')
+def handle_message():
+    print(f"User {request.sid} connected!")
+
+
+@socketio.on('disconnect')
+def handle_message():
+    print(f"User {request.sid} disconnected!")
+
+
+@socketio.on('message')
+def handle_message(message):
+    print(message)
+    emit('message', request.sid[:5] + " : "+message["msg"], broadcast=True)
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80, debug=True)
+    socketio.run(app, host="0.0.0.0", port=80, debug=True)

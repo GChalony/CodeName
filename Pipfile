@@ -13,6 +13,7 @@ numpy = "*"
 flask = "*"
 gunicorn = "*"
 eventlet = "*"
+flask-socketio = "*"
 
 [requires]
 python_version = "3.7"

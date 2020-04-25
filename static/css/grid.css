@@ -1,7 +1,8 @@
-body
-{
-    background: #228;
+html, body {
+  height: 100%;
+  margin: 0;
 }
+body{ background: #228; }
 h1
 {
     color: white;
