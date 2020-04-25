@@ -4,3 +4,6 @@ codenameapp/__pycache__
 
 # Jupyter Lab
 notebook
+
+# Virtual environment Python
+venv

@@ -20,7 +20,7 @@ form.addEventListener("submit", function(e){
     sendMsg();
 });
 
-socket.on('message', function(msg){
+socket.on('message response', function(msg){
     console.log("received : "+msg);
     var li = document.createElement('li');
     li.textContent = msg;
