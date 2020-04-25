@@ -11,12 +11,21 @@ h1
 #avatar, #players
 {
     width: 30%;
+    border-radius: 30px;
 }
 #avatar { background: #8af }
+.h
+{
+    display: flex;
+    flex-direction: horizontal;
+}
 #avatar canvas
 {
-    width: 80%;
+    width: 320px;
+    height: 160px;
     margin: auto;
+    background: white;
+    margin-bottom: 20px;
 }
 #controls
 {
@@ -48,3 +57,4 @@ h1
     justify-content: center;
     margin-top: 50px;
 }
+#start input {padding: 10px;}

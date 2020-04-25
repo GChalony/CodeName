@@ -10,8 +10,10 @@
         <div id="avatar">
             <h1>Avatar</h1>
             <div>
-                <canvas></canvas>
+                <div class="h"><canvas id="av"></canvas></div>
                 <div id="controls">
+                    <input type="color" value="#ffff00" id="backcol"/>
+                    <input type="color" value="#ff0000" id="mouthcol"/>
                     <input type="submit" value="<">
                     <input type="submit" value=">">
                     <input type="submit" value="<">
@@ -36,8 +38,8 @@
             </div>
         </div>
     </div>
-    <div id="start"><input type="submit" value="Commencer la partie"/></div>
+    <div id="start"><input type="submit" id="go" value="Commencer la partie"/></div>
 
-
+    <script src="{{url_for('static', filename='js/avatar.js') }}"></script>
 </body>
 </html>
