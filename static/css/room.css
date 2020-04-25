@@ -1,0 +1,50 @@
+#container
+{
+    margin-top: 100px;
+    display: flex;
+    justify-content: space-around;
+}
+h1
+{
+    text-align: center;
+}
+#avatar, #players
+{
+    width: 30%;
+}
+#avatar { background: #8af }
+#avatar canvas
+{
+    width: 80%;
+    margin: auto;
+}
+#controls
+{
+    display: flex;
+    justify-content: center;
+}
+#players { background: #fa8 }
+#teams
+{
+    height: 70%;
+    display: flex;
+    justify-content: space-around;
+}
+#teams ul
+{
+    padding: 3px;
+    border: solid black 1px;
+    list-style-type: none;
+}
+#teams li
+{
+    margin: 5px;
+    padding: 3px 20px;
+    background: #bbb;
+}
+#start
+{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
