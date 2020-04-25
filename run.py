@@ -4,6 +4,7 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from werkzeug.utils import redirect
 
+import config
 from codenameapp.utils import generate_random_words, parse_cell_code, generate_response_grid, genid
 
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
@@ -12,6 +13,7 @@ logger.setLevel(logging.DEBUG)
 logger.info("Starting app!")
 
 app = Flask(__name__)
+app.config.from_object(config)
 socketio = SocketIO(app)
 
 grid = generate_random_words("ressources/words.csv")
@@ -21,6 +23,7 @@ grids = {"0": grid}
 grids_response = {"0": grid_response}
 
 
+@app.route("/index")
 @app.route("/")
 def hello():
     return render_template("index.html")
