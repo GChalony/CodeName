@@ -1,6 +1,6 @@
 body
 {
-    background: #228
+    background: #228;
 }
 h1
 {
@@ -9,7 +9,39 @@ h1
     font-weight: bold;
     text-align: center;
 }
-
+#container
+{
+    display: flex;
+}
+.msglist
+{
+    list-style-type: none;
+    height: 100%;
+    overflow: auto;
+    padding: 0;
+}
+#events
+{
+    height: 40%;
+    background: yellow;
+}
+#events li {background: white;}
+#events li:nth-child(odd) {background: #8f9;}
+#chat
+{
+    height: 50%;
+    background: red;
+}
+#messages {margin-bottom: 0;}
+#messages li
+{
+    padding: 2px 4px;
+    background: white;
+}
+#messages li:nth-child(odd) { background: #eee; }
+#msgform
+{
+}
 table
 {
     width: 70%;
@@ -55,4 +87,10 @@ td[data-code="3"]
     background: black;
     color: white;
     font: bold;
+}
+
+#controls
+{
+    width: 10%;
+    margin: auto;
 }

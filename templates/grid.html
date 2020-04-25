@@ -7,44 +7,72 @@
 </head>
 <body>
     <h1>Code Name</h1>
-    <table>
-        <tr>
-            <td id="r0c0" data-selected="false" data-code="-1">{{data[0, 0]}} </td>
-            <td id="r0c1" data-selected="false" data-code="-1">{{data[0, 1]}} </td>
-            <td id="r0c2" data-selected="false" data-code="-1">{{data[0, 2]}} </td>
-            <td id="r0c3" data-selected="false" data-code="-1">{{data[0, 3]}} </td>
-            <td id="r0c4" data-selected="false" data-code="-1">{{data[0, 4]}} </td>
-        </tr>
-        <tr>
-            <td id="r1c0" data-selected="false" data-code="-1">{{data[1, 0]}} </td>
-            <td id="r1c1" data-selected="false" data-code="-1">{{data[1, 1]}} </td>
-            <td id="r1c2" data-selected="false" data-code="-1">{{data[1, 2]}} </td>
-            <td id="r1c3" data-selected="false" data-code="-1">{{data[1, 3]}} </td>
-            <td id="r1c4" data-selected="false" data-code="-1">{{data[1, 4]}} </td>
-        </tr>
-        <tr>
-            <td id="r2c0" data-selected="false" data-code="-1">{{data[2, 0]}} </td>
-            <td id="r2c1" data-selected="false" data-code="-1">{{data[2, 1]}} </td>
-            <td id="r2c2" data-selected="false" data-code="-1">{{data[2, 2]}} </td>
-            <td id="r2c3" data-selected="false" data-code="-1">{{data[2, 3]}} </td>
-            <td id="r2c4" data-selected="false" data-code="-1">{{data[2, 4]}} </td>
-        </tr>
-        <tr>
-            <td id="r3c0" data-selected="false" data-code="-1">{{data[3, 0]}} </td>
-            <td id="r3c1" data-selected="false" data-code="-1">{{data[3, 1]}} </td>
-            <td id="r3c2" data-selected="false" data-code="-1">{{data[3, 2]}} </td>
-            <td id="r3c3" data-selected="false" data-code="-1">{{data[3, 3]}} </td>
-            <td id="r3c4" data-selected="false" data-code="-1">{{data[3, 4]}} </td>
-        </tr>
-        <tr>
-            <td id="r4c0" data-selected="false" data-code="-1">{{data[4, 0]}} </td>
-            <td id="r4c1" data-selected="false" data-code="-1">{{data[4, 1]}} </td>
-            <td id="r4c2" data-selected="false" data-code="-1">{{data[4, 2]}} </td>
-            <td id="r4c3" data-selected="false" data-code="-1">{{data[4, 3]}} </td>
-            <td id="r4c4" data-selected="false" data-code="-1">{{data[4, 4]}} </td>
-        </tr>
-    </table>
-
+    <div id="container">
+        <table>
+            <tr>
+                <td id="r0c0" data-selected="false" data-code="-1">{{data[0, 0]}} </td>
+                <td id="r0c1" data-selected="false" data-code="-1">{{data[0, 1]}} </td>
+                <td id="r0c2" data-selected="false" data-code="-1">{{data[0, 2]}} </td>
+                <td id="r0c3" data-selected="false" data-code="-1">{{data[0, 3]}} </td>
+                <td id="r0c4" data-selected="false" data-code="-1">{{data[0, 4]}} </td>
+            </tr>
+            <tr>
+                <td id="r1c0" data-selected="false" data-code="-1">{{data[1, 0]}} </td>
+                <td id="r1c1" data-selected="false" data-code="-1">{{data[1, 1]}} </td>
+                <td id="r1c2" data-selected="false" data-code="-1">{{data[1, 2]}} </td>
+                <td id="r1c3" data-selected="false" data-code="-1">{{data[1, 3]}} </td>
+                <td id="r1c4" data-selected="false" data-code="-1">{{data[1, 4]}} </td>
+            </tr>
+            <tr>
+                <td id="r2c0" data-selected="false" data-code="-1">{{data[2, 0]}} </td>
+                <td id="r2c1" data-selected="false" data-code="-1">{{data[2, 1]}} </td>
+                <td id="r2c2" data-selected="false" data-code="-1">{{data[2, 2]}} </td>
+                <td id="r2c3" data-selected="false" data-code="-1">{{data[2, 3]}} </td>
+                <td id="r2c4" data-selected="false" data-code="-1">{{data[2, 4]}} </td>
+            </tr>
+            <tr>
+                <td id="r3c0" data-selected="false" data-code="-1">{{data[3, 0]}} </td>
+                <td id="r3c1" data-selected="false" data-code="-1">{{data[3, 1]}} </td>
+                <td id="r3c2" data-selected="false" data-code="-1">{{data[3, 2]}} </td>
+                <td id="r3c3" data-selected="false" data-code="-1">{{data[3, 3]}} </td>
+                <td id="r3c4" data-selected="false" data-code="-1">{{data[3, 4]}} </td>
+            </tr>
+            <tr>
+                <td id="r4c0" data-selected="false" data-code="-1">{{data[4, 0]}} </td>
+                <td id="r4c1" data-selected="false" data-code="-1">{{data[4, 1]}} </td>
+                <td id="r4c2" data-selected="false" data-code="-1">{{data[4, 2]}} </td>
+                <td id="r4c3" data-selected="false" data-code="-1">{{data[4, 3]}} </td>
+                <td id="r4c4" data-selected="false" data-code="-1">{{data[4, 4]}} </td>
+            </tr>
+        </table>
+        <div id="chats">
+            <div id="events">
+                <ul class="msglist">
+                    <li><em>Machin</em> entered the chat</li>
+                    <li>Equipe bleu, a vous de jouer.</li>
+                    <li><em>Hippopotame</em> : gagné !</li>
+                </ul>
+            </div>
+            <div id="chat">
+                <ul id="messages" class="msglist">
+                    <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
+                    <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
+                    <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
+                    <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
+                    <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
+                    <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
+                </ul>
+                <form id="msgform">
+                    <input type="text" id="m">
+                    <input type="submit" id="s">
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="controls">
+        <input id="send-choice" type="submit">
+    </div>
     <script src="{{ url_for('static', filename='js/grid.js') }}"></script>
 </body>
 </html>
