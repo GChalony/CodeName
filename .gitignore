@@ -10,3 +10,5 @@ venv
 
 # Config Visual Studio Code
 .vscode
+
+__pycache__

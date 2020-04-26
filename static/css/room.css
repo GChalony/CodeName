@@ -1,4 +1,4 @@
-#container
+#players-container
 {
     margin-top: 100px;
     display: flex;
@@ -8,29 +8,10 @@ h1
 {
     text-align: center;
 }
-#avatar, #players
+#players
 {
     width: 30%;
     border-radius: 30px;
-}
-#avatar { background: #8af }
-.h
-{
-    display: flex;
-    flex-direction: horizontal;
-}
-#avatar canvas
-{
-    width: 320px;
-    height: 160px;
-    margin: auto;
-    background: white;
-    margin-bottom: 20px;
-}
-#controls
-{
-    display: flex;
-    justify-content: center;
 }
 #players { background: #fa8 }
 #teams

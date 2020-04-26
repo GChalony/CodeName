@@ -1,4 +1,4 @@
-function newGame(){
-        window.location = "/new";
-        return false;
-    }
+// function newGame(){
+//         window.location = "/new";
+//         return false;
+//     }
