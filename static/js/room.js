@@ -1,22 +1,18 @@
 var socket = io();
 
-function startGame(){
-    console.log("Going to grid !");
-    socket.emit('start game', {"current_url": window.location.href});
-}
-
 var go = document.getElementById("go");
 go.addEventListener("click", function(e){
     e.preventDefault();
-    console.log('Go6!');
-    startGame();
-    // Sent some kind of request to the backend to be redirected to the grid
-
+    console.log("Go!");
+    socket.emit("start game", {"current_url": window.location.href});
 })
 
+var home = document.getElementById("home");
+home.addEventListener("click", function(e){
+    e.preventDefault();
+    socket.emit("return home");
+})
 
-socket.on('start game response', function(data){
-    console.log("front side start game response");
-    console.log("data11", data)
+socket.on("url redirection", function(data){
     window.location = data.url;
 });

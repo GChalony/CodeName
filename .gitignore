@@ -7,3 +7,6 @@ notebook
 
 # Virtual environment Python
 venv
+
+# Config Visual Studio Code
+.vscode

@@ -54,7 +54,10 @@ h1
 #start
 {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     margin-top: 50px;
+    padding: 10px 10px;
 }
-#start input {padding: 10px;}
+#start input {
+    padding: 10px;
+}

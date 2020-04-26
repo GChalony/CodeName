@@ -25,7 +25,7 @@ grids_response = {"0": grid_response}
 
 @app.route("/index")
 @app.route("/")
-def hello():
+def get_home():
     return render_template("index.html")
 
 
@@ -51,33 +51,35 @@ def new_game():
 
 @app.route("/cell")
 def get_cell_data():
-    cell_code = request.args.get('code')
+    cell_code = request.args.get("code")
     r, c = parse_cell_code(cell_code)
     val = grid_response[r, c]
     logger.debug(f"Returning value for cell {cell_code} : {val}")
     return str(val)
 
 # Socket callbacks
-@socketio.on('connect')
+@socketio.on("connect")
 def handle_connect():
     print(f"User {request.sid} connected!")
 
-
-@socketio.on('disconnect')
+@socketio.on("disconnect")
 def handle_disconnect():
     print(f"User {request.sid} disconnected!")
 
-
-@socketio.on('message')
+@socketio.on("message")
 def handle_message(message):
     print(message)
-    emit('message response', request.sid[:5] + " : "+message["msg"], broadcast=True)
+    emit("message response", request.sid[:5] + " : "+message["msg"], broadcast=True)
 
-@socketio.on('start game')
+@socketio.on("start game")
 def handle_start_game(data):
     room_url = data["current_url"]
     grid_url = room_url.replace("room", "grid")
-    emit("start game response", {"url": grid_url}, broadcast=True)
+    emit("url redirection", {"url": grid_url}, broadcast=True)
+
+@socketio.on("return home")
+def handle_start_game():
+    emit("url redirection", {"url": url_for("get_home")})
 
 
 if __name__ == "__main__":
