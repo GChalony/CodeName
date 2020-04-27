@@ -10,10 +10,14 @@ matplotlib = "*"
 matplotlib = "*"
 opencv-python = "*"
 numpy = "*"
-flask = "*"
 gunicorn = "*"
 eventlet = "*"
+flask = "1.0.2"
 flask-socketio = "*"
+flask-Login = "0.4.1"
+flask-Session = "0.3.1"
+werkzeug = "0.14.1"
+
 
 [requires]
 python_version = "3.7"
