@@ -1,39 +1,15 @@
-body
-{
+body {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
 }
-h1
-{
+
+h1 {
     text-align: center;
     margin: 10px 0;
 }
-nav
-{
-    margin: auto;
-    width: 50%;
-    height: 50%;
-    border: solid 2px black;
-    border-radius: 10px;
-}
-nav ul
-{
-    padding: 5px;
-    list-style-type: none;
-}
-nav ul li
-{
-    text-align: center;
-}
-nav ul a
-{
-    color: #228;
-    font: 2em bold normal;
-    text-decoration: none;
-}
-footer
-{
+
+footer {
     position: fixed;
     bottom: 0;
     right: 0;
@@ -43,45 +19,59 @@ footer
     padding: 5px;
 }
 
-#nickname-container
-{
+#nickname-container {
     display: flex;
     justify-content: center;
 }
 
-#avatar-container
-{
+#avatar-container {
     margin: 10px;
     display: flex;
     justify-content: center;
 }
 
-#avatar
-{
+#avatar {
     /* width: 30%; */
     border-radius: 30px;
+    background: #8af
 }
-#avatar { background: #8af }
-.h
-{
+
+.h {
     display: flex;
     flex-direction: horizontal;
 }
-#avatar canvas
-{
+#avatar canvas {
     width: 320px;
     height: 160px;
     margin: auto;
     background: white;
     margin-bottom: 20px;
 }
-#avatar-controls
-{
+#avatar-controls {
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
 }
-.controls{
+.controls {
     display: flex;
     justify-content: center;
+}
+
+#home-buttons {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-around; */
+    margin-bottom: 20px;
+    /* padding: 10px 10px; */
+}
+.buttons {
+    padding: 10px;
+}
+.inputs {
+    padding: 10px;
+}
+.one-button-area {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
 }

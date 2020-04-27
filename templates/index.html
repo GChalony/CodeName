@@ -10,8 +10,8 @@
 
 
 <div id="nickname-container">
-    <label>Pseudo :</label>
-    <input type="text" id="nickname" placeholder="Écris ton pseudo">
+    <label class="inputs">Pseudo :</label>
+    <input type="text" class="inputs" id="nickname-input" placeholder="Inscris ton pseudo">
 </div>
 <div id="avatar-container">
     <div id="avatar">
@@ -33,16 +33,19 @@
         </div>
     </div>
 </div>
+<div id="home-buttons">
+    <div class="one-button-area">
+        <button type="submit" class="buttons" id="new-game-button">Nouvelle partie</button>
+    </div>
+    <div class="one-button-area">
+        <input type="text" class="inputs" id="join-game-link" placeholder="Inscris le lien à rejoindre">
+        <button type="submit" class="buttons" id="join-game-button">Rejoindre une partie</button>
+    </div>
+</div>
 
-<nav>
-    <ul>
-        <li><a href="/new">Nouvelle partie</a></li>
-        <!-- <li><a href="/">A propos</a></li>
-        <li><a href="/">Feedback</a></li> -->
-    </ul>
-</nav>
 <footer><p>Designed with love - provided on an as-is basis, no guarantee.</p></footer>
-<script src="{{url_for('static', filename='js/welcome.js') }}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script src="{{url_for('static', filename='js/home.js') }}"></script>
 <script src="{{url_for('static', filename='js/avatar.js') }}"></script>
 </body>
 </html>

@@ -25,16 +25,15 @@
         </div>
     </div>
     <div id="start">
-        <input type="submit" id="home" value="Retour à l'accueil"/>
-        <input type="submit" id="go" value="Commencer la partie"/>
+        <button type="submit" id="home">Retour à l'accueil</button>
+        <button type="submit" id="go">Commencer la partie</button>
+        <!-- <input type="submit" id="home" value="Retour à l'accueil"/>
+        <input type="submit" id="go" value="Commencer la partie"/> -->
         <!-- <div id="start"><input type="submit" id="go" value="Retour au menu"/></div>
         <div id="menu"><input type="submit" id="go" value="Commencer la partie"/></div> -->
     </div>
 
-    <script src="{{url_for('static', filename='js/avatar.js') }}"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"
-            integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I="
-            crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script src="{{url_for('static', filename='js/room.js') }}"></script>
 </body>
 </html>

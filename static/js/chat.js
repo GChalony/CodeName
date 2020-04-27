@@ -1,16 +1,16 @@
-console.log('Initiating chat')
+console.log("Initiating chat")
 
 var socket = io();
-socket.on('connect', function() {
-    socket.emit('event', {data: 'I\'m connected!'});
+socket.on("connect", function() {
+    socket.emit("event", {data: "I'm connected!"});
 });
 
 function sendMsg(){
     var m = document.getElementById("m");
     var txt = m.value;
     console.log("Sending "+ txt);
-    socket.emit('message', {'msg': txt});
-    m.value = '';
+    socket.emit("message", {"msg": txt});
+    m.value = "";
 }
 
 var form = document.getElementById("msgform");
@@ -20,9 +20,9 @@ form.addEventListener("submit", function(e){
     sendMsg();
 });
 
-socket.on('message response', function(msg){
+socket.on("message response", function(msg){
     console.log("received : "+msg);
-    var li = document.createElement('li');
+    var li = document.createElement("li");
     li.textContent = msg;
-    document.getElementById('messages').append(li);
+    document.getElementById("messages").append(li);
 });
