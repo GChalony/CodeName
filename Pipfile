@@ -14,9 +14,8 @@ gunicorn = "*"
 eventlet = "*"
 flask = "*"
 flask-socketio = "*"
-flask-Login = "*"
 flask-Session = "*"
-
+werkzeug = "<1"
 
 [requires]
 python_version = "3.7"

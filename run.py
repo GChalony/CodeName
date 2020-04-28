@@ -1,4 +1,5 @@
 import logging
+from uuid import uuid4
 
 from flask import Flask, render_template, request, \
     url_for, redirect
@@ -27,7 +28,7 @@ games = {"0": g}
 
 temp_default_teams = [["Greg", "Sol"], ["Axel", "Clem"]]
 
-users = []
+
 
 @app.route("/index")
 @app.route("/")
@@ -51,6 +52,7 @@ def get_grid(room_id):
 def get_room(room_id):
     return render_template("room.html")
 
+
 @app.route("/<room_id>/cell")
 def get_cell_data(room_id):
     cell_code = request.args.get("code")
@@ -61,10 +63,14 @@ def get_cell_data(room_id):
 
 
 ### SOCKET CALLBACKS  ###
+@socketio.on("connect")
+def handle_connect():
+    print(f"Socket {request.sid} connected!")
+
 
 @socketio.on("disconnect")
 def handle_disconnect():
-    print(f"User {request.sid} disconnected!")
+    print(f"Socket {request.sid} disconnected!")
 
 
 @socketio.on("create room")
@@ -75,13 +81,8 @@ def handle_create_room(data):
     emit("url redirection", {"url": room_url}, broadcast=True)
 
 
-@socketio.on("return home")
-def handle_start_game():
-    emit("url redirection", {"url": url_for("get_home")})
-
-
-socketio.on_namespace(RoomNamespace("room/"))
-socketio.on_namespace(GameNamespace("game/"))
+socketio.on_namespace(RoomNamespace("/room", games.update))
+socketio.on_namespace(GameNamespace("/game"))
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)

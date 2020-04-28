@@ -1,18 +1,19 @@
-var socket = io();
+var socket = io("/room");
 
 var go = document.getElementById("go");
 go.addEventListener("click", function(e){
     e.preventDefault();
     console.log("Go!");
-    socket.emit("start game", {"current_url": window.location.href});
-})
+    console.log(socket);
+    socket.emit("start_game");
+});
 
 var home = document.getElementById("home");
-home.addEventListener("click", function(e){
-    e.preventDefault();
-    socket.emit("return home");
-})
+home.addEventListener("click", function(){
+    window.location = "/";
+});
 
-socket.on("url redirection", function(data){
+socket.on("url_redirection", function(data){
+    console.log(data);
     window.location = data.url;
 });
