@@ -8,7 +8,7 @@ class Game:
         self.players = players
         self.teams = teams
 
-        self.words = generate_random_words("../ressources/words.csv")
+        self.words = generate_random_words("ressources/words.csv")
         self.answers = generate_response_grid()
         self.current_mask = np.zeros((5, 5))
 

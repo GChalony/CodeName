@@ -12,11 +12,10 @@ opencv-python = "*"
 numpy = "*"
 gunicorn = "*"
 eventlet = "*"
-flask = "1.0.2"
+flask = "*"
 flask-socketio = "*"
-flask-Login = "0.4.1"
-flask-Session = "0.3.1"
-werkzeug = "0.14.1"
+flask-Login = "*"
+flask-Session = "*"
 
 
 [requires]

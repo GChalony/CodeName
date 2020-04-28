@@ -32,8 +32,6 @@ function drawAvatar(body, head, mouth){
     context.stroke();
 }
 
-drawAvatar("#ff0", "#ff0", "#ff0000")
-
 backcol = document.getElementById("backcol");
 mouthcol = document.getElementById("mouthcol");
 
@@ -43,3 +41,6 @@ backcol.addEventListener('change', function(e){
 mouthcol.addEventListener('change', function(e){
     drawAvatar(backcol.value, backcol.value, e.target.value);
 });
+
+drawAvatar(backcol.value, backcol.value, mouthcol.value);
+

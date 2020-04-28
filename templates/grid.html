@@ -8,15 +8,33 @@
 <body>
     <h1>Code Name</h1>
     <div id="container">
-        <table>
-            {% for r in range(5) %}
-            <tr>
-                {% for c in range(5) %}
-                <td id={{'r'~r~'c'~c}} data-selected="false" data-code="-1">{{data[r, c]}} </td>
+        <div id="players">
+            {% for i in range(1, 3) %}
+                {% for player in teams[i-1] %}
+                <span
+                        id="{{ player }}"
+                        data-team="{{ ''~i }}"
+                        class="{{ 'pseudo'+(' current-player' if (i==1) and (loop.index==1) else '') }}">
+                    {{ player }}
+                </span>
                 {% endfor %}
-            </tr>
             {% endfor %}
-        </table>
+        </div>
+        <div id="center">
+            <table>
+                {% for r in range(5) %}
+                <tr>
+                    {% for c in range(5) %}
+                    <td id={{'r'~r~'c'~c}} data-selected="false" data-code="-1">{{data[r, c]}} </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+
+            <div id="controls">
+                <input id="send-choice" type="submit">
+            </div>
+        </div>
         <div id="chats">
             <div id="events">
                 <ul class="msglist">
@@ -32,15 +50,11 @@
                     <li>Greg: Blabla</li><li>Autre: bluiblui</li><li>Autre: Blou</li>
                 </ul>
                 <form id="msgform">
-                    <input type="text" id="m">
-                    <input type="submit" id="s">
+                    <input type="text" id="m" autocomplete="off">
+                    <input type="submit" id="s" value=">">
                 </form>
-                </div>
             </div>
         </div>
-    </div>
-    <div id="controls">
-        <input id="send-choice" type="submit">
     </div>
     <script src="{{ url_for('static', filename='js/grid.js') }}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"
