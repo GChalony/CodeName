@@ -1,7 +1,7 @@
 import logging
 
 from flask import Flask, render_template, request, \
-    url_for
+    url_for, redirect
 from flask_session import Session
 from flask_socketio import SocketIO, emit, join_room
 
@@ -33,6 +33,13 @@ users = []
 @app.route("/")
 def get_home():
     return render_template("index.html")
+
+
+@app.route("/new_room")
+def create_new_room():
+    room_id = uuid4()
+    print(f"Created new room {room_id}")
+    return redirect(f"{room_id}/room")
 
 
 @app.route("/<room_id>/grid")
