@@ -2,6 +2,11 @@ var canvas = document.getElementById("av");
 var context = canvas.getContext('2d');
 var w = canvas.width, h = canvas.height;
 
+function getCookie(key){
+    var cookies = "; " + document.cookie;
+    var parts = cookies.split("; "+key+"=")
+    if (parts.length == 2) return parts.pop().split(";").shift();
+}
 
 function drawAvatar(body, head, mouth){
     context.beginPath();
@@ -42,5 +47,26 @@ mouthcol.addEventListener('change', function(e){
     drawAvatar(backcol.value, backcol.value, e.target.value);
 });
 
-drawAvatar(backcol.value, backcol.value, mouthcol.value);
+var pseudo = getCookie("pseudo");
+if (typeof pseudo == "undefined"){
+    pseudo = ""
+}
+var col1 = getCookie("avatar-col1");
+if (typeof col1 == "undefined"){
+    col1 = "#ffff00"
+}
+else{
+    col1 = "#" + col1;
+}
+var col2 = getCookie("avatar-col2");
+if (typeof col2 == "undefined"){
+    col2 = "#ff0000"
+}
+else{
+    col2 = "#" + col2;
+}
+console.log(col1, col2);
+drawAvatar(col1, col1, col2);
+
+document.getElementById("nickname-input").value = pseudo;
 

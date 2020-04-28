@@ -19,18 +19,16 @@ class RoomNamespace(Namespace):
         print("Connect!")
         if "user_id" in session:
             session_id = session["user_id"]
-            print(f'Welcome back user {session_id} !')
+            print(f'Welcome back user {session_id} - {session["pseudo"]} !')
         else:
-            session_id = uuid4()
-            session["user_id"] = session_id
-            print(f'New user {session_id} connected!')
+            raise Exception("No user_id!")
         new_user = User(session_id)
         self.users.append(new_user)
 
     def on_disconnect(self):
         print("Disconnected!")
         user_id = session.get("user_id", None)
-        print(f"Disconnecting {user_id}")
+        print(f"Disconnecting {user_id} - {session['pseudo']} ")
         i, user = self.get_user_by_id(user_id)
         self.users.pop(i)
 
