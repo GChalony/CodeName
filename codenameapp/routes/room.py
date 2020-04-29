@@ -3,9 +3,11 @@ from uuid import uuid4
 import datetime
 
 from codenameapp.game import Game
-from codenameapp.socket_namespaces import RoomNamespace, GameNamespace
 from codenameapp.utils import parse_cell_code, genid
 from codenameapp import app
+import logging
+
+logger = logging.getLogger(__name__)
 
 g = Game(["greg", "clem", "sol", "axel"], [["greg", "clem"], ["sol", "axel"]])
 games = {"0": g}
