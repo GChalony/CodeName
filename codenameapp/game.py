@@ -1,4 +1,6 @@
 import numpy as np
+from flask import session, request
+from flask_socketio import Namespace, emit
 
 from codenameapp.utils import generate_random_words, generate_response_grid, parse_cell_code
 
@@ -49,3 +51,19 @@ if __name__ == "__main__":
     print(g.current_team, g.current_player, g.current_mask)
     g.try_cell("r0c1")
     print(g.current_mask)
+
+
+class GameNamespace(Namespace):
+    def on_connect(self):
+        if "user_id" in session:
+            print(f'Welcome back user {session["user_id"]} !')
+        else:
+            raise Exception("User not authenticated")
+
+    def on_disconnect(self):
+        user_id = session.get("user_id", None)
+        print(f"User {user_id} left the game !")
+
+    def on_message(self, msg):
+        print("Received : "+msg)
+        emit("message response", request.sid[:5] + " : " + msg["msg"], broadcast=True)

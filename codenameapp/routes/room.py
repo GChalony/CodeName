@@ -16,24 +16,32 @@ temp_default_teams = [["Greg", "Sol"], ["Axel", "Clem"]]
 @app.route("/new_room")
 def create_new_room():
     room_id = uuid4().hex
-    print(f"Created new room {room_id}")
-    pseudo = request.args.get("pseudo", None)
-    col1 = request.args.get("col1", "")
-    col2 = request.args.get("col2", "")
-    resp = redirect(f"{room_id}/room")
-    user_id = session.get("user_id", uuid4().hex)
+    # Should store this room id somewhere, and possibly the user who created it
 
-    expire_date = datetime.datetime.now() + datetime.timedelta(30)  # 30 days ahead
+    logger.debug(f"Created new room {room_id}")
+    pseudo = request.args.get("pseudo", None)
+    col1 = request.args.get("col1", None)
+    col2 = request.args.get("col2", None)
+
+    if pseudo is None or col1 is None or col2 is None:
+        return "Missing parameters", 400
+
+    user_id = session.get("user_id", uuid4().hex)  # Create new user_id if not already stored
     session["user_id"] = user_id
     session["pseudo"] = pseudo
     session["avatar-col1"] = col1
     session["avatar-col2"] = col2
+
+    # Here we should store the user in DB and in a dict or smth
+
+    resp = redirect(f"{room_id}/room")
+    # Add cookies (could attach them to the home page to avoid sending them all the time...)
+    expire_date = datetime.datetime.now() + datetime.timedelta(30)  # 30 days ahead
     resp.set_cookie("user_id", user_id, expires=expire_date)
     resp.set_cookie("pseudo", pseudo, expires=expire_date)
     resp.set_cookie("avatar-col1", col1, expires=expire_date)
     resp.set_cookie("avatar-col2", col2, expires=expire_date)
     return resp
-
 
 @app.route("/<room_id>/grid")
 def get_grid(room_id):
