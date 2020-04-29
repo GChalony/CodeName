@@ -1,8 +1,7 @@
-from flask import render_template, Blueprint
-from codenameapp.routes import routes_blueprint
+from flask import render_template
+from codenameapp import app
 
-
-@routes_blueprint.route("/index")
-@routes_blueprint.route("/")
+@app.route("/index")
+@app.route("/")
 def get_home():
     return render_template("index.html")

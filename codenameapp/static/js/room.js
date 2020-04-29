@@ -27,3 +27,10 @@ socket.on("update_room_players", function(room_players){
 //     e.preventDefault();
 //     socket.emit("disconnect_from_window_closed");
 // })
+
+var go = document.getElementById("debug_button");
+go.addEventListener("click", function(e){
+    e.preventDefault();
+    console.log("click debug_button!");
+    socket.emit("debug_button");
+});

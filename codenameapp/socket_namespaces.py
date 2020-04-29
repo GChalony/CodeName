@@ -45,8 +45,16 @@ class RoomNamespace(Namespace):
         room_id = url.split("/")[-2]
         game = Game(self.users, [])
         self.add_game({room_id: game})
+        print("grid_url", grid_url)
         emit("url_redirection", {"url": grid_url}, broadcast=True)
 
+    def on_debug_button(self):
+        print("on_debug_button")
+        a = request.cookies.get('user_id')
+        b = request.cookies.get('pseudo')
+        c = request.cookies.get('avatar-col1')
+        d = request.cookies.get('avatar-col2')
+        print(a, b, c, d)
 
 class GameNamespace(Namespace):
     def on_connect(self):
