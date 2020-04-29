@@ -8,8 +8,8 @@ from flask_session import Session
 from flask_socketio import SocketIO, emit, join_room
 
 import config
-from codenameapp.game import Game
-from codenameapp.socket_namespaces import RoomNamespace, GameNamespace
+from codenameapp.game import Game, GameNamespace
+from codenameapp.room import RoomNamespace
 from codenameapp.utils import parse_cell_code, genid
 
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
