@@ -1,13 +1,10 @@
-import logging
 
 from flask import session, request
 from flask_socketio import Namespace, emit
 
 from codenameapp.game import Game
 from codenameapp.users import User
-
-logger = logging.getLogger(__name__)
-
+from codenameapp import logger
 
 class RoomNamespace(Namespace):
     def __init__(self, name, add_game_func):
@@ -18,6 +15,7 @@ class RoomNamespace(Namespace):
         self.add_game = add_game_func
 
     def on_connect(self):
+        logger.debug(f"Socket {request.sid} (user {session.get('pseudo', None)}) connected!")
         logger.debug("Connected to room Namespace!")
         if "user_id" not in session:
             # There is a better way to handle errors in sockets

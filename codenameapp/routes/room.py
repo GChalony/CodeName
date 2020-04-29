@@ -4,10 +4,7 @@ import datetime
 
 from codenameapp.game import Game
 from codenameapp.utils import parse_cell_code, genid
-from codenameapp import app
-import logging
-
-logger = logging.getLogger(__name__)
+from codenameapp import app, logger
 
 g = Game(["greg", "clem", "sol", "axel"], [["greg", "clem"], ["sol", "axel"]])
 games = {"0": g}
@@ -53,9 +50,8 @@ def get_grid(room_id):
 
 @app.route("/<room_id>/room")
 def get_room(room_id):
-    print(session)
-    return render_template("room.html")
-
+    logger.debug(session)
+    return render_template("room.html", initial_player_pseudo=session.get("pseudo", None))
 
 @app.route("/<room_id>/cell")
 def get_cell_data(room_id):

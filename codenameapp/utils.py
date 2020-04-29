@@ -4,7 +4,7 @@ import uuid
 import numpy as np
 
 
-def generate_random_words(path_to_words="../ressources/words.csv"):
+def generate_random_words(path_to_words="ressources/words.csv"):
     with open(path_to_words, encoding="utf8") as words_file:
         words = words_file.readlines()
     words = [w.replace('\n', '').capitalize() for w in words]
