@@ -1,14 +1,6 @@
-from flask import Flask, render_template
-import config
-import logging
+from flask import Flask
 
-### LOGGER ###
-# Logging config (could move to config file)
-logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-logger.info("Starting app!")
-logging.getLogger('werkzeug').setLevel(logging.ERROR)
+import config
 
 ### FLASK APP ###
 app = Flask(__name__)
