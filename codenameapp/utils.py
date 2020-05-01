@@ -1,8 +1,6 @@
 import json
 import uuid
-
 import numpy as np
-
 
 def generate_random_words(path_to_words="ressources/words.csv"):
     with open(path_to_words, encoding="utf8") as words_file:
