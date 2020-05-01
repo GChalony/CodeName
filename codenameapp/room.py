@@ -15,6 +15,7 @@ class RoomNamespace(Namespace):
         self.add_game = add_game_func
 
     def on_connect(self):
+        # Have access to session here
         logger.debug(f"Socket {request.sid} (user {session.get('pseudo', None)}) connected!")
         logger.debug("Connected to room Namespace!")
         if "user_id" not in session:

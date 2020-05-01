@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, url_for, redirect, session
-from uuid import uuid4
 import datetime
+from uuid import uuid4
+from flask import render_template, request, redirect, session
 
-from codenameapp.game import Game
-from codenameapp.utils import parse_cell_code, genid
 from codenameapp import app, logger
+from codenameapp.game import Game
+from codenameapp.utils import parse_cell_code
 
 g = Game(["greg", "clem", "sol", "axel"], [["greg", "clem"], ["sol", "axel"]])
 games = {"0": g}

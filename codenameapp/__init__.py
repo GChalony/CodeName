@@ -1,9 +1,9 @@
-from flask import Flask, render_template
-import config
+from flask import Flask
 import logging
 
+import config
+
 ### LOGGER ###
-# Logging config (could move to config file)
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
