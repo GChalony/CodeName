@@ -1,6 +1,6 @@
 console.log("Initiating chat")
 
-var socket = io();
+var socket = io("/grid");
 socket.on("connect", function() {
     socket.emit("event", {data: "I'm connected!"});
 });
@@ -9,7 +9,7 @@ function sendMsg(){
     var m = document.getElementById("m");
     var txt = m.value;
     console.log("Sending "+ txt);
-    socket.emit("message", {"msg": txt});
+    socket.emit("chat_message", {"msg": txt});
     m.value = "";
 }
 
@@ -20,7 +20,7 @@ form.addEventListener("submit", function(e){
     sendMsg();
 });
 
-socket.on("message response", function(msg){
+socket.on("chat_msg", function(msg){
     console.log("received : "+msg);
     var li = document.createElement("li");
     li.textContent = msg;

@@ -88,9 +88,9 @@ class GameNamespace(Namespace):
         user_id = session.get("user_id", None)
         print(f"User {user_id} left the game !")
 
-    def on_message(self, msg):
+    def on_chat_message(self, msg):
         print("Received : "+msg)
-        emit("message response", request.sid[:5] + " : " + msg["msg"], broadcast=True)
+        emit("chat_msg", request.sid[:5] + " : " + msg["msg"], broadcast=True)
 
 
 if __name__ == "__main__":
