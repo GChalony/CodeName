@@ -1,6 +1,5 @@
 console.log("Initiating chat")
 
-var socket = io("/grid");
 socket.on("connect", function() {
     socket.emit("event", {data: "I'm connected!"});
 });
