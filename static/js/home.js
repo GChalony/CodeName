@@ -1,3 +1,5 @@
+var socket = io("/room");  // Connect to namespace /room
+
 newGameBtn = document.getElementById("new-game-button")
 
 newGameBtn.addEventListener("click", function(e){
@@ -10,4 +12,6 @@ newGameBtn.addEventListener("click", function(e){
     console.log(new_loc);
     // Simply change loc and redirection will handle the rest
     window.location = new_loc;
+    // socket.emit("join");
+
 });

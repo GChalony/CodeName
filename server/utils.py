@@ -1,5 +1,5 @@
 import json
-import uuid
+from uuid import uuid4
 import numpy as np
 
 def generate_random_words(path_to_words="ressources/words.csv"):
@@ -34,4 +34,4 @@ def generate_response_grid():
 
 
 def genid():
-    return uuid.uuid4().hex
+    return uuid4().hex
