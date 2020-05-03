@@ -18,16 +18,16 @@ class RouteManager:
         self.rn = room_namespace
         self.all_rooms = self.rn.all_rooms
 
-        self.app.add_url_rule('/tuto', view_func=self.tuto)
-        self.app.add_url_rule('/', view_func=self.get_home)
-        self.app.add_url_rule('/new_room', view_func=self.create_new_room)
-        self.app.add_url_rule('/<room_id>/grid', view_func=self.get_grid)
-        self.app.add_url_rule('/<room_id>/room', view_func=self.get_room)
-        self.app.add_url_rule('/<room_id>/cell', view_func=self.get_cell_data)
+        self.app.add_url_rule("/tuto", view_func=self.tuto)
+        self.app.add_url_rule("/", view_func=self.get_home)
+        # self.app.add_url_rule("/new_room", view_func=self.create_new_room)
+        self.app.add_url_rule("/<room_id>/grid", view_func=self.get_grid)
+        self.app.add_url_rule("/<room_id>/room", view_func=self.get_room)
+        self.app.add_url_rule("/<room_id>/cell", view_func=self.get_cell_data)
 
     def tuto(self):
         print("rooms ROUTE", self.all_rooms)
-        return render_template('tuto.html')
+        return render_template("tuto.html")
 
     def get_home(self):
         return render_template("index.html")

@@ -1,7 +1,9 @@
 
 from flask import session, request
-from flask_socketio import Namespace, emit
+from flask_socketio import Namespace, emit, join_room, leave_room, \
+    close_room, rooms, disconnect, send
 import logging
+from uuid import uuid4
 
 from server.game import Game
 from server.users import User
@@ -15,26 +17,30 @@ class RoomNamespace(Namespace):
         # I don't think we actually need that (just users of one room_id)
         self.users = []
         self.add_game = add_game_func
+        self.all_rooms = {}
+        self.all_users = {}
 
     def on_connect(self):
         # Have access to session here
-        logger.debug(f"Socket {request.sid} (user {session.get('pseudo', None)}) connected!")
+        logger.debug(f'Socket {request.sid} (user {session.get("pseudo", None)}) connected!')
         logger.debug("Connected to room Namespace!")
-        if "user_id" not in session:
-            # There is a better way to handle errors in sockets
-            raise Exception("No user_id!")
+        user_id = session.get("user_id", uuid4().hex)
+        session["user_id"] = user_id
+        # if "user_id" not in session:
+        #     # There is a better way to handle errors in sockets
+        #     raise Exception("No user_id!")
 
-        session_id = session["user_id"]
-        logger.info(f'Welcome back user {session_id} - {session["pseudo"]} !')
-        new_user = User(session_id)
-        # Should get room_id here (from request) then store users by room_id
-        self.users.append(new_user)
+        # session_id = session["user_id"]
+        # logger.info(f"Welcome back user {session_id} - {session["pseudo"]} !")
+        # new_user = User(session_id)
+        # # Should get room_id here (from request) then store users by room_id
+        # self.users.append(new_user)
 
     def on_disconnect(self):
         logger.debug("Disconnected from room Namespace!")
-        user_id = session.get("user_id", None)
-        i, user = self.get_user_by_id(user_id)
-        self.users.pop(i)
+        # user_id = session.get("user_id", None)
+        # i, user = self.get_user_by_id(user_id)
+        # self.users.pop(i)
 
     def get_user_by_id(self, user_id):
         for i, u in enumerate(self.users):
@@ -52,64 +58,73 @@ class RoomNamespace(Namespace):
         emit("url_redirection", {"url": grid_url}, broadcast=True)
 
 
+    def on_create_room(self, data):
+        print("on_create_room, data=", data)
+        new_room_id = uuid4().hex
+        if new_room_id not in self.all_rooms:
+            self.all_rooms[new_room_id] = []
+        data["room_id"] = new_room_id
+        self.on_join_existing_room(data)
 
-    def on_join(self, message):
+    def on_join_existing_room(self, data):
+        print("on_join_existing_room, data=", data)
+        room_id = data.get("room_id")
         user_id = session.get("user_id", uuid4().hex)
+        if room_id not in self.all_rooms:
+            print("ROOM_ID DOES NOT EXIST") # Need to display this to player
+        elif user_id not in self.all_rooms[room_id]:
+            self.all_rooms[room_id].append(user_id) # register user_id in all_rooms[room_id]
+
+        nickname = data.get("nickname")
         session["user_id"] = user_id
-        new_room = message['room']
         if user_id not in self.all_users:
-            self.all_users[user_id] = [new_room]
+            self.all_users[user_id] = [room_id] # register room_id in all_users[user_id]
         else:
-            self.all_users[user_id].append(new_room)
+            self.all_users[user_id].append(room_id)
 
-        if new_room not in self.all_rooms:
-            self.all_rooms[new_room] = [user_id]
-        elif user_id not in self.all_rooms[new_room]:
-            self.all_rooms[new_room].append(user_id)
-
-        print("new_room", new_room)
         print("self.all_rooms", self.all_rooms)
-        join_room(new_room)
-        update_receive_count()
-        emit('my_response',
-             {'data': 'In rooms: ' + ', '.join(rooms()),
-              'count': session['receive_count']})
-        # send('Toto has entered the room.', room=new_room)
+        join_room(room_id)
+        print("rooms()", rooms())
+        room_url = f"{room_id}/room"
+        emit("url_redirection", {"url": room_url})
+        print("ALL PLAYERS : self.all_rooms[room_id]", self.all_rooms[room_id])
+        emit("get_players_in_room", {"players": self.all_rooms[room_id]})
 
-    def on_leave(self, message):
+
+    def on_leave_room(self, data):
         user_id = session.get("user_id")
-        new_room = message['room']
-        if new_room in self.all_users[user_id]:
-            self.all_users[user_id].remove(new_room)
-        print("on leave, self.all_users=", self.all_users)
-        leave_room(message['room'], user_id)
-        update_receive_count()
-        emit('my_response',
-             {'data': 'In rooms: ' + ', '.join(rooms()),
-              'count': session['receive_count']})
+        current_url = data["current_url"]
+        room_id = current_url.split("/")[-2]
+        if room_id in self.all_users[user_id]:
+            self.all_users[user_id].remove(room_id)
+        if user_id in self.all_rooms[room_id]:
+            self.all_rooms[room_id].remove(user_id)
+        leave_room(room_id)
+        print("on_leave_room, self.all_users=", self.all_users)
+        print("on_leave_room, self.all_rooms=", self.all_rooms)
+        print("on_leave_room, rooms()=", rooms())
+        if not self.all_rooms[room_id]:
+            self.on_close_room({"room_id": room_id})
+        emit("url_redirection", {"url": "/"})
 
-    def on_close_room(self, message):
-        room = message['room']
-        del self.all_rooms[room]
-        print("self.all_rooms2", self.all_rooms)
-        update_receive_count()
-        emit('my_response', {'data': 'Room ' + room + ' is closing.',
-                             'count': session['receive_count']},
-             room=room)
-        close_room(room)
+    def on_close_room(self, data):
+        room_id = data["room_id"]
+        del self.all_rooms[room_id]
+        print("on_close_room, self.all_rooms=", self.all_rooms)
+        # emit("my_response", {"data": "Room " + room + " is closing.", room=room)
+        close_room(room_id)
 
     def on_my_room_event(self, message):
-        update_receive_count()
-        emit('my_response',
-             {'data': message['data'], 'count': session['receive_count']},
-             room=message['room'])
+        emit("my_response", {"data": message["data"]}, room=message["room"])
 
-
-    def on_debug_button(self):
+    def on_debug_button(self, data):
         print("on_debug_button")
-        a = request.cookies.get('user_id')
-        b = request.cookies.get('pseudo')
-        c = request.cookies.get('avatar-col1')
-        d = request.cookies.get('avatar-col2')
+        a = request.cookies.get("user_id")
+        b = request.cookies.get("pseudo")
+        c = request.cookies.get("avatar-col1")
+        d = request.cookies.get("avatar-col2")
         print(a, b, c, d)
 
+        current_url = data["current_url"]
+        room_id = current_url.split("/")[-2]
+        emit("get_players_in_room", {"players": self.all_rooms[room_id]})

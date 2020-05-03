@@ -11,7 +11,7 @@ function askCellValue(event){
 
     var target = event.target;
 
-    xhr.addEventListener('readystatechange', function(e){
+    xhr.addEventListener("readystatechange", function(e){
         console.log(e);
         console.log(xhr);
         target.dataset.selected = "true";
@@ -25,5 +25,5 @@ var cells = document.getElementsByTagName("td"),
 
 for (var i=0; i<ncells; i++){
     var cell = cells[i];
-    cell.addEventListener('click', askCellValue);
+    cell.addEventListener("click", askCellValue);
 }

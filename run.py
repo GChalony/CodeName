@@ -19,7 +19,7 @@ logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.info("Starting app!")
-logging.getLogger('werkzeug').setLevel(logging.ERROR)
+logging.getLogger("werkzeug").setLevel(logging.ERROR)
 
 # To remove error about packets
 Payload.max_decode_packets = 50
@@ -42,12 +42,12 @@ games = {"0": g}
 
 temp_default_teams = [["Greg", "Sol"], ["Axel", "Clem"]]
 
-room_namespace = RoomNamespace('/room', games.update)
-tuto_namespace = TutoNamespace('/tuto')
+room_namespace = RoomNamespace("/room", games.update)
+tuto_namespace = TutoNamespace("/tuto")
 route_manager = RouteManager(app, tuto_namespace)
 
 socketio.on_namespace(room_namespace)
 socketio.on_namespace(tuto_namespace)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     socketio.run(app, debug=True)
