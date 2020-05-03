@@ -52,3 +52,12 @@ socket.on('switch_teams', function(data){
     }
 
 });
+
+socket.on('change_title', function(new_title){
+    // Change title here
+});
+
+socket.on('change_controle', function(){
+    // Change (or hide) controls here
+    // controls.display = 'none';
+});
