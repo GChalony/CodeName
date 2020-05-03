@@ -6,6 +6,8 @@ import numpy as np
 from flask import session, request
 from flask_socketio import Namespace, emit
 
+from server.room_session import room_session
+from server.users import User
 from server.utils import generate_random_words, generate_response_grid, parse_cell_code
 
 logger = logging.getLogger(__name__)
@@ -72,7 +74,6 @@ class Game:
         self.current_team = (self.current_team + 1) % 2
         self.current_player = self._get_next_player()
         self.last_player = last_player
-        logger.debug(f"\n{self.__dict__}")
 
         return voted, value
 
@@ -80,20 +81,47 @@ class Game:
 class GameNamespace(Namespace):
     def on_connect(self):
         if "user_id" in session:
-            print(f'Welcome back user {session["user_id"]} !')
+            logger.info(f'Welcome back user {session["pseudo"]} !')
         else:
             raise Exception("User not authenticated")
 
     def on_disconnect(self):
-        user_id = session.get("user_id", None)
-        print(f"User {user_id} left the game !")
+        pseudo = session.get("pseudo", None)
+        logger.info(f"User {pseudo} left the game !")
 
     def on_chat_message(self, msg):
-        print("Received : "+msg)
-        emit("chat_msg", request.sid[:5] + " : " + msg["msg"], broadcast=True)
+        logger.debug("Received : "+msg)
+        emit("chat_msg", session["pseudo"] + " : " + msg, broadcast=True)
+
+    def _get_votes_counts(self):
+        votes_per_user = room_session.game.votes
+        count = Counter(votes_per_user)
+        return count.most_common()
+
+    def on_vote_cell(self, code):
+        user_id = "2"  # session["user_id"]  # Fake id to play
+        logger.debug(f"Voting: user={user_id} cell={code}")
+        logger.debug(f"Teams_ids: {room_session.game.teams}")
+        res = room_session.game.vote(user_id, code)
+        if res is None:  # Votes not done
+            votes_counts = self._get_votes_counts()
+            logger.debug(f"Votes counts: {votes_counts}")
+            emit("update_votes", votes_counts)
+        else:
+            vote = {"cell": res[0], "value": str(res[1])}
+            logger.debug(f"Switching teams: {vote}")
+            emit("vote_done", vote, broadcast=True)
+            # Swith current player
+            result = {
+                "current_player": room_session.game.current_player
+            }
+            emit("switch_teams", result, broadcast=True)
+            pass  # Switch teams etc
+
 
 
 if __name__ == "__main__":
+    logging.basicConfig()
     logger.setLevel(logging.DEBUG)
     g = Game([["a", "b", "c"], ["d", "e", "f"]])
 
