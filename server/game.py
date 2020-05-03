@@ -80,18 +80,20 @@ class Game:
 
 class GameNamespace(Namespace):
     def on_connect(self):
-        if "user_id" in session:
-            logger.info(f'Welcome back user {session["pseudo"]} !')
+        logging.debug(str(room_session.game))
+        # TODO toggle controls according to user_id
+        if "user_id" in request.cookies:
+            logger.info(f'Welcome back user {request.cookies["pseudo"]} !')
         else:
             raise Exception("User not authenticated")
 
     def on_disconnect(self):
-        pseudo = session.get("pseudo", None)
+        pseudo = request.cookies.get("pseudo", None)
         logger.info(f"User {pseudo} left the game !")
 
     def on_chat_message(self, msg):
         logger.debug("Received : "+msg)
-        emit("chat_msg", session["pseudo"] + " : " + msg, broadcast=True)
+        emit("chat_msg", request.cookies.get("pseudo") + " : " + msg, broadcast=True)
 
     def _get_votes_counts(self):
         votes_per_user = room_session.game.votes
@@ -99,25 +101,26 @@ class GameNamespace(Namespace):
         return count.most_common()
 
     def on_vote_cell(self, code):
-        user_id = "2"  # session["user_id"]  # Fake id to play
-        logger.debug(f"Voting: user={user_id} cell={code}")
-        logger.debug(f"Teams_ids: {room_session.game.teams}")
-        res = room_session.game.vote(user_id, code)
-        if res is None:  # Votes not done
-            votes_counts = self._get_votes_counts()
-            logger.debug(f"Votes counts: {votes_counts}")
-            emit("update_votes", votes_counts)
-        else:
-            vote = {"cell": res[0], "value": str(res[1])}
-            logger.debug(f"Switching teams: {vote}")
-            emit("vote_done", vote, broadcast=True)
-            # Swith current player
-            result = {
-                "current_player": room_session.game.current_player
-            }
-            emit("switch_teams", result, broadcast=True)
-            pass  # Switch teams etc
-
+        user_id = request.cookies["user_id"]  # session["user_id"]  # TODO change back in production
+        try:
+            logger.debug(f"Current state: {room_session.game}")
+            res = room_session.game.vote(user_id, code)
+            if res is None:  # Votes not done
+                votes_counts = self._get_votes_counts()
+                logger.debug(f"Votes counts: {votes_counts}")
+                emit("update_votes", votes_counts)
+            else:
+                vote = {"cell": res[0], "value": str(res[1])}
+                logger.debug(f"Switching teams: {vote}")
+                emit("vote_done", vote, broadcast=True)
+                # Swith current player
+                result = {
+                    "current_player_id": room_session.game.current_player
+                }
+                emit("switch_teams", result, broadcast=True)
+        except PermissionError as e:
+            logger.debug(room_session.game)
+            logger.error(e)
 
 
 if __name__ == "__main__":
