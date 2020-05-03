@@ -22,27 +22,39 @@ class Game:
         self.answers = generate_response_grid()
         self.current_mask = np.zeros((5, 5))
 
-        self.current_team = 0
-        self.current_player = 0
-        self.last_player = None
+        self.current_team_idx = 0
+        self.current_player_idx = 0
+        self.last_player_idx = None
 
         self.votes = {}
 
+    def __str__(self):
+        return f"Team {self.current_team_idx} - player {self.current_player} is spy.\n" \
+                f"Last player={self.last_player_idx} and votes={self.votes}"
+
+    @property
+    def current_team(self):
+        return self.teams[self.current_team_idx]
+
+    @property
+    def current_player(self):
+        return self.current_team[self.current_player_idx]
+
     def _get_next_team(self):
-        return 0 if self.current_team == 1 else 1
+        return 0 if self.current_team_idx == 1 else 1
 
     def _get_next_player(self):
         next_team = self._get_next_team()
-        if self.last_player is None:
+        if self.last_player_idx is None:
             return 0
-        return (self.last_player + 1) % self.len_teams[next_team]
+        return (self.last_player_idx + 1) % self.len_teams[next_team]
 
     def vote(self, user_id, code):
         logger.debug(f"User {user_id} is voting {code}")
-        if user_id not in self.teams[self.current_team]:
-            raise Exception(f"Vote from wrong team: {user_id} !")
-        if self.teams[self.current_team].index(user_id) == self.current_player:
-            raise Exception(f"Vote from current player {user_id}!")
+        if user_id not in self.current_team:
+            raise PermissionError(f"Vote from wrong team: {user_id} !")
+        if self.current_player == user_id:
+            raise PermissionError(f"Vote from current player {user_id}!")
         self.votes[user_id] = code
         logger.debug(f"Votes: {self.votes}")
         if self.voting_done():
@@ -50,7 +62,7 @@ class Game:
             return voted
 
     def voting_done(self):
-        return len(self.votes) == self.len_teams[self.current_team] - 1
+        return len(self.votes) == self.len_teams[self.current_team_idx] - 1
 
     def get_team_vote(self):
         vals = list(self.votes.values())
@@ -70,10 +82,10 @@ class Game:
         self.current_mask[r, c] = 1
 
         # Switch teams
-        last_player = self.current_player
-        self.current_team = (self.current_team + 1) % 2
-        self.current_player = self._get_next_player()
-        self.last_player = last_player
+        last_player = self.current_player_idx
+        self.current_team_idx = (self.current_team_idx + 1) % 2
+        self.current_player_idx = self._get_next_player()
+        self.last_player_idx = last_player
 
         return voted, value
 
