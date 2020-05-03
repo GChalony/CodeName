@@ -4,4 +4,4 @@ class User():
         self.nickname = ""
 
     def __repr__(self):
-        return "<{}>".format(self.id)
+        return f"<{self.id}>"

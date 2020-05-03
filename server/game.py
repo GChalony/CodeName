@@ -6,7 +6,7 @@ import numpy as np
 from flask import session, request
 from flask_socketio import Namespace, emit
 
-from codenameapp.utils import generate_random_words, generate_response_grid, parse_cell_code
+from server.utils import generate_random_words, generate_response_grid, parse_cell_code
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ class Game:
         self.teams = teams
         self.len_teams = (len(teams[0]), len(teams[1]))
 
-        self.words = generate_random_words("../codenameapp/ressources/words.csv")
+        self.words = generate_random_words("server/ressources/words.csv")
         self.answers = generate_response_grid()
         self.current_mask = np.zeros((5, 5))
 
