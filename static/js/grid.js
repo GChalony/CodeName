@@ -14,7 +14,6 @@ function voteCell(event){
     socket.emit('vote_cell', event.target.id);
 }
 
-
 var cells = document.getElementsByTagName("td"),
     ncells = cells.length;
 
@@ -31,13 +30,25 @@ socket.on('update_votes', function(votes){
 });
 
 socket.on('vote_done', function(data){
+    // TODO: Reset votes
     console.log(data);
     target = document.getElementById(data.cell);
     target.dataset.selected = "true";
     target.dataset.code = parseInt(data.value);
 });
 
+var players = document.getElementsById("tdplayers").children,
+    nplayers = players.length;
+
 socket.on('switch_teams', function(data){
-    console.log(data);
+    for (var i=0; i<nplayers; i++){
+        var player = players[i];
+        if ( player.classList.contains('MyClass') ){
+            player.classList.remove('current-player');
+        }
+        if (player.id == data.current_player_id){
+            player.classList.add('current-player');
+        }
+    }
 
 });

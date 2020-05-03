@@ -1,9 +1,5 @@
 console.log("Initiating chat")
 
-socket.on("connect", function() {
-    socket.emit("event", {data: "I'm connected!"});
-});
-
 function sendMsg(){
     var m = document.getElementById("m");
     var txt = m.value;
