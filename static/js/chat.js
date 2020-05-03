@@ -8,7 +8,7 @@ function sendMsg(){
     var m = document.getElementById("m");
     var txt = m.value;
     console.log("Sending "+ txt);
-    socket.emit("chat_message", {"msg": txt});
+    socket.emit("chat_message", txt);
     m.value = "";
 }
 
