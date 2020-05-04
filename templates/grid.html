@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/grid.css') }}">
 </head>
 <body>
-    <h1>Code Name</h1>
+    <h1 id="toptitle">Code Name</h1>
     <div id="container">
         <div id="players">
             {% for i in [1, 2] %}
@@ -31,16 +31,15 @@
                 {% endfor %}
             </table>
 
-            <div id="controls">
+            <form id="controls">
+                <input type="text">
+                <input type="text">
                 <input id="send-choice" type="submit">
-            </div>
+            </form>
         </div>
         <div id="chats">
             <div id="events">
-                <ul class="msglist">
-                    <li><em>Machin</em> entered the chat</li>
-                    <li>Equipe bleu, a vous de jouer.</li>
-                    <li><em>Hippopotame</em> : gagné !</li>
+                <ul id="events_msglist" class="msglist">
                 </ul>
             </div>
             <div id="chat">
@@ -58,5 +57,6 @@
             crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/grid.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/events_chat.js') }}"></script>
 </body>
 </html>
