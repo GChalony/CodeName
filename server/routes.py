@@ -1,29 +1,26 @@
 import datetime
-from flask import render_template, request, redirect, session
-from uuid import uuid4
 import logging
+from uuid import uuid4
 
-from server.game import Game
+from flask import render_template, request, redirect, session
+
+from server.room_session import room_session
+from server.utils import parse_cell_code
 
 logger = logging.getLogger(__name__)
 
-g = Game(["greg", "clem", "sol", "axel"], [["greg", "clem"], ["sol", "axel"]])
-games = {"0": g}
-
-temp_default_teams = [["Greg", "Sol"], ["Axel", "Clem"]]
 
 class RouteManager:
-    def __init__(self, app, room_namespace):
+    def __init__(self, app):
         self.app = app
-        self.rn = room_namespace
-        self.all_rooms = self.rn.all_rooms
 
-        self.app.add_url_rule("/tuto", view_func=self.tuto)
-        self.app.add_url_rule("/", view_func=self.get_home)
-        # self.app.add_url_rule("/new_room", view_func=self.create_new_room)
-        self.app.add_url_rule("/<room_id>/grid", view_func=self.get_grid)
-        self.app.add_url_rule("/<room_id>/room", view_func=self.get_room)
-        self.app.add_url_rule("/<room_id>/cell", view_func=self.get_cell_data)
+    def init_routes(self):
+        self.app.add_url_rule('/tuto', view_func=self.tuto)
+        self.app.add_url_rule('/', view_func=self.get_home)
+        self.app.add_url_rule('/new_room', view_func=self.create_new_room)
+        self.app.add_url_rule('/<room_id>/room', view_func=self.get_room)
+        self.app.add_url_rule('/<room_id>/grid', view_func=self.get_grid)
+        self.app.add_url_rule('/<room_id>/cell', view_func=self.get_cell_data)
 
     def tuto(self):
         print("rooms ROUTE", self.all_rooms)
@@ -61,21 +58,15 @@ class RouteManager:
         resp.set_cookie("avatar-col2", col2, expires=expire_date)
         return resp
 
-    # @app.route("/<room_id>/grid")
-    def get_grid(self, room_id):
-        # return render_template("grid.html", data=games[room_id].words, teams=temp_default_teams)
-        return render_template("grid.html", data=games["0"].words, teams=temp_default_teams)
-
-
-    # @app.route("/<room_id>/room")
     def get_room(self, room_id):
-        logger.debug(session)
         return render_template("room.html", initial_player_pseudo=session.get("pseudo", None))
 
-    # @app.route("/<room_id>/cell")
+    def get_grid(self, room_id):
+        return render_template("grid.html", words=room_session.game.words, teams=room_session.teams)
+
     def get_cell_data(self, room_id):
         cell_code = request.args.get("code")
         r, c = parse_cell_code(cell_code)
-        val = games[room_id].answers[r, c]
+        val = room_session.game.answers[r, c]
         # logger.debug(f"Returning value for cell {cell_code} : {val}")
         return str(val)

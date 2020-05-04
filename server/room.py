@@ -1,3 +1,4 @@
+import logging
 
 from flask import session, request
 from flask_socketio import Namespace, emit, join_room, leave_room, \
@@ -6,55 +7,62 @@ import logging
 from uuid import uuid4
 
 from server.game import Game
+from server.room_session import room_session
 from server.users import User
 
 logger = logging.getLogger(__name__)
 
+temp_default_teams = [[User("1", "Greg"), User("2", "Sol")],
+                      [User("3", "Clem"), User("4", "Axel")]]
+
 class RoomNamespace(Namespace):
-    def __init__(self, name, add_game_func):
+    def __init__(self, name):
         super(RoomNamespace, self).__init__(name)
         # Track ALL users
         # I don't think we actually need that (just users of one room_id)
         self.users = []
-        self.add_game = add_game_func
         self.all_rooms = {}
         self.all_users = {}
 
     def on_connect(self):
         # Have access to session here
-        logger.debug(f'Socket {request.sid} (user {session.get("pseudo", None)}) connected!')
-        logger.debug("Connected to room Namespace!")
+        # logger.debug(f'Socket {request.sid} (user {session.get("pseudo", None)}) connected!')
+        # logger.debug("Connected to room Namespace!")
         user_id = session.get("user_id", uuid4().hex)
         session["user_id"] = user_id
         # if "user_id" not in session:
         #     # There is a better way to handle errors in sockets
         #     raise Exception("No user_id!")
 
-        # session_id = session["user_id"]
-        # logger.info(f"Welcome back user {session_id} - {session["pseudo"]} !")
-        # new_user = User(session_id)
-        # # Should get room_id here (from request) then store users by room_id
-        # self.users.append(new_user)
+        user_id = session["user_id"]
+        pseudo = session.get("pseudo", "mypseudo")
+        session["pseudo"] = pseudo
+
+        # logger.info(f'Welcome back user {user_id} - {pseudo} !')
+        new_user = User(user_id, pseudo)
+        if not hasattr(room_session, "users"):  # First connection
+            room_session.users = []
+        room_session.users.append(new_user)
+        # logger.debug(room_session.__dict__)
 
     def on_disconnect(self):
         logger.debug("Disconnected from room Namespace!")
-        # user_id = session.get("user_id", None)
-        # i, user = self.get_user_by_id(user_id)
-        # self.users.pop(i)
+        user_id = session.get("user_id", None)
+        i, user = self.get_user_by_id(user_id)
+        room_session.users.pop(i)
 
     def get_user_by_id(self, user_id):
-        for i, u in enumerate(self.users):
+        for i, u in enumerate(room_session.users):
             if u.id == user_id:
                 return i, u
 
     def on_start_game(self):
         logger.info("start game")
-        logger.debug(request.__dict__)
+        room_session.teams = temp_default_teams
         url = request.environ["HTTP_REFERER"]  # Access to request context
         grid_url = url.replace("room", "grid")
-        room_id = url.split("/")[-2]
-        game = Game(self.users, [])
-        self.add_game({room_id: game})
+        game = Game([[u.id for u in team] for team in room_session.teams])
+        room_session.game = game
         emit("url_redirection", {"url": grid_url}, broadcast=True)
 
 
@@ -76,6 +84,7 @@ class RoomNamespace(Namespace):
             self.all_rooms[room_id].append(user_id) # register user_id in all_rooms[room_id]
 
         nickname = data.get("nickname")
+        session["pseudo"] = nickname
         session["user_id"] = user_id
         if user_id not in self.all_users:
             self.all_users[user_id] = [room_id] # register room_id in all_users[user_id]
