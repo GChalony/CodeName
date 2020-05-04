@@ -40,6 +40,10 @@ class Game:
     def current_player(self):
         return self.current_team[self.current_player_idx]
 
+    @property
+    def current_team_name(self):
+        return ["Rouge", "Bleu"][self.current_team_idx]
+
     def _get_next_team(self):
         return 0 if self.current_team_idx == 1 else 1
 
@@ -91,13 +95,18 @@ class Game:
 
 
 class GameNamespace(Namespace):
+    # TODO toggle controls according to user_id
     def on_connect(self):
         logging.debug(str(room_session.game))
-        # TODO toggle controls according to user_id
-        if "user_id" in request.cookies:
-            logger.info(f'Welcome back user {request.cookies["pseudo"]} !')
-        else:
+        if "user_id" not in request.cookies:
             raise Exception("User not authenticated")
+        user_id = request.cookies["user_id"]
+        logger.info(f'Welcome back user {request.cookies["pseudo"]} !')
+        # Store mapping of user_id <-> socketio id
+        if not hasattr(room_session, "socketio_id_to_user_id"):
+            room_session.socketio_id_to_user_id = {}
+        room_session.socketio_id_to_user_id[user_id] = request.sid
+        logger.debug(room_session.socketio_id_to_user_id)
 
     def on_disconnect(self):
         pseudo = request.cookies.get("pseudo", None)
@@ -114,9 +123,11 @@ class GameNamespace(Namespace):
 
     def on_vote_cell(self, code):
         user_id = request.cookies["user_id"]  # session["user_id"]  # TODO change back in production
+        game = room_session.game
+        previous_player_id = game.current_player
         try:
-            logger.debug(f"Current state: {room_session.game}")
-            res = room_session.game.vote(user_id, code)
+            logger.debug(f"Current state: {game}")
+            res = game.vote(user_id, code)
             if res is None:  # Votes not done
                 votes_counts = self._get_votes_counts()
                 logger.debug(f"Votes counts: {votes_counts}")
@@ -125,13 +136,18 @@ class GameNamespace(Namespace):
                 vote = {"cell": res[0], "value": str(res[1])}
                 logger.debug(f"Switching teams: {vote}")
                 emit("vote_done", vote, broadcast=True)
-                # Swith current player
+                r, c = parse_cell_code(vote["cell"])
+                emit("add_event", f"L'equipe {game.current_team_name} a voté "
+                                  f"{game.words[r, c]}", broadcast=True)
+                emit('change_title', f"Equipe {game.current_team_name}", broadcast=True)
                 result = {
-                    "current_player_id": room_session.game.current_player
+                    "current_player_id": game.current_player
                 }
                 emit("switch_teams", result, broadcast=True)
+                emit("toggle_controls", room=room_session.socketio_id_to_user_id[previous_player_id])
+                emit("toggle_controls", room=room_session.socketio_id_to_user_id[game.current_player])
         except PermissionError as e:
-            logger.debug(room_session.game)
+            logger.debug(game)
             logger.error(e)
 
 

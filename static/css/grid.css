@@ -94,6 +94,7 @@ td[data-code="3"]
 }
 #controls
 {
+    display: none;
     width: 10%;
     margin: auto;
 }

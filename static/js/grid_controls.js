@@ -37,27 +37,33 @@ socket.on('vote_done', function(data){
     target.dataset.code = parseInt(data.value);
 });
 
-var players = document.getElementsById("tdplayers").children,
+var players = document.getElementById("players").children,
     nplayers = players.length;
 
 socket.on('switch_teams', function(data){
+    console.log('Switching');
     for (var i=0; i<nplayers; i++){
         var player = players[i];
-        if ( player.classList.contains('MyClass') ){
+        if ( player.classList.contains('current-player') ){
             player.classList.remove('current-player');
         }
         if (player.id == data.current_player_id){
             player.classList.add('current-player');
         }
     }
-
 });
 
+var title = document.getElementById('toptitle');
 socket.on('change_title', function(new_title){
-    // Change title here
+    title.textContent = new_title;
 });
 
-socket.on('change_controle', function(){
-    // Change (or hide) controls here
-    // controls.display = 'none';
+var controls = document.getElementById('controls');
+socket.on('toggle_controls', function(){
+    console.log('Toggling controls');
+    if (controls.style.display === "none") {
+        controls.style.display = "flex";
+    } else {
+      controls.style.display = "none";
+    }
 });
