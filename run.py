@@ -1,19 +1,18 @@
 #!/usr/bin/env python
-from flask_socketio import SocketIO
-from flask_session import Session
-from flask import Flask, render_template
 import logging
-from engineio.payload import Payload
 
+from engineio.payload import Payload
+from flask import Flask
+from flask_session import Session
+from flask_socketio import SocketIO
+
+import config
+from server.game import Game
+from server.game_manager import GameManager
 from server.room import RoomNamespace
 from server.room_session import room_session
-from server.tuto import TutoNamespace
 from server.routes import RouteManager
-from server.game import Game, GameNamespace
-import config
-
-
-### LOGGER ###
+from server.tuto import TutoNamespace
 from server.users import User
 
 logging.basicConfig(level=logging.WARNING,
@@ -28,7 +27,6 @@ Payload.max_decode_packets = 50
 ### FLASK APP ###
 app = Flask(__name__)
 app.config.from_object(config)
-
 
 use_session = True
 # use_session = False
@@ -50,14 +48,16 @@ temp_default_teams = [["Greg", "Sol"], ["Axel", "Clem"]]
 
 room_namespace = RoomNamespace('/room')
 tuto_namespace = TutoNamespace('/tuto')
-game_namespace = GameNamespace('/grid')
 
 socketio.on_namespace(room_namespace)
 socketio.on_namespace(tuto_namespace)
-socketio.on_namespace(game_namespace)
 
 route_manager = RouteManager(app)
 route_manager.init_routes()
+
+game_manager = GameManager('/grid')
+game_manager.init_routes(app)
+socketio.on_namespace(game_manager)
 
 
 if __name__ == '__main__':
