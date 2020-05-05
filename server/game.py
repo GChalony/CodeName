@@ -65,8 +65,8 @@ class Game:
         self.votes[user_id] = code
         logger.debug(f"Votes: {self.votes}")
         if self.voting_done():
-            voted = self.end_round()
-            return voted
+            cell, value = self.end_round()
+            return cell, value
 
     def voting_done(self):
         return len(self.votes) == self.len_teams[self.current_team_idx] - 1
@@ -98,7 +98,6 @@ class Game:
 
 
 class GameNamespace(Namespace):
-    # TODO toggle controls according to user_id
     def on_connect(self):
         logger.debug(str(room_session.game))
         if "user_id" not in request.cookies:
@@ -109,10 +108,14 @@ class GameNamespace(Namespace):
         if not hasattr(room_session, "socketio_id_to_user_id"):
             room_session.socketio_id_to_user_id = {}
         room_session.socketio_id_to_user_id[user_id] = request.sid
-        logger.debug(room_session.socketio_id_to_user_id)
         if user_id in room_session.game.current_guessers:
             logger.debug(f"Enabling votes for user {user_id}")
             emit("enable_vote")
+        if user_id == room_session.game.current_player:
+            logger.debug(f"Setting as spy user={user_id}")
+            emit("toggle_controls")
+        pseudo = request.cookies["pseudo"]
+        self.send_new_event(f"{pseudo} a rejoint la partie")
 
     def on_disconnect(self):
         pseudo = request.cookies.get("pseudo", None)
@@ -134,28 +137,57 @@ class GameNamespace(Namespace):
         try:
             logger.debug(f"Current state: {game}")
             res = game.vote(user_id, code)
-            if res is None:  # Votes not done
-                votes_counts = self._get_votes_counts()
-                logger.debug(f"Votes counts: {votes_counts}")
-                emit("update_votes", votes_counts)
+            if res is None:
+                # Votes not done
+                self.update_cell_votes()
             else:
-                vote = {"cell": res[0], "value": str(res[1])}
-                logger.debug(f"Switching teams: {vote}")
-                emit("vote_done", vote, broadcast=True)
-                r, c = parse_cell_code(vote["cell"])
-                emit("add_event", f"L'equipe {game.current_team_name} a voté "
-                                  f"{game.words[r, c]}", broadcast=True)
-                emit('change_title', f"Equipe {game.current_team_name}", broadcast=True)
-                result = {
-                    "current_player_id": game.current_player
-                }
-                emit("switch_teams", result, broadcast=True)
-                emit("toggle_controls", room=room_session.socketio_id_to_user_id[previous_player_id])
-                emit("toggle_controls", room=room_session.socketio_id_to_user_id[game.current_player])
-
+                # Votes are done, change teams etc
+                cell, value = res
+                self.notify_cell_votes(cell, value)
+                r, c = parse_cell_code(cell)
+                self.send_new_event(f"Team {game.current_team_name} voted {game.words[r, c]}")
+                self.switch_teams(previous_player_id, game.current_player)
         except PermissionError as e:
             logger.debug(game)
             logger.error(e)
+
+    def update_cell_votes(self):
+        votes_counts = self._get_votes_counts()
+        logger.debug(f"Votes counts: {votes_counts}")
+        emit("update_votes", votes_counts)
+
+    def notify_cell_votes(self, cell, value):
+        vote = {"cell": cell, "value": str(value)}
+        emit("vote_done", vote, broadcast=True)
+
+    def change_title(self, new_title):
+        emit('change_title', f"Equipe {new_title}", broadcast=True)
+
+    def toggle_controls_current_player(self, prev_player_id, new_player_id):
+        emit("toggle_controls", room=room_session.socketio_id_to_user_id[prev_player_id])
+        emit("toggle_controls", room=room_session.socketio_id_to_user_id[new_player_id])
+
+    def change_current_player(self, new_player):
+        emit("change_current_player", new_player, broadcast=True)
+
+    def enable_votes(self, player_ids):
+        for player_id in player_ids:
+            emit("enable_vote", room=room_session.socketio_id_to_user_id[player_id])
+
+    def disable_votes(self, player_ids):
+        for player_id in player_ids:
+            emit("disable_vote", room=room_session.socketio_id_to_user_id[player_id])
+
+    def send_new_event(self, event_msg):
+        emit("add_event", event_msg, broadcast=True)
+
+    def switch_teams(self, prev_player, new_player):
+        game = room_session.game
+        self.change_title(f"Equipe {game.current_team_name}")
+        self.toggle_controls_current_player(prev_player, new_player)
+        self.change_current_player(new_player)
+        self.disable_votes(game.teams[(game.current_team_idx+1) % 2])
+        self.enable_votes(game.current_guessers)
 
 
 if __name__ == "__main__":

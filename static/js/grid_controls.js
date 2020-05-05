@@ -42,14 +42,14 @@ socket.on('vote_done', function(data){
 var players = document.getElementById("players").children,
     nplayers = players.length;
 
-socket.on('switch_teams', function(data){
+socket.on('change_current_player', function(player_id){
     console.log('Switching');
     for (var i=0; i<nplayers; i++){
         var player = players[i];
         if ( player.classList.contains('current-player') ){
             player.classList.remove('current-player');
         }
-        if (player.id == data.current_player_id){
+        if (player.id == player_id){
             player.classList.add('current-player');
         }
     }
@@ -63,7 +63,7 @@ socket.on('change_title', function(new_title){
 var controls = document.getElementById('controls');
 socket.on('toggle_controls', function(){
     console.log('Toggling controls');
-    if (controls.style.display === "none") {
+    if (controls.style.display === "none" || controls.style.display == "") {
         controls.style.display = "flex";
     } else {
       controls.style.display = "none";
