@@ -34,12 +34,20 @@ class Game:
         return self.teams[self.current_team_idx]
 
     @property
+    def other_team_idx(self):
+        return 0 if self.current_team_idx == 1 else 1
+
+    @property
     def current_spy_idx(self):
         return self.spies_idx[self.current_team_idx]
 
     @property
     def current_spy(self):
-        return self.teams[self.current_team_idx]
+        return self.spies[self.current_team_idx]
+
+    @property
+    def other_spy(self):
+        return self.spies[self.other_team_idx]
 
     @property
     def current_team_name(self):
@@ -48,9 +56,6 @@ class Game:
     @property
     def current_guessers(self):
         return self.guessers[self.current_team_idx]
-
-    def _get_next_team(self):
-        return 0 if self.current_team_idx == 1 else 1
 
     def get_votes_counts(self):
         count = Counter(self.votes)
@@ -87,7 +92,7 @@ class Game:
 
         self.votes = {}
         self.current_mask[r, c] = 1
-        self.current_team_idx = self._get_next_team()
+        self.current_team_idx = self.other_team_idx
 
         return voted, value
 

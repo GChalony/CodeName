@@ -39,7 +39,7 @@ var players = document.getElementById("players").children,
     nplayers = players.length;
 
 socket.on('change_current_player', function(player_id){
-    console.log('Switching');
+    console.log('Switching'+player_id);
     for (var i=0; i<nplayers; i++){
         var player = players[i];
         if ( player.classList.contains('current-player') ){
@@ -56,13 +56,13 @@ socket.on('change_title', function(new_title){
     title.textContent = new_title;
 });
 
-var controls = document.getElementById('controls');
+var button = document.getElementById('send-hint');
 socket.on('toggle_controls', function(){
     console.log('Toggling controls');
-    if (controls.style.display === "none" || controls.style.display == "") {
-        controls.style.display = "flex";
+    if (button.disabled) {
+        button.disabled = false;
     } else {
-      controls.style.display = "none";
+      button.disabled = true;
     }
 });
 
