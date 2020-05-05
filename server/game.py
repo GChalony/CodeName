@@ -3,11 +3,10 @@ from collections import Counter
 from random import shuffle
 
 import numpy as np
-from flask import session, request
+from flask import request
 from flask_socketio import Namespace, emit
 
 from server.room_session import room_session
-from server.users import User
 from server.utils import generate_random_words, generate_response_grid, parse_cell_code
 
 logger = logging.getLogger(__name__)
@@ -43,6 +42,10 @@ class Game:
     @property
     def current_team_name(self):
         return ["Rouge", "Bleu"][self.current_team_idx]
+
+    @property
+    def current_guessers(self):
+        return [u for u in self.current_team if u != self.current_player]
 
     def _get_next_team(self):
         return 0 if self.current_team_idx == 1 else 1
@@ -97,7 +100,7 @@ class Game:
 class GameNamespace(Namespace):
     # TODO toggle controls according to user_id
     def on_connect(self):
-        logging.debug(str(room_session.game))
+        logger.debug(str(room_session.game))
         if "user_id" not in request.cookies:
             raise Exception("User not authenticated")
         user_id = request.cookies["user_id"]
@@ -107,6 +110,9 @@ class GameNamespace(Namespace):
             room_session.socketio_id_to_user_id = {}
         room_session.socketio_id_to_user_id[user_id] = request.sid
         logger.debug(room_session.socketio_id_to_user_id)
+        if user_id in room_session.game.current_guessers:
+            logger.debug(f"Enabling votes for user {user_id}")
+            emit("enable_vote")
 
     def on_disconnect(self):
         pseudo = request.cookies.get("pseudo", None)
@@ -146,6 +152,7 @@ class GameNamespace(Namespace):
                 emit("switch_teams", result, broadcast=True)
                 emit("toggle_controls", room=room_session.socketio_id_to_user_id[previous_player_id])
                 emit("toggle_controls", room=room_session.socketio_id_to_user_id[game.current_player])
+
         except PermissionError as e:
             logger.debug(game)
             logger.error(e)

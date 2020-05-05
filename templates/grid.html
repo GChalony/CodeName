@@ -21,11 +21,12 @@
             {% endfor %}
         </div>
         <div id="center">
-            <table>
+            <table id="table">
                 {% for r in range(5) %}
                 <tr>
                     {% for c in range(5) %}
-                    <td id={{'r'~r~'c'~c}} data-selected="false" data-code="-1">{{words[r, c]}} </td>
+                    <td id={{'r'~r~'c'~c}} data-selected="false" data-code="-1" data-enabled="false">
+                        {{words[r, c]}} </td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
@@ -55,7 +56,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"
             integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I="
             crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/grid.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/grid_controls.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
     <script src="{{ url_for('static', filename='js/events_chat.js') }}"></script>
 </body>

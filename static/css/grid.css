@@ -55,7 +55,7 @@ table
     table-layout: fixed ;
 }
 
-td, th
+td
 {
     background: #fca;
     text-align: center;
@@ -70,6 +70,10 @@ td:hover
     cursor: pointer;
 }
 td[data-selected="true"]
+{
+    cursor: not-allowed;
+}
+td[data-enabled="false"]
 {
     cursor: not-allowed;
 }
