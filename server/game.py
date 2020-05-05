@@ -14,7 +14,7 @@ class Game:
         self.teams = teams
         self.team_names = ["Rouge", "Bleue"]
         self.spies_idx = spies
-        self.spies = (teams[0][spies[0]], teams[1][spies])
+        self.spies = (teams[0][spies[0]], teams[1][spies[1]])
         self.guessers = [[u for u in team if u not in spies] for team in teams]
 
         self.words = generate_random_words("server/ressources/words.csv")

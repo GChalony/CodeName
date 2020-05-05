@@ -69,11 +69,11 @@ td:hover
     background: #eee;
     cursor: pointer;
 }
-td[data-selected="true"]
+td[data-enabled="false"]
 {
     cursor: not-allowed;
 }
-td[data-enabled="false"]
+td[data-votedfor="true"]
 {
     cursor: not-allowed;
 }
@@ -98,7 +98,7 @@ td[data-code="3"]
 }
 #controls
 {
-    display: none;
+    display: flex;
     width: 10%;
     margin: auto;
 }

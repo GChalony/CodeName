@@ -1,12 +1,8 @@
 var socket = io("/grid");
 
 function drawVotes(cell, n){
+    // draw votes during voting phase
     cell.style.background = '#'+n+''+n+''+n;
-}
-
-function selectCell(event){
-    console.log(event);
-    event.target.dataset.selected = "true";
 }
 
 function voteCell(event){
@@ -35,7 +31,7 @@ socket.on('vote_done', function(data){
     // TODO: Reset votes
     console.log(data);
     target = document.getElementById(data.cell);
-    target.dataset.selected = "true";
+    target.dataset.enabled = "true";
     target.dataset.code = parseInt(data.value);
 });
 

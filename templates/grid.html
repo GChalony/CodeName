@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Grille de jeu</title>
+    <title>{{ title }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/grid.css') }}">
 </head>
 <body>
@@ -25,18 +25,24 @@
                 {% for r in range(5) %}
                 <tr>
                     {% for c in range(5) %}
-                    <td id={{'r'~r~'c'~c}} data-selected="false" data-code="-1" data-enabled="false">
+                    <td id={{'r'~r~'c'~c}}
+                        data-votedfor="false"
+                        data-code="{% if is_spy %}{{ answers[r][c] }}{% else %}-1}{% endif %}"
+                        data-enabled="{% if enabled %}true{% else %}false{% endif %}"
+                    >
                         {{words[r, c]}} </td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
             </table>
 
+            {% if is_spy %}
             <form id="controls">
                 <input type="text">
-                <input type="text">
+                <input type="number" min="0" max="9">
                 <input id="send-choice" type="submit">
             </form>
+            {% endif %}
         </div>
         <div id="chats">
             <div id="events">
