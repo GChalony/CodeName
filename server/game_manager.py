@@ -44,7 +44,6 @@ class GameManager(Namespace):
         pseudo = request.cookies["pseudo"]
         self.send_new_event(f"{pseudo} a rejoint la partie")
 
-
     def on_disconnect(self):
         pseudo = request.cookies.get("pseudo", None)
         logger.info(f"User {pseudo} left the game !")
@@ -68,6 +67,7 @@ class GameManager(Namespace):
             if res is None:
                 # Votes not done
                 self.update_cell_votes()
+                self.disable_votes(user_id)
             else:
                 # Votes are done, change teams etc
                 cell, value = res
@@ -82,7 +82,7 @@ class GameManager(Namespace):
     def update_cell_votes(self):
         votes_counts = rs.game.get_votes_counts()
         logger.debug(f"Votes counts: {votes_counts}")
-        emit("update_votes", votes_counts)
+        emit("update_votes", votes_counts, broadcast=True)
 
     def notify_cell_votes(self, cell, value):
         vote = {"cell": cell, "value": str(value)}
@@ -102,7 +102,7 @@ class GameManager(Namespace):
         for player_id in player_ids:
             emit("enable_vote", room=rs.socketio_id_to_user_id[player_id])
 
-    def disable_votes(self, player_ids):
+    def disable_votes(self, *player_ids):
         logger.debug(f"Disabling votes for users ids {player_ids}")
         for player_id in player_ids:
             emit("disable_vote", room=rs.socketio_id_to_user_id[player_id])
@@ -115,6 +115,6 @@ class GameManager(Namespace):
         logger.debug(f"Switching teams")
         self.change_title(f"Equipe {rs.game.current_team_name}")
         self.change_current_player(spy_id)
-        self.disable_votes(rs.game.teams[(rs.game.current_team_idx+1) % 2])
+        self.disable_votes(*rs.game.other_guessers)
         self.enable_votes(*rs.game.current_guessers)
         self.toggle_controls()

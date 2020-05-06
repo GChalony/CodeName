@@ -56,9 +56,14 @@ class Game:
     def current_guessers(self):
         return self.guessers[self.current_team_idx]
 
+    @property
+    def other_guessers(self):
+        return self.guessers[self.other_team_idx]
+
     def get_votes_counts(self):
-        count = Counter(self.votes)
-        return count.most_common()
+        count = Counter(list(self.votes.values()))
+        votes_counts = {cell: n for cell, n in count.most_common()}
+        return votes_counts
 
     def vote(self, user_id, code):
         logger.debug(f"User {user_id} is voting {code}")

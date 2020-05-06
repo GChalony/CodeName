@@ -38,13 +38,11 @@ else:
     socketio = SocketIO(app)
 
 
-temp_default_teams = [[User("1", "Greg"), User("2", "Sol")],
+temp_default_teams = [[User("1", "Greg"), User("2", "Sol"), User("5", "Vic")],
                       [User("3", "Clem"), User("4", "Axel")]]
 g = Game([[u.id for u in team] for team in temp_default_teams])
 # Should never do that, this is just to add a default room for tests only
 room_session._all_rooms_data["0"] = {"game": g, "teams": temp_default_teams}
-
-temp_default_teams = [["Greg", "Sol"], ["Axel", "Clem"]]
 
 room_namespace = RoomNamespace('/room')
 tuto_namespace = TutoNamespace('/tuto')
@@ -61,4 +59,4 @@ socketio.on_namespace(game_manager)
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app)

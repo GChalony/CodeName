@@ -2,7 +2,7 @@ var socket = io("/grid");
 
 function drawVotes(cell, n){
     // draw votes during voting phase
-    cell.style.background = '#'+n+''+n+''+n;
+    cell.style.background = '#3'+n+'3';
 }
 
 function voteCell(event){
@@ -21,9 +21,13 @@ for (var i=0; i<ncells; i++){
 }
 
 socket.on('update_votes', function(votes){
+    console.log("updating votes"+votes);
     for (var cellCode in votes){
-        var cell = getElementById(cellCode);
-        drawVotes(cell, votes[cell]);
+        var cell = document.getElementById(cellCode);
+        console.log(cell);
+        console.log(votes);
+        console.log(votes[cellCode]);
+        drawVotes(cell, votes[cellCode]);
     }
 });
 
