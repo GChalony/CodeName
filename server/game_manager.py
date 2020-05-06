@@ -31,12 +31,11 @@ class GameManager(Namespace):
 
     # Socketio events handles
     def on_connect(self):
-        logger.debug(str(rs.game))
         if "user_id" not in request.cookies:
             raise Exception("User not authenticated")
         user_id = request.cookies["user_id"]
         logger.info(f'Welcome back user {request.cookies["pseudo"]} !')
-
+        logger.info(f"It's {rs.game.current_team_name}'s turn")
         # Store mapping of user_id <-> socketio id  TODO rid
         if not hasattr(rs, "socketio_id_to_user_id"):
             rs.socketio_id_to_user_id = {}
@@ -51,7 +50,7 @@ class GameManager(Namespace):
         logger.info(f"User {pseudo} left the game !")
 
     def on_chat_message(self, msg):
-        logger.debug("Received : "+msg)
+        logger.debug("Chat : "+msg)
         emit("chat_msg", request.cookies.get("pseudo") + " : " + msg, broadcast=True)
 
     def on_hint(self, hint, n):
@@ -65,7 +64,6 @@ class GameManager(Namespace):
         user_id = request.cookies["user_id"]  # session["user_id"]  # TODO change back in production
         game = rs.game
         try:
-            logger.debug(f"Current state: {game}")
             res = game.vote(user_id, code)
             if res is None:
                 # Votes not done
@@ -100,18 +98,21 @@ class GameManager(Namespace):
         emit("change_current_player", new_player_id, broadcast=True)
 
     def enable_votes(self, *player_ids):
-        logger.debug(player_ids)
+        logger.debug(f"Enabling votes for users ids {player_ids}")
         for player_id in player_ids:
             emit("enable_vote", room=rs.socketio_id_to_user_id[player_id])
 
     def disable_votes(self, player_ids):
+        logger.debug(f"Disabling votes for users ids {player_ids}")
         for player_id in player_ids:
             emit("disable_vote", room=rs.socketio_id_to_user_id[player_id])
 
     def send_new_event(self, event_msg):
+        logger.debug(f"Sending new event {event_msg}")
         emit("add_event", event_msg, broadcast=True)
 
     def switch_teams(self, spy_id):
+        logger.debug(f"Switching teams")
         self.change_title(f"Equipe {rs.game.current_team_name}")
         self.change_current_player(spy_id)
         self.disable_votes(rs.game.teams[(rs.game.current_team_idx+1) % 2])
