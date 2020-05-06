@@ -15,7 +15,7 @@ class Game:
         self.team_names = ["Rouge", "Bleue"]
         self.spies_idx = spies
         self.spies = (teams[0][spies[0]], teams[1][spies[1]])
-        self.guessers = [[u for u in team if u not in spies] for team in teams]
+        self.guessers = [[u for u in team if u not in self.spies] for team in teams]
 
         self.words = generate_random_words("server/ressources/words.csv")
         self.answers = generate_response_grid()
@@ -26,8 +26,7 @@ class Game:
         self.votes = {}
 
     def __str__(self):
-        return f"Team {self.current_team_idx} - spy {self.current_spy} is spy.\n" \
-                f"votes={self.votes}"
+        return f"Team {self.current_team_idx} - spy {self.current_spy} is spy."
 
     @property
     def current_team(self):
