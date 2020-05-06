@@ -76,6 +76,7 @@ td[data-enabled="false"]
 td[data-votedfor="true"]
 {
     cursor: not-allowed;
+    opacity: 0.5;
 }
 td[data-code="0"]
 {

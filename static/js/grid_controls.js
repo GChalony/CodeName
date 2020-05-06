@@ -31,7 +31,8 @@ socket.on('vote_done', function(data){
     // TODO: Reset votes
     console.log(data);
     target = document.getElementById(data.cell);
-    target.dataset.enabled = "true";
+    target.dataset.enabled = "false";
+    target.dataset.votedfor = "true";
     target.dataset.code = parseInt(data.value);
 });
 
