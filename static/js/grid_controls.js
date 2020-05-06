@@ -22,7 +22,7 @@ for (var i=0; i<ncells; i++){
 
 socket.on('update_votes', function(votes){
     for (var cellCode in votes){
-        var cell = getElementsById(cellCode);
+        var cell = getElementById(cellCode);
         drawVotes(cell, votes[cell]);
     }
 });
@@ -56,16 +56,33 @@ socket.on('change_title', function(new_title){
     title.textContent = new_title;
 });
 
-var button = document.getElementById('send-hint');
-socket.on('toggle_controls', function(){
-    console.log('Toggling controls');
-    if (button.disabled) {
-        button.disabled = false;
-    } else {
-      button.disabled = true;
-    }
-});
 
+// Spy controls
+var controls = document.getElementById("controls");
+if (controls){
+    var button = document.getElementById('send-hint');
+    socket.on('toggle_controls', function(){
+        console.log('Toggling controls');
+        if (button.disabled) {
+            button.disabled = false;
+        } else {
+          button.disabled = true;
+        }
+    });
+    controls.addEventListener("submit", function(e){
+        e.preventDefault();
+        var hint = document.getElementById("hint");
+        var n = document.getElementById("n");
+        socket.emit("hint", hint.value, n.value);
+        hint.value = "";
+        n.value = "";
+        button.disabled = true;
+        return false;
+    });
+}
+
+
+// Votes
 var vote_enabled = false;
 var table = document.getElementById('table');
 socket.on('enable_vote', function(){
@@ -86,3 +103,4 @@ socket.on('disable_vote', function(){
     }
     vote_enabled = false;
 });
+

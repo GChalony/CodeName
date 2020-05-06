@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ title }}</title>
+    <title>Code Name</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/grid.css') }}">
 </head>
 <body>
-    <h1 id="toptitle">Code Name</h1>
+    <h1 id="toptitle">{{ title }}</h1>
     <div id="container">
         <div id="players">
             {% for i in [1, 2] %}
@@ -38,9 +38,9 @@
 
             {% if is_spy %}
             <form id="controls">
-                <input type="text">
-                <input type="number" min="0" max="9">
-                <input id="send-hint" type="submit">
+                <input id="hint" type="text">
+                <input id="n" type="number" min="0" max="9">
+                <input id="send-hint" type="submit" {% if not spy_enabled %}disabled{% endif %}>
             </form>
             {% endif %}
         </div>
