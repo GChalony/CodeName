@@ -19,8 +19,6 @@ class RouteManager:
         self.app.add_url_rule('/', view_func=self.get_home)
         self.app.add_url_rule('/new_room', view_func=self.create_new_room)
         self.app.add_url_rule('/<room_id>/room', view_func=self.get_room)
-        self.app.add_url_rule('/<room_id>/grid', view_func=self.get_grid)
-        self.app.add_url_rule('/<room_id>/cell', view_func=self.get_cell_data)
 
     def tuto(self):
         print("rooms ROUTE", self.all_rooms)
@@ -61,13 +59,3 @@ class RouteManager:
     def get_room(self, room_id):
         return render_template("room.html")
         # return render_template("room.html", initial_player_pseudo=session.get("pseudo", None))
-
-    def get_grid(self, room_id):
-        return render_template("grid.html", words=room_session.game.words, teams=room_session.teams)
-
-    def get_cell_data(self, room_id):
-        cell_code = request.args.get("code")
-        r, c = parse_cell_code(cell_code)
-        val = room_session.game.answers[r, c]
-        # logger.debug(f"Returning value for cell {cell_code} : {val}")
-        return str(val)
