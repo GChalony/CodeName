@@ -59,7 +59,8 @@ class RouteManager:
         return resp
 
     def get_room(self, room_id):
-        return render_template("room.html", initial_player_pseudo=session.get("pseudo", None))
+        return render_template("room.html")
+        # return render_template("room.html", initial_player_pseudo=session.get("pseudo", None))
 
     def get_grid(self, room_id):
         return render_template("grid.html", words=room_session.game.words, teams=room_session.teams)

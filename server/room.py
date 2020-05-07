@@ -18,43 +18,44 @@ temp_default_teams = [[User("1", "Greg"), User("2", "Sol")],
 class RoomNamespace(Namespace):
     def __init__(self, name):
         super(RoomNamespace, self).__init__(name)
-        # Track ALL users
-        # I don't think we actually need that (just users of one room_id)
-        self.users = []
-        self.all_rooms = {}
-        self.all_users = {}
 
     def on_connect(self):
         # Have access to session here
         # logger.debug(f'Socket {request.sid} (user {session.get("pseudo", None)}) connected!')
         # logger.debug("Connected to room Namespace!")
-        user_id = session.get("user_id", uuid4().hex)
-        session["user_id"] = user_id
-        # if "user_id" not in session:
-        #     # There is a better way to handle errors in sockets
-        #     raise Exception("No user_id!")
 
-        user_id = session["user_id"]
-        pseudo = session.get("pseudo", "mypseudo")
-        session["pseudo"] = pseudo
-
-        # logger.info(f'Welcome back user {user_id} - {pseudo} !')
-        new_user = User(user_id, pseudo)
         if not hasattr(room_session, "users"):  # First connection
             room_session.users = []
-        room_session.users.append(new_user)
+        if "user_id" in session:
+            print("WELCOME BACK", session["user_id"])
+        user_id = session.get("user_id", uuid4().hex)
+        session["user_id"] = user_id
+        pseudo = session.get("pseudo", "")
+        session["pseudo"] = pseudo
+        backcol = session.get("backcol", "#ffff00")
+        session["backcol"] = backcol
+        mouthcol = session.get("mouthcol", "#ff0000")
+        session["mouthcol"] = mouthcol
+
+        old_user = self.get_user_by_id(user_id)
+        if not old_user:
+            print("NEW USER, pseudo=", pseudo)
+            new_user = User(user_id, pseudo, backcol, mouthcol)
+            room_session.users.append(new_user)
+        print("ON CONNECT room_session.users", room_session.users)
         # logger.debug(room_session.__dict__)
 
     def on_disconnect(self):
         logger.debug("Disconnected from room Namespace!")
         user_id = session.get("user_id", None)
-        i, user = self.get_user_by_id(user_id)
-        room_session.users.pop(i)
+        user = self.get_user_by_id(user_id)
+        if user:
+            room_session.users.remove(user)
 
     def get_user_by_id(self, user_id):
-        for i, u in enumerate(room_session.users):
+        for u in room_session.users:
             if u.id == user_id:
-                return i, u
+                return u
 
     def on_start_game(self):
         logger.info("start game")
@@ -69,71 +70,80 @@ class RoomNamespace(Namespace):
     def on_create_room(self, data):
         print("on_create_room, data=", data)
         new_room_id = uuid4().hex
-        if new_room_id not in self.all_rooms:
-            self.all_rooms[new_room_id] = []
         data["room_id"] = new_room_id
         self.on_join_existing_room(data)
 
     def on_join_existing_room(self, data):
         print("on_join_existing_room, data=", data)
         room_id = data.get("room_id")
-        user_id = session.get("user_id", uuid4().hex)
-        if room_id not in self.all_rooms:
-            print("ROOM_ID DOES NOT EXIST") # Need to display this to player
-        elif user_id not in self.all_rooms[room_id]:
-            self.all_rooms[room_id].append(user_id) # register user_id in all_rooms[room_id]
+        user_id = session.get("user_id")
+        user = self.get_user_by_id(user_id)
 
-        nickname = data.get("nickname")
-        session["pseudo"] = nickname
+        pseudo = data.get("pseudo")
+        backcol = data.get("backcol")
+        mouthcol = data.get("mouthcol")
+        session["pseudo"] = pseudo
+        session["backcol"] = backcol
+        session["mouthcol"] = mouthcol
         session["user_id"] = user_id
-        if user_id not in self.all_users:
-            self.all_users[user_id] = [room_id] # register room_id in all_users[user_id]
-        else:
-            self.all_users[user_id].append(room_id)
+        print("ON JOIN, pseudo=", pseudo)
+        print("ON JOIN, session['pseudo']=", session['pseudo'])
+        user.pseudo = pseudo
+        user.backcol = backcol
+        user.mouthcol = mouthcol
 
-        print("self.all_rooms", self.all_rooms)
         join_room(room_id)
         print("rooms()", rooms())
         room_url = f"{room_id}/room"
         emit("url_redirection", {"url": room_url})
-        print("ALL PLAYERS : self.all_rooms[room_id]", self.all_rooms[room_id])
-        emit("get_players_in_room", {"players": self.all_rooms[room_id]})
-
 
     def on_leave_room(self, data):
         user_id = session.get("user_id")
         current_url = data["current_url"]
         room_id = current_url.split("/")[-2]
-        if room_id in self.all_users[user_id]:
-            self.all_users[user_id].remove(room_id)
-        if user_id in self.all_rooms[room_id]:
-            self.all_rooms[room_id].remove(user_id)
+        user = self.get_user_by_id(user_id)
+        print("on_leave_room, user_id=", user_id)
+        print("on_leave_room, user=", user)
+        print("on_leave_room, room_session.users=", room_session.users)
+        if user:
+            room_session.users.remove(user)
         leave_room(room_id)
-        print("on_leave_room, self.all_users=", self.all_users)
-        print("on_leave_room, self.all_rooms=", self.all_rooms)
         print("on_leave_room, rooms()=", rooms())
-        if not self.all_rooms[room_id]:
-            self.on_close_room({"room_id": room_id})
         emit("url_redirection", {"url": "/"})
+        self.on_get_players_in_room()
 
     def on_close_room(self, data):
         room_id = data["room_id"]
-        del self.all_rooms[room_id]
-        print("on_close_room, self.all_rooms=", self.all_rooms)
+        print("on_close_room")
         # emit("my_response", {"data": "Room " + room + " is closing.", room=room)
         close_room(room_id)
 
     def on_my_room_event(self, message):
         emit("my_response", {"data": message["data"]}, room=message["room"])
 
+    def on_get_players_in_room(self):
+        print("on_get_players_in_room")
+        # current_url = data["current_url"]
+        # room_id = current_url.split("/")[-2]
+        players_list = [user.__dict__ for user in room_session.users]
+        emit("response_players_in_room", {"players": players_list}, broadcast=True)
+
+    def on_get_user_infos(self):
+        user_id = session.get("user_id")
+        user = self.get_user_by_id(user_id)
+        print("on_get_user_infos, user=", user)
+        print("on_get_user_infos, user.backcol=", user.backcol)
+        # pseudo = "pas de pseudo"
+        if user:
+            print("user.pseudo", user.pseudo)
+            pseudo = user.pseudo
+            backcol = user.backcol
+            mouthcol = user.mouthcol
+            emit("return_user_infos", {"pseudo": pseudo, "backcol": backcol, "mouthcol": mouthcol})
+        else:
+            print("YA PAS DE USER on get user info")
+
     def on_debug_button(self, data):
         print("on_debug_button")
-        a = request.cookies.get("user_id")
-        b = request.cookies.get("pseudo")
-        c = request.cookies.get("avatar-col1")
-        d = request.cookies.get("avatar-col2")
-        print(a, b, c, d)
-
         current_url = data["current_url"]
         room_id = current_url.split("/")[-2]
-        emit("get_players_in_room", {"players": self.all_rooms[room_id]})

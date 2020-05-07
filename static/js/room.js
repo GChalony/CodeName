@@ -26,10 +26,20 @@ go.addEventListener("click", function(e){
     // socket.emit("on_debug_button");
     socket.emit("debug_button", {"current_url": window.location.href});
 });
+socket.emit("get_players_in_room")
 
-socket.on("get_players_in_room", function(data){
-    console.log("in get_players_in_room, data=", data);
-    // var li = document.createElement("li");
-    // li.textContent = msg;
-    // document.getElementById("messages").append(li);
+socket.on("response_players_in_room", function(data){
+    console.log("in response_players_in_room, data=", data);
+    players = data.players
+
+    var ul_t1 = document.getElementById("t1");
+    document.getElementById("t1").innerHTML = "";
+    for (var i = 0; i < players.length; i++) {
+        var li = document.createElement("li");
+        li.setAttribute('id', players[i].id);
+        li.appendChild(document.createTextNode(players[i].pseudo));
+        ul_t1.appendChild(li);
+    }
+
 });
+
