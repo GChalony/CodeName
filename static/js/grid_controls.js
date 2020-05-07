@@ -1,8 +1,15 @@
 var socket = io("/grid");
 
+votes = []
+
 function drawVotes(cell, n){
     // draw votes during voting phase
     cell.style.background = '#3'+n+'3';
+    votes.push(cell.id);
+}
+
+function undrawVotes(cell){
+    cell.removeAttribute("style");
 }
 
 function voteCell(event){
@@ -32,7 +39,10 @@ socket.on('update_votes', function(votes){
 });
 
 socket.on('vote_done', function(data){
-    // TODO: Reset votes
+    console.log(data);
+    votes.forEach(function(cell_id, index, array) {
+      undrawVotes(document.getElementById(cell_id));
+    });
     console.log(data);
     target = document.getElementById(data.cell);
     target.dataset.enabled = "false";
@@ -44,7 +54,7 @@ var players = document.getElementById("players").children,
     nplayers = players.length;
 
 socket.on('change_current_player', function(player_id){
-    console.log('Switching'+player_id);
+    console.log('Switching '+player_id);
     for (var i=0; i<nplayers; i++){
         var player = players[i];
         if ( player.classList.contains('current-player') ){

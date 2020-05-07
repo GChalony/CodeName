@@ -59,14 +59,12 @@ td
 {
     background: #fca;
     text-align: center;
-    padding: 20px;
+    padding: 18px;
     border-radius: 10px;
-    box-shadow: -15px 15px grey;
 }
 
 td:hover
 {
-    background: #eee;
     cursor: pointer;
 }
 td[data-enabled="false"]

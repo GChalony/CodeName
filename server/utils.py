@@ -2,6 +2,7 @@ import json
 from uuid import uuid4
 import numpy as np
 
+
 def generate_random_words(path_to_words="ressources/words.csv"):
     with open(path_to_words, encoding="utf8") as words_file:
         words = words_file.readlines()
@@ -32,6 +33,3 @@ def generate_response_grid():
     map = np.array(map, dtype=np.uint8)
     return map
 
-
-def genid():
-    return uuid4().hex

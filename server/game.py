@@ -60,6 +60,10 @@ class Game:
     def other_guessers(self):
         return self.guessers[self.other_team_idx]
 
+    @property
+    def other_team_name(self):
+        return self.team_names[self.other_team_idx]
+
     def get_votes_counts(self):
         count = Counter(list(self.votes.values()))
         votes_counts = {cell: n for cell, n in count.most_common()}
