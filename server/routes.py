@@ -22,7 +22,7 @@ class RouteManager:
 
     def tuto(self):
         print("rooms ROUTE", self.all_rooms)
-        return render_template('tuto.html')
+        return render_template("tuto.html")
 
     def get_home(self):
         return render_template("index.html")
@@ -57,4 +57,5 @@ class RouteManager:
         return resp
 
     def get_room(self, room_id):
-        return render_template("room.html", initial_player_pseudo=session.get("pseudo", None))
+        return render_template("room.html")
+        # return render_template("room.html", initial_player_pseudo=session.get("pseudo", None))

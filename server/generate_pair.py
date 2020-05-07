@@ -10,7 +10,7 @@ print("Generating codename maps...")
 
 with open("words.csv", encoding="utf8") as words_file:
     words = words_file.readlines()
-words = [w.replace('\n', '') for w in words]
+words = [w.replace("\n", "") for w in words]
 np.random.shuffle(words)
 words = words[:25]
 

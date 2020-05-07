@@ -21,6 +21,8 @@ logger = logging.getLogger(__name__)
 logging.getLogger("server").setLevel(logging.DEBUG)
 logger.info("Starting app!")
 
+logging.getLogger("werkzeug").setLevel(logging.ERROR)
+
 # To remove error about packets
 Payload.max_decode_packets = 50
 
