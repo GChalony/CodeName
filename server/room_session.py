@@ -1,6 +1,7 @@
 """Inspired by https://stackoverflow.com/questions/20036520/what-is-the-purpose-of-flasks-context-stacks"""
 
 from flask import request
+from flask_socketio import emit
 
 
 def _get_room_id_from_url(url):
@@ -47,3 +48,10 @@ class RoomSession:
 room_session = RoomSession()
 
 
+def emit_in_room(*args, **kwargs):
+    """If room arg is not provided, emits a socket msg to all sockets connected to the
+    current room.
+
+    Otherwise just calls flask_socketio.emit()."""
+    room = kwargs.pop("room", get_room_id())
+    emit(*args, room=room, **kwargs)

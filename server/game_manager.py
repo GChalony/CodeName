@@ -1,9 +1,9 @@
 import logging
 
-from flask import request, render_template
-from flask_socketio import Namespace, emit
+from flask import request, render_template, flash
+from flask_socketio import Namespace, join_room
 
-from server.room_session import room_session as rs
+from server.room_session import room_session as rs, get_room_id, emit_in_room
 from server.utils import parse_cell_code
 
 logger = logging.getLogger(__name__)
@@ -21,6 +21,7 @@ class GameManager(Namespace):
         if user_id in rs.game.spies:
             answers = rs.game.answers
             is_spy = True
+        flash("Welcome!")
         return render_template("grid.html",
                                title=f"Equipe {rs.game.current_team_name}",
                                words=rs.game.words,
@@ -44,13 +45,15 @@ class GameManager(Namespace):
         pseudo = request.cookies["pseudo"]
         self.send_new_event(f"{pseudo} a rejoint la partie")
 
+        join_room(get_room_id())
+
     def on_disconnect(self):
         pseudo = request.cookies.get("pseudo", None)
         logger.info(f"User {pseudo} left the game !")
 
     def on_chat_message(self, msg):
         logger.debug("Chat : "+msg)
-        emit("chat_msg", request.cookies.get("pseudo") + " : " + msg, broadcast=True)
+        emit_in_room("chat_msg", request.cookies.get("pseudo") + " : " + msg)
 
     def on_hint(self, hint, n):
         pseudo = request.cookies["pseudo"]
@@ -82,34 +85,34 @@ class GameManager(Namespace):
     def update_cell_votes(self):
         votes_counts = rs.game.get_votes_counts()
         logger.debug(f"Votes counts: {votes_counts}")
-        emit("update_votes", votes_counts, broadcast=True)
+        emit_in_room("update_votes", votes_counts)
 
     def notify_cell_votes(self, cell, value):
         vote = {"cell": cell, "value": str(value)}
-        emit("vote_done", vote, broadcast=True)
+        emit_in_room("vote_done", vote)
 
     def change_title(self, new_title):
-        emit('change_title', new_title, broadcast=True)
+        emit_in_room('change_title', new_title)
 
-    def toggle_controls(self):
-        emit("toggle_controls", room=rs.socketio_id_to_user_id[rs.game.current_spy])
+    def enable_controls(self):
+        emit_in_room("enable_controls", room=rs.socketio_id_to_user_id[rs.game.current_spy])
 
     def change_current_player(self, new_player_id):
-        emit("change_current_player", new_player_id, broadcast=True)
+        emit_in_room("change_current_player", new_player_id)
 
     def enable_votes(self, *player_ids):
         logger.debug(f"Enabling votes for users ids {player_ids}")
         for player_id in player_ids:
-            emit("enable_vote", room=rs.socketio_id_to_user_id[player_id])
+            emit_in_room("enable_vote", room=rs.socketio_id_to_user_id[player_id])
 
     def disable_votes(self, *player_ids):
         logger.debug(f"Disabling votes for users ids {player_ids}")
         for player_id in player_ids:
-            emit("disable_vote", room=rs.socketio_id_to_user_id[player_id])
+            emit_in_room("disable_vote", room=rs.socketio_id_to_user_id[player_id])
 
     def send_new_event(self, event_msg):
         logger.debug(f"Sending new event {event_msg}")
-        emit("add_event", event_msg, broadcast=True)
+        emit_in_room("add_event", event_msg)
 
     def switch_teams(self, spy_id):
         logger.debug(f"Switching teams")
@@ -117,4 +120,4 @@ class GameManager(Namespace):
         self.change_current_player(spy_id)
         self.disable_votes(*rs.game.other_guessers)
         self.enable_votes(*rs.game.current_guessers)
-        self.toggle_controls()
+        self.enable_controls()

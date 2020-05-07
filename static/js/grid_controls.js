@@ -66,14 +66,11 @@ socket.on('change_title', function(new_title){
 var controls = document.getElementById("controls");
 if (controls){
     var button = document.getElementById('send-hint');
-    socket.on('toggle_controls', function(){
-        console.log('Toggling controls');
-        if (button.disabled) {
-            button.disabled = false;
-        } else {
-          button.disabled = true;
-        }
+    socket.on('enable_controls', function(){
+        console.log('Enabling controls');
+        button.disabled = false;
     });
+
     controls.addEventListener("submit", function(e){
         e.preventDefault();
         var hint = document.getElementById("hint");
