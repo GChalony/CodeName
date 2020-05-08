@@ -14,21 +14,33 @@ class GameManager(Namespace):
     def init_routes(self, app):
         app.add_url_rule('/<room_id>/grid', view_func=self.load_page)
 
+    def init_game_session(self):
+        logger.info("Initiating game session")
+        rs.has_started = True
+        rs.chat_history = []
+        rs.events_history = []
+        rs.votes_history = {}
+        rs.socketio_id_to_user_id = {}
+
     def load_page(self, room_id):
-        # TODO adapt to reload
+        if not (hasattr(rs, "has_started") and rs.has_started):
+            self.init_game_session()
         user_id = request.cookies["user_id"]
         answers, is_spy = None, False
         if user_id in rs.game.spies:
             answers = rs.game.answers
             is_spy = True
-        flash("Welcome!")
+
         return render_template("grid.html",
                                title=f"Equipe {rs.game.current_team_name}",
                                words=rs.game.words,
                                teams=rs.teams,
                                spy_enabled=user_id == rs.game.current_spy,
                                is_spy=is_spy,
-                               answers=answers)
+                               answers=answers,
+                               chat_history=rs.chat_history,
+                               events_history=rs.events_history,
+                               votes_history=rs.votes_history)
 
     # Socketio events handles
     def on_connect(self):
@@ -36,10 +48,6 @@ class GameManager(Namespace):
             raise Exception("User not authenticated")
         user_id = request.cookies["user_id"]
         logger.info(f'Welcome back user {request.cookies["pseudo"]} !')
-        logger.info(f"It's {rs.game.current_team_name}'s turn")
-        # Store mapping of user_id <-> socketio id  TODO rid
-        if not hasattr(rs, "socketio_id_to_user_id"):
-            rs.socketio_id_to_user_id = {}
         rs.socketio_id_to_user_id[user_id] = request.sid
 
         pseudo = request.cookies["pseudo"]
@@ -53,7 +61,9 @@ class GameManager(Namespace):
 
     def on_chat_message(self, msg):
         logger.debug("Chat : "+msg)
-        emit_in_room("chat_msg", request.cookies.get("pseudo") + " : " + msg)
+        response = request.cookies.get("pseudo") + " : " + msg
+        rs.chat_history.append(response)
+        emit_in_room("chat_msg", response)
 
     def on_hint(self, hint, n):
         pseudo = request.cookies["pseudo"]
@@ -74,6 +84,7 @@ class GameManager(Namespace):
             else:
                 # Votes are done, change teams etc
                 cell, value = res
+                rs.votes_history[cell] = value
                 self.notify_cell_votes(cell, value)
                 r, c = parse_cell_code(cell)
                 self.send_new_event(f"Team {game.current_team_name} voted {game.words[r, c]}")
@@ -112,6 +123,7 @@ class GameManager(Namespace):
 
     def send_new_event(self, event_msg):
         logger.debug(f"Sending new event {event_msg}")
+        rs.events_history.append(event_msg)
         emit_in_room("add_event", event_msg)
 
     def switch_teams(self, spy_id):

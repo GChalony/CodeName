@@ -25,9 +25,10 @@
                 {% for r in range(5) %}
                 <tr>
                     {% for c in range(5) %}
-                    <td id={{'r'~r~'c'~c}}
-                        data-votedfor="false"
-                        data-code="{% if is_spy %}{{ answers[r][c] }}{% else %}-1}{% endif %}"
+                    {% set cell = 'r'~r~'c'~c %}
+                    <td id="{{ cell }}"
+                        data-votedfor="{%if votes_history[cell] is defined %}true{% else %}false{% endif %}"
+                        data-code="{% if is_spy %}{{ answers[r][c] }}{% elif votes_history[cell] is defined %}{{ votes_history[cell] }}{% else %}-1{% endif %}"
                         data-enabled="{% if enabled %}true{% else %}false{% endif %}"
                     >
                         {{words[r, c]}} </td>
@@ -47,10 +48,16 @@
         <div id="chats">
             <div id="events">
                 <ul id="events_msglist" class="msglist">
+                    {% for msg in events_history %}
+                    <li>{{ msg }}</li>
+                    {% endfor %}
                 </ul>
             </div>
             <div id="chat">
                 <ul id="messages" class="msglist">
+                    {% for msg in chat_history %}
+                    <li>{{ msg }}</li>
+                    {% endfor %}
                 </ul>
                 <form id="msgform">
                     <input type="text" id="m" autocomplete="off">
