@@ -12,20 +12,6 @@ function undrawVotes(cell){
     cell.removeAttribute("style");
 }
 
-function voteCell(event){
-    console.log(event);
-    if (vote_enabled){
-        socket.emit('vote_cell', event.target.id);
-    }
-}
-
-var cells = document.getElementsByTagName("td"),
-    ncells = cells.length;
-
-for (var i=0; i<ncells; i++){
-    var cell = cells[i];
-    cell.addEventListener('click', voteCell);
-}
 
 socket.on('update_votes', function(votes){
     console.log("updating votes"+votes);
@@ -69,50 +55,5 @@ socket.on('change_current_player', function(player_id){
 var title = document.getElementById('toptitle');
 socket.on('change_title', function(new_title){
     title.textContent = new_title;
-});
-
-
-// Spy controls
-var controls = document.getElementById("controls");
-if (controls){
-    var button = document.getElementById('send-hint');
-    socket.on('enable_controls', function(){
-        console.log('Enabling controls');
-        button.disabled = false;
-    });
-
-    controls.addEventListener("submit", function(e){
-        e.preventDefault();
-        var hint = document.getElementById("hint");
-        var n = document.getElementById("n");
-        socket.emit("hint", hint.value, n.value);
-        hint.value = "";
-        n.value = "";
-        button.disabled = true;
-        return false;
-    });
-}
-
-
-// Votes
-var vote_enabled = false;
-var table = document.getElementById('table');
-socket.on('enable_vote', function(){
-    console.log("Enabling vote")
-    // Allow user to touch cells and vote
-    for (var i=0; i<ncells; i++){
-        var cell = cells[i];
-        cell.dataset.enabled = "true";
-    }
-
-    vote_enabled = true;
-});
-socket.on('disable_vote', function(){
-    // Prevent user from voting
-    for (var i=0; i<ncells; i++){
-        var cell = cells[i];
-        cell.dataset.enabled = "false";
-    }
-    vote_enabled = false;
 });
 

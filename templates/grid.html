@@ -14,7 +14,7 @@
                 <span
                         id="{{ player.id }}"
                         data-team="{{ ''~i }}"
-                        class="{{ 'pseudo'+(' current-player' if (i==1) and (loop.index==1) else '') }}">
+                        class="pseudo{% if player.id==current_spy %} current-player{% endif %}">
                     {{ player.pseudo }}
                 </span>
                 {% endfor %}
@@ -29,7 +29,7 @@
                     <td id="{{ cell }}"
                         data-votedfor="{%if votes_history[cell] is defined %}true{% else %}false{% endif %}"
                         data-code="{% if is_spy %}{{ answers[r][c] }}{% elif votes_history[cell] is defined %}{{ votes_history[cell] }}{% else %}-1{% endif %}"
-                        data-enabled="{% if enabled %}true{% else %}false{% endif %}"
+                        data-enabled="false"
                     >
                         {{words[r, c]}} </td>
                     {% endfor %}
@@ -43,6 +43,8 @@
                 <input id="n" type="number" min="0" max="9">
                 <input id="send-hint" type="submit" {% if not spy_enabled %}disabled{% endif %}>
             </form>
+            {% else %}
+            <input id="pass" type="submit">
             {% endif %}
         </div>
         <div id="chats">
@@ -67,8 +69,10 @@
         </div>
     </div>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/grid_controls.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/events_chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/grid/grid_controls.js') }}"></script>
+    {% if is_spy %}<script src="{{ url_for('static', filename='js/grid/spy.js') }}"></script>
+    {% else %}<script src="{{ url_for('static', filename='js/grid/guesser.js') }}"></script>{% endif %}
+    <script src="{{ url_for('static', filename='js/grid/chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/grid/events_chat.js') }}"></script>
 </body>
 </html>

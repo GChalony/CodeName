@@ -20,7 +20,9 @@ class GameManager(Namespace):
         rs.chat_history = []
         rs.events_history = []
         rs.votes_history = {}
-        rs.socketio_id_to_user_id = {}
+        rs.socketio_id_from_user_id = {}
+        rs.votes_enabled = []
+        rs.game_title = f"Equipe {rs.game.current_team_name}"
 
     def load_page(self, room_id):
         if not (hasattr(rs, "has_started") and rs.has_started):
@@ -30,13 +32,13 @@ class GameManager(Namespace):
         if user_id in rs.game.spies:
             answers = rs.game.answers
             is_spy = True
-
         return render_template("grid.html",
-                               title=f"Equipe {rs.game.current_team_name}",
+                               title=rs.game_title,
                                words=rs.game.words,
                                teams=rs.teams,
                                spy_enabled=user_id == rs.game.current_spy,
                                is_spy=is_spy,
+                               current_spy=rs.game.current_spy,
                                answers=answers,
                                chat_history=rs.chat_history,
                                events_history=rs.events_history,
@@ -48,14 +50,21 @@ class GameManager(Namespace):
             raise Exception("User not authenticated")
         user_id = request.cookies["user_id"]
         logger.info(f'Welcome back user {request.cookies["pseudo"]} !')
-        rs.socketio_id_to_user_id[user_id] = request.sid
+        rs.socketio_id_from_user_id[user_id] = request.sid
+        join_room(get_room_id())
 
         pseudo = request.cookies["pseudo"]
         self.send_new_event(f"{pseudo} a rejoint la partie")
 
-        join_room(get_room_id())
+        if user_id in rs.votes_enabled:
+            self.enable_votes(user_id)
+        self.update_cell_votes(user_id)
 
     def on_disconnect(self):
+        user_id = request.cookies["user_id"]
+        pseudo = request.cookies["pseudo"]
+        self.send_new_event(f"{pseudo} a quitté la partie")
+        rs.socketio_id_from_user_id.pop(user_id)
         pseudo = request.cookies.get("pseudo", None)
         logger.info(f"User {pseudo} left the game !")
 
@@ -75,38 +84,39 @@ class GameManager(Namespace):
     def on_vote_cell(self, code):
         user_id = request.cookies["user_id"]  # session["user_id"]  # TODO change back in production
         game = rs.game
-        try:
-            res = game.vote(user_id, code)
-            if res is None:
-                # Votes not done
-                self.update_cell_votes()
-                self.disable_votes(user_id)
-            else:
-                # Votes are done, change teams etc
-                cell, value = res
-                rs.votes_history[cell] = value
-                self.notify_cell_votes(cell, value)
-                r, c = parse_cell_code(cell)
-                self.send_new_event(f"Team {game.current_team_name} voted {game.words[r, c]}")
-                self.switch_teams(game.current_spy)
-        except PermissionError as e:
-            logger.debug(game)
-            logger.error(e)
+        res = game.vote(user_id, code)
+        if res is None:
+            # Votes not done
+            self.update_cell_votes()
+            self.disable_votes(user_id)
+        else:
+            # Votes are done, change teams etc
+            cell, value = res
+            rs.votes_history[cell] = value
+            self.notify_cell_votes(cell, value)
+            r, c = parse_cell_code(cell)
+            self.send_new_event(f"Team {game.current_team_name} voted {game.words[r, c]}")
+            self.switch_teams(game.current_spy)
 
-    def update_cell_votes(self):
+    def update_cell_votes(self, user_id=None):
+        # TODO loop for multiple votes
         votes_counts = rs.game.get_votes_counts()
         logger.debug(f"Votes counts: {votes_counts}")
-        emit_in_room("update_votes", votes_counts)
+        if user_id is None:
+            emit_in_room("update_votes", votes_counts)
+        else:
+            emit_in_room("update_votes", votes_counts, room=rs.socketio_id_from_user_id[user_id])
 
     def notify_cell_votes(self, cell, value):
         vote = {"cell": cell, "value": str(value)}
         emit_in_room("vote_done", vote)
 
     def change_title(self, new_title):
+        rs.game_title = new_title
         emit_in_room('change_title', new_title)
 
     def enable_controls(self):
-        emit_in_room("enable_controls", room=rs.socketio_id_to_user_id[rs.game.current_spy])
+        emit_in_room("enable_controls", room=rs.socketio_id_from_user_id[rs.game.current_spy])
 
     def change_current_player(self, new_player_id):
         emit_in_room("change_current_player", new_player_id)
@@ -114,12 +124,14 @@ class GameManager(Namespace):
     def enable_votes(self, *player_ids):
         logger.debug(f"Enabling votes for users ids {player_ids}")
         for player_id in player_ids:
-            emit_in_room("enable_vote", room=rs.socketio_id_to_user_id[player_id])
+            rs.votes_enabled.append(player_id)
+            emit_in_room("enable_vote", room=rs.socketio_id_from_user_id[player_id])
 
     def disable_votes(self, *player_ids):
         logger.debug(f"Disabling votes for users ids {player_ids}")
         for player_id in player_ids:
-            emit_in_room("disable_vote", room=rs.socketio_id_to_user_id[player_id])
+            rs.votes_enabled.remove(player_id)
+            emit_in_room("disable_vote", room=rs.socketio_id_from_user_id[player_id])
 
     def send_new_event(self, event_msg):
         logger.debug(f"Sending new event {event_msg}")
