@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Code Name</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/grid.css') }}">
+    {% if is_spy %}<link rel="stylesheet" href="{{ url_for('static', filename='css/spy.css') }}">
+    {% else %}<link rel="stylesheet" href="{{ url_for('static', filename='css/guesser.css') }}">{% endif %}
 </head>
 <body>
     <h1 id="toptitle">{{ title }}</h1>

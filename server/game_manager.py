@@ -84,11 +84,13 @@ class GameManager(Namespace):
     def on_vote_cell(self, code):
         user_id = request.cookies["user_id"]  # session["user_id"]  # TODO change back in production
         game = rs.game
+        if (user_id not in game.current_guessers) and (user_id in rs.votes_enabled):
+            raise PermissionError(f"Vote not allowed from user {user_id}")
         game.vote(user_id, code)
+        self.disable_votes(user_id)
         if not game.voting_done():
             # Not everyone has voted
             self.update_cell_votes()
-            self.disable_votes(user_id)
         else:
             # Votes are done
             cell, value = game.end_votes()
@@ -148,6 +150,5 @@ class GameManager(Namespace):
         rs.game.switch_teams()
         self.change_title(f"Equipe {rs.game.current_team_name}")
         self.change_current_player(rs.game.current_spy)
-        self.disable_votes(*rs.game.other_guessers)
         self.enable_votes(*rs.game.current_guessers)
         self.enable_controls()

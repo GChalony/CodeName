@@ -1,0 +1,11 @@
+td[data-votedfor="true"]
+{
+    opacity: 0.5;
+}
+
+#controls
+{
+    display: flex;
+    width: 10%;
+    margin: auto;
+}

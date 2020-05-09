@@ -4,7 +4,14 @@ votes = []
 
 function drawVotes(cell, n){
     // draw votes during voting phase
-    cell.style.background = '#3'+n+'3';
+    cell.style.backgroundImage = "url('/static/vote.png'),".repeat(n).slice(0, -1);
+    var pos = "";
+    for (var i=0; i<n; i++){
+        pos += 100 - n - 2 + "%,";
+    }
+    cell.style.backgroundPositionX = pos.slice(0, -1);
+    cell.style.backgroundPositionY = "2%";
+    cell.style.backgroundRepeat = "no-repeat";
     votes.push(cell.id);
 }
 

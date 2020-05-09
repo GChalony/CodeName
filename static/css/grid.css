@@ -54,15 +54,14 @@ table
     border-spacing: 30px;
     table-layout: fixed ;
 }
-
 td
 {
     background: #fca;
+    background-repeat: no-repeat;
     text-align: center;
     padding: 18px;
     border-radius: 10px;
 }
-
 td:hover
 {
     cursor: pointer;
@@ -74,7 +73,6 @@ td[data-enabled="false"]
 td[data-votedfor="true"]
 {
     cursor: not-allowed;
-    opacity: 0.5;
 }
 td[data-code="0"]
 {
@@ -95,12 +93,7 @@ td[data-code="3"]
     color: white;
     font: bold;
 }
-#controls
-{
-    display: flex;
-    width: 10%;
-    margin: auto;
-}
+
 
 /* Right part: events and chat */
 #chats
@@ -123,7 +116,7 @@ td[data-code="3"]
     background: yellow;
 }
 #events li {background: white;}
-#events li:nth-child(odd) {background: #8f9;}
+#events li:nth-child(odd) {background: #eee;}
 #chat
 {
     height: 50%;
