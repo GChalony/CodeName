@@ -13,6 +13,14 @@ for (var i=0; i<ncells; i++){
     cell.addEventListener('click', voteCell);
 }
 
+var pass = document.getElementById("pass");
+pass.addEventListener('click', function(e){
+    if (vote_enabled){
+        socket.emit('vote_cell', 'none');
+    }
+});
+
+
 // Votes
 var vote_enabled = false;
 var table = document.getElementById('table');
@@ -24,6 +32,7 @@ socket.on('enable_vote', function(){
         cell.dataset.enabled = "true";
     }
     vote_enabled = true;
+    pass.disabled = false;
 });
 
 socket.on('disable_vote', function(){
@@ -33,9 +42,6 @@ socket.on('disable_vote', function(){
         cell.dataset.enabled = "false";
     }
     vote_enabled = false;
+    pass.disabled = true;
 });
 
-var pass = document.getElementById("pass");
-pass.addEventListener('click', function(e){
-    socket.emit('vote_cell', 'none')
-});

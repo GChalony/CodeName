@@ -84,28 +84,33 @@ class GameManager(Namespace):
     def on_vote_cell(self, code):
         user_id = request.cookies["user_id"]  # session["user_id"]  # TODO change back in production
         game = rs.game
-        res = game.vote(user_id, code)
-        if res is None:
-            # Votes not done
+        game.vote(user_id, code)
+        if not game.voting_done():
+            # Not everyone has voted
             self.update_cell_votes()
             self.disable_votes(user_id)
         else:
-            # Votes are done, change teams etc
-            cell, value = res
-            rs.votes_history[cell] = value
-            self.notify_cell_votes(cell, value)
-            r, c = parse_cell_code(cell)
-            self.send_new_event(f"Team {game.current_team_name} voted {game.words[r, c]}")
-            self.switch_teams(game.current_spy)
+            # Votes are done
+            cell, value = game.end_votes()
+            if cell is not None:
+                self.notify_cell_votes(cell, value)
+                rs.votes_history[cell] = value
+                r, c = parse_cell_code(cell)
+                self.send_new_event(f"Team {game.current_team_name} voted {game.words[r, c]}")
+                self.enable_votes(*rs.game.current_guessers)
+            else:
+                # Everybody passed -> change teams
+                self.send_new_event(f"Team {rs.game.current_team_name} a passé")
+                self.switch_teams()
 
     def update_cell_votes(self, user_id=None):
-        # TODO loop for multiple votes
         votes_counts = rs.game.get_votes_counts()
         logger.debug(f"Votes counts: {votes_counts}")
-        if user_id is None:
-            emit_in_room("update_votes", votes_counts)
-        else:
-            emit_in_room("update_votes", votes_counts, room=rs.socketio_id_from_user_id[user_id])
+        if len(votes_counts):  # Check that contains actual values and not just pass
+            if user_id is None:
+                emit_in_room("update_votes", votes_counts)
+            else:
+                emit_in_room("update_votes", votes_counts, room=rs.socketio_id_from_user_id[user_id])
 
     def notify_cell_votes(self, cell, value):
         vote = {"cell": cell, "value": str(value)}
@@ -138,10 +143,11 @@ class GameManager(Namespace):
         rs.events_history.append(event_msg)
         emit_in_room("add_event", event_msg)
 
-    def switch_teams(self, spy_id):
+    def switch_teams(self):
         logger.debug(f"Switching teams")
+        rs.game.switch_teams()
         self.change_title(f"Equipe {rs.game.current_team_name}")
-        self.change_current_player(spy_id)
+        self.change_current_player(rs.game.current_spy)
         self.disable_votes(*rs.game.other_guessers)
         self.enable_votes(*rs.game.current_guessers)
         self.enable_controls()

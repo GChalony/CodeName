@@ -66,7 +66,7 @@ class Game:
 
     def get_votes_counts(self):
         count = Counter(list(self.votes.values()))
-        votes_counts = {cell: n for cell, n in count.most_common()}
+        votes_counts = {cell: n for cell, n in count.most_common() if cell != "none"}
         return votes_counts
 
     def vote(self, user_id, code):
@@ -77,32 +77,33 @@ class Game:
             raise PermissionError(f"Vote from current player {user_id}!")
         self.votes[user_id] = code
         logger.debug(f"Votes: {self.votes}")
-        if self.voting_done():
-            cell, value = self.end_round()
-            return cell, value
 
     def voting_done(self):
         return len(self.votes) == len(self.current_team) - 1
 
     def get_team_vote(self):
-        vals = list(self.votes.values())
+        vals = [v for v in self.votes.values() if v != "none"]
         shuffle(vals)  # Shuffle to be random in case equal counts
-        c = Counter(vals)
-        most_voted = c.most_common(1)[0][0]
+        c = Counter(vals).most_common(1)
+        most_voted = c[0][0] if len(c) else None
         logger.debug(f"Team vote: {most_voted}")
         return most_voted
 
-    def end_round(self):
-        logger.debug("Ending round")
+    def end_votes(self):
+        logger.debug("Ending votes")
         voted = self.get_team_vote()
+        self.votes = {}
+
+        if voted is None:
+            return None, None
+
         r, c = parse_cell_code(voted)
         value = self.answers[r, c]
-
-        self.votes = {}
         self.current_mask[r, c] = 1
-        self.current_team_idx = self.other_team_idx
-
         return voted, value
+
+    def switch_teams(self):
+        self.current_team_idx = self.other_team_idx
 
 
 if __name__ == "__main__":
