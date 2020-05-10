@@ -86,6 +86,13 @@ class GameManager(Namespace):
         game = rs.game
         if (user_id not in game.current_guessers) and (user_id in rs.votes_enabled):
             raise PermissionError(f"Vote not allowed from user {user_id}")
+        pseudo = request.cookies["pseudo"]
+        if code == "none":
+            ev = f"{pseudo} a passé"
+        else:
+            r, c = parse_cell_code(code)
+            ev = f"{pseudo} a voté {rs.game.words[r, c]}"
+        self.send_new_event(ev)
         game.vote(user_id, code)
         self.disable_votes(user_id)
         if not game.voting_done():
@@ -98,7 +105,7 @@ class GameManager(Namespace):
                 self.notify_cell_votes(cell, value)
                 rs.votes_history[cell] = value
                 r, c = parse_cell_code(cell)
-                self.send_new_event(f"Team {game.current_team_name} voted {game.words[r, c]}")
+                self.send_new_event(f"L'équipe {game.current_team_name} a voté {game.words[r, c]}")
                 self.enable_votes(*rs.game.current_guessers)
             else:
                 # Everybody passed -> change teams
