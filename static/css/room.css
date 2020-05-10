@@ -1,44 +1,48 @@
-#players-container
-{
-    margin-top: 100px;
-    display: flex;
-    justify-content: space-around;
-}
-h1
-{
+/* h2 {
     text-align: center;
+} */
+
+.panel-group {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0px;
 }
-#players
-{
+
+.panel-group .panel+.panel {
+    margin-top: 0px;
+}
+
+.size-panel {
     width: 30%;
-    border-radius: 30px;
 }
-#players { background: #fa8 }
-#teams
-{
-    height: 70%;
+
+.pseudo-div {
+    padding: 7px 12px;
+}
+
+.red-border {
+    border-color: #c9302c !important;
+}
+
+.red-bg {
+    background-color: #c9302c !important;
+}
+
+.display-btn {
+    width: 100%;
+}
+
+.spy-border {
+    border-bottom: 1px solid transparent;
+    border-color: #337ab7;
+}
+
+#start {
     display: flex;
-    justify-content: space-around;
-}
-#teams ul
-{
-    padding: 3px;
-    border: solid black 1px;
-    list-style-type: none;
-}
-#teams li
-{
-    margin: 5px;
-    padding: 3px 20px;
-    background: #bbb;
-}
-#start
-{
-    display: flex;
-    justify-content: space-around;
-    margin-top: 50px;
+    justify-content: center;
     padding: 10px 10px;
 }
 #start button {
     padding: 10px;
+    margin: 10px;
 }

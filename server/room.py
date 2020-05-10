@@ -15,6 +15,21 @@ logger = logging.getLogger(__name__)
 temp_default_teams = [[User("1", "Greg"), User("2", "Sol")],
                       [User("3", "Clem"), User("4", "Axel")]]
 
+room_teams_default = {
+    "blue": [
+        None,
+        None,
+        None,
+        None
+    ],
+    "red": [
+        None,
+        None,
+        None,
+        None
+    ]
+}
+
 class RoomNamespace(Namespace):
     def __init__(self, name):
         super(RoomNamespace, self).__init__(name)
@@ -73,6 +88,7 @@ class RoomNamespace(Namespace):
         data["room_id"] = new_room_id
         self.on_join_existing_room(data)
 
+
     def on_join_existing_room(self, data):
         print("on_join_existing_room, data=", data)
         room_id = data.get("room_id")
@@ -95,6 +111,20 @@ class RoomNamespace(Namespace):
         join_room(room_id)
         print("rooms()", rooms())
         room_url = f"{room_id}/room"
+        room_session.room_teams = {
+            "blue": [
+                None,
+                "ebb1e650986c444baa2078977e854acb",
+                None,
+                None
+            ],
+            "red": [
+                "reztoztiurevgoezr",
+                None,
+                None,
+                None
+            ]
+        }
         emit("url_redirection", {"url": room_url})
 
     def on_leave_room(self, data):
@@ -128,12 +158,26 @@ class RoomNamespace(Namespace):
         players_list = [user.__dict__ for user in room_session.users]
         emit("response_players_in_room", {"players": players_list}, broadcast=True)
 
+    def on_initialize_room(self):
+        try:
+            print("IN TRY")
+            teams = room_session.room_teams
+        except:
+            print("IN EXCEPT")
+            teams = room_teams_default
+        emit("response_initialize_room", {
+            "user_id": session["user_id"],
+            "pseudo": session["pseudo"],
+            "teams": teams
+            })
+
+    def on_update_teams(self, teams):
+        room_session.room_teams = teams
+        emit("response_teams", {"teams": teams}, broadcast=True)
+
     def on_get_user_infos(self):
         user_id = session.get("user_id")
         user = self.get_user_by_id(user_id)
-        print("on_get_user_infos, user=", user)
-        print("on_get_user_infos, user.backcol=", user.backcol)
-        # pseudo = "pas de pseudo"
         if user:
             print("user.pseudo", user.pseudo)
             pseudo = user.pseudo

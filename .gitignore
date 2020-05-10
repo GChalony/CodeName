@@ -18,3 +18,4 @@ flask_session
 # files to test html css design
 test.html
 test.css
+test.js

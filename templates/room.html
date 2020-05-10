@@ -1,29 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/room.css') }}">
     <title>Salle d'attente</title>
+    <meta charset="utf-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="test.css"> -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/room.css') }}">
 </head>
 <body>
-    <div id="players-container">
-        <div id="players">
-            <h1>Players</h1>
-            <div id="teams">
-                <ul id="t1">
-                    <!-- <li>{{ initial_player_pseudo }}</li> -->
-                </ul>
-                <ul id="t2">
-                </ul>
+    <div class="container">
+        <h2>Salle d'attente</h2>
+        <div class="panel-group">
+            <div id="blue_team_panel" class="panel panel-primary size-panel">
+                <div id="panel_heading" class="panel-heading">Equipe bleue</div>
+                <div id="blue_team_panel_body">
+                    <!-- <div class="panel-body spy-border"><div class="pseudo-div">Toto (espion)</div></div> -->
+                </div>
+            </div>
+            <div id="red_team_panel" class="panel panel-primary size-panel red-border">
+                <div class="panel-heading red-bg">Equipe rouge</div>
+                <div id="red_team_panel_body">
+                    <!-- <div class="panel-body spy-border red-border"><div class="pseudo-div">Titi (espion)</div></div> -->
+                </div>
             </div>
         </div>
     </div>
     <div id="start">
-        <button type="submit" id="debug_button">DEBUG</button>
-        <button type="submit" id="home">Retour à l'accueil</button>
-        <button type="submit" id="go">Commencer la partie</button>
+        <button class="btn btn-default" type="submit" id="debug_button">DEBUG</button>
+        <button class="btn btn-default" type="submit" id="home">Retour à l'accueil</button>
+        <button class="btn btn-success" type="submit" id="go">Commencer la partie</button>
     </div>
-
+    <!-- <script src="test.js"></script> -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     <script src="{{url_for('static', filename='js/room.js') }}"></script>
 </body>
