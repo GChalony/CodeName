@@ -1,6 +1,6 @@
 import logging
 
-from flask import request, render_template, flash
+from flask import request, render_template, flash, url_for
 from flask_socketio import Namespace, join_room
 
 from server.room_session import room_session as rs, get_room_id, emit_in_room
@@ -95,11 +95,13 @@ class GameManager(Namespace):
         self.send_new_event(ev)
         game.vote(user_id, code)
         self.disable_votes(user_id)
-        if not game.voting_done():
+        if not game.is_voting_done():
             # Not everyone has voted
             self.update_cell_votes()
         else:
             # Votes are done
+            if game.is_game_over():
+                self.game_over()
             cell, value = game.end_votes()
             if cell is not None:
                 self.notify_cell_votes(cell, value)
@@ -159,3 +161,6 @@ class GameManager(Namespace):
         self.change_current_player(rs.game.current_spy)
         self.enable_votes(*rs.game.current_guessers)
         self.enable_controls()
+
+    def game_over(self):
+        emit_in_room('redirect', f"/{get_room_id()}/room")

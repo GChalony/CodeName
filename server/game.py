@@ -18,6 +18,7 @@ class Game:
         self.guessers = [[u for u in team if u not in self.spies] for team in teams]
 
         self.words = generate_random_words("server/ressources/words.csv")
+        # 0: nothing, 1: red, 2: blue, 3: black
         self.answers = generate_response_grid()
         self.current_mask = np.zeros((5, 5))
 
@@ -78,8 +79,18 @@ class Game:
         self.votes[user_id] = code
         logger.debug(f"Votes: {self.votes}")
 
-    def voting_done(self):
+    def is_voting_done(self):
         return len(self.votes) == len(self.current_team) - 1
+
+    def is_game_over(self):
+        # Check black
+        if self.current_mask[np.where(self.answers) == 3]:
+            return True
+        # Check nb blue/red left
+        not_guessed_idx = np.where(1-self.current_mask)
+        vals_left = self.answers[not_guessed_idx]
+        n_red, n_blue = (vals_left == 1).sum(), (vals_left == 2).sum()
+        return n_red == 0 or n_blue == 0
 
     def get_team_vote(self):
         vals = [v for v in self.votes.values() if v != "none"]
