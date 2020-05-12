@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Code Name</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/grid.css') }}">
     {% if is_spy %}<link rel="stylesheet" href="{{ url_for('static', filename='css/spy.css') }}">
     {% else %}<link rel="stylesheet" href="{{ url_for('static', filename='css/guesser.css') }}">{% endif %}
 </head>
 <body>
+<div class="" class="d-flex flex-column">
     <h1 id="toptitle">{{ title }}</h1>
     <div id="container">
-        <div id="players">
+        <div id="players" class="mx-3">
             {% for i in [1, 2] %}
                 {% for player in teams[i-1] %}
                 <span
@@ -22,8 +26,8 @@
                 {% endfor %}
             {% endfor %}
         </div>
-        <div id="center">
-            <table id="table">
+        <div id="center" class="py-3">
+            <table id="table" class="mb-3 w-100">
                 {% for r in range(5) %}
                 <tr>
                     {% for c in range(5) %}
@@ -39,33 +43,36 @@
                 {% endfor %}
             </table>
 
-            {% if is_spy %}
-            <form id="controls">
-                <input id="hint" type="text">
-                <input id="n" type="number" min="0" max="9">
-                <input id="send-hint" type="submit" {% if not spy_enabled %}disabled{% endif %}>
-            </form>
-            {% else %}
-            <input id="pass" type="submit" value="passer" disabled>
-            {% endif %}
+            <div>
+                {% if is_spy %}
+                <form id="controls" class="form-inline flex-nowrap justify-content-center">
+                    <input id="hint" class="form-control" type="text">
+                    <input id="n" class="form-control" type="number" min="0" max="9">
+                    <input id="send-hint" class="btn btn-success"
+                           type="submit" {% if not spy_enabled %}disabled{% endif %}>
+                </form>
+                {% else %}
+                <input id="pass"  class="btn btn-success" type="submit" value="passer" disabled>
+                {% endif %}
+            </div>
         </div>
-        <div id="chats">
-            <div id="events">
+        <div id="chats" class="mx-3">
+            <div id="events" class="h-50 mb-3">
                 <ul id="events_msglist" class="msglist">
                     {% for msg in events_history %}
                     <li>{{ msg }}</li>
                     {% endfor %}
                 </ul>
             </div>
-            <div id="chat">
+            <div id="chat" class="d-flex flex-column h-50">
                 <ul id="messages" class="msglist">
                     {% for msg in chat_history %}
                     <li>{{ msg }}</li>
                     {% endfor %}
                 </ul>
-                <form id="msgform">
-                    <input type="text" id="m" autocomplete="off">
-                    <input type="submit" id="s" value=">">
+                <form id="msgform" class="form-inline">
+                    <input type="text" id="m" class="form-control" autocomplete="off">
+                    <input type="submit" id="s" class="form-control" value=">">
                 </form>
             </div>
         </div>
@@ -76,5 +83,6 @@
     {% else %}<script src="{{ url_for('static', filename='js/grid/guesser.js') }}"></script>{% endif %}
     <script src="{{ url_for('static', filename='js/grid/chat.js') }}"></script>
     <script src="{{ url_for('static', filename='js/grid/events_chat.js') }}"></script>
+    </div>
 </body>
 </html>

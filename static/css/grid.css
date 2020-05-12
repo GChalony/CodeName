@@ -1,5 +1,5 @@
 html, body {
-  height: 100%;
+  height: auto;
   margin: 0;
 }
 body{ background: #228; }
@@ -9,12 +9,16 @@ h1
     font-size: 2em;
     font-weight: bold;
     text-align: center;
+    margin: 30px;
 }
 #container
 {
     display: flex;
 }
 
+#players, #chats{
+    width: 15%;
+}
 /* Left part : teams */
 #players
 {
@@ -34,11 +38,11 @@ h1
 }
 .pseudo[data-team="1"]
 {
-    color: red;
+    color: #dc3545;
 }
 .pseudo[data-team="2"]
 {
-    color: blue;
+    color: #007bff;
 }
 
 /* Center: grid */
@@ -48,18 +52,17 @@ h1
 }
 table
 {
-    width: 70%;
-    height: 50%;
     margin: auto;
     border-spacing: 30px;
     table-layout: fixed ;
+    border-collapse: initial;
 }
 td
 {
     background: #fca;
     background-repeat: no-repeat;
     text-align: center;
-    padding: 18px;
+    padding: 3.5% 0;
     border-radius: 10px;
 }
 td:hover
@@ -80,11 +83,11 @@ td[data-code="0"]
 }
 td[data-code="1"]
 {
-    background: red;
+    background: #dc3545;
 }
 td[data-code="2"]
 {
-    background: blue;
+    background: #007bff;
     color: white;
 }
 td[data-code="3"]
@@ -120,7 +123,7 @@ td[data-code="3"]
 #chat
 {
     height: 50%;
-    background: red;
+    background: #dc3545;
 }
 #messages {
     margin: 0;
