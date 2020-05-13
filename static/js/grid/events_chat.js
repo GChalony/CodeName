@@ -7,4 +7,5 @@ socket.on('add_event', function(msg){
     var li = document.createElement("li");
     li.textContent = msg;
     event_chat.append(li);
+    event_chat.scrollTo(0, event_chat.scrollHeight);
 });

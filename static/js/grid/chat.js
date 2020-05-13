@@ -15,9 +15,11 @@ form.addEventListener("submit", function(e){
     sendMsg();
 });
 
+var messages = document.getElementById("messages");
 socket.on("chat_msg", function(msg){
     console.log("received : "+msg);
     var li = document.createElement("li");
     li.textContent = msg;
-    document.getElementById("messages").append(li);
+    messages.append(li);
+    messages.scrollTo(0, messages.scrollHeight);
 });
