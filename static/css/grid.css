@@ -139,6 +139,12 @@ td[data-code="3"]
 {
     display: flex;
 }
+#s
+{
+    background-image: url(/static/send.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
 /* Overwrite some bootstrap stuff */
 .form-control-sm
