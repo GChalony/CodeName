@@ -14,7 +14,7 @@
 <div class="" class="d-flex flex-column">
     <h1 id="toptitle">{{ title }}</h1>
     <div id="container">
-        <div id="players" class="mx-3">
+        <div id="players" class="mx-3 mt-5">
             {% for i in [1, 2] %}
                 {% for player in teams[i-1] %}
                 <span
@@ -26,13 +26,14 @@
                 {% endfor %}
             {% endfor %}
         </div>
-        <div id="center" class="py-3">
+        <div id="center" class="">
             <table id="table" class="mb-3 w-100">
                 {% for r in range(5) %}
                 <tr>
                     {% for c in range(5) %}
                     {% set cell = 'r'~r~'c'~c %}
                     <td id="{{ cell }}"
+                        class="rounded"
                         data-votedfor="{%if votes_history[cell] is defined %}true{% else %}false{% endif %}"
                         data-code="{% if is_spy %}{{ answers[r][c] }}{% elif votes_history[cell] is defined %}{{ votes_history[cell] }}{% else %}-1{% endif %}"
                         data-enabled="false"
@@ -46,13 +47,13 @@
             <div>
                 {% if is_spy %}
                 <form id="controls" class="form-inline flex-nowrap justify-content-center">
-                    <input id="hint" class="form-control" type="text">
-                    <input id="n" class="form-control" type="number" min="0" max="9">
-                    <input id="send-hint" class="btn btn-success"
+                    <input id="hint" class="form-control form-control-sm" type="text">
+                    <input id="n" class="form-control form-control-sm mx-5" type="number" min="0" max="9">
+                    <input id="send-hint" class="btn btn-success form-control-sm"
                            type="submit" {% if not spy_enabled %}disabled{% endif %}>
                 </form>
                 {% else %}
-                <input id="pass"  class="btn btn-success" type="submit" value="passer" disabled>
+                <input id="pass"  class="btn btn-success form-control-sm" type="submit" value="passer" disabled>
                 {% endif %}
             </div>
         </div>
@@ -70,13 +71,15 @@
                     <li>{{ msg }}</li>
                     {% endfor %}
                 </ul>
-                <form id="msgform" class="form-inline">
-                    <input type="text" id="m" class="form-control" autocomplete="off">
-                    <input type="submit" id="s" class="form-control" value=">">
+                <form id="msgform" class="form-inline flex-nowrap p-1">
+                    <input type="text" id="m" class="form-control form-control-sm" autocomplete="off">
+                    <input type="submit" id="s" class="form-control form-control-sm" value=">">
                 </form>
             </div>
         </div>
     </div>
+
+    <!--  Scripts  -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/grid/grid_controls.js') }}"></script>
     {% if is_spy %}<script src="{{ url_for('static', filename='js/grid/spy.js') }}"></script>

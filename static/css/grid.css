@@ -2,29 +2,26 @@ html, body {
   height: auto;
   margin: 0;
 }
-body{ background: #228; }
+body{ background: #005580; }
 h1
 {
     color: white;
     font-size: 2em;
     font-weight: bold;
     text-align: center;
-    margin: 30px;
+    margin-top: 30px;
 }
 #container
 {
     display: flex;
 }
 
-#players, #chats{
-    width: 15%;
-}
 /* Left part : teams */
 #players
 {
     display: flex;
     flex-direction: column;
-    background: cyan;
+    /*background: cyan;*/
 }
 .pseudo
 {
@@ -38,32 +35,32 @@ h1
 }
 .pseudo[data-team="1"]
 {
-    color: #dc3545;
+    color: #c00;
 }
 .pseudo[data-team="2"]
 {
-    color: #007bff;
+    color: #0af;
 }
 
 /* Center: grid */
 #center
 {
-    background: purple;
+    /*background: purple;*/
 }
 table
 {
     margin: auto;
-    border-spacing: 30px;
     table-layout: fixed ;
     border-collapse: initial;
+    border-spacing: 2rem;
 }
 td
 {
     background: #fca;
     background-repeat: no-repeat;
     text-align: center;
-    padding: 3.5% 0;
-    border-radius: 10px;
+    padding: 1% 0;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.5);
 }
 td:hover
 {
@@ -83,11 +80,12 @@ td[data-code="0"]
 }
 td[data-code="1"]
 {
-    background: #dc3545;
+    background: #c00;
+    color: white;
 }
 td[data-code="2"]
 {
-    background: #007bff;
+    background: #0af;
     color: white;
 }
 td[data-code="3"]
@@ -104,6 +102,7 @@ td[data-code="3"]
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 80vh;  /* Don't really like that */
 }
 .msglist
 {
@@ -116,14 +115,14 @@ td[data-code="3"]
 #events
 {
     height: 40%;
-    background: yellow;
+    background: #eee;
 }
 #events li {background: white;}
 #events li:nth-child(odd) {background: #eee;}
 #chat
 {
     height: 50%;
-    background: #dc3545;
+    background: #eee;
 }
 #messages {
     margin: 0;
@@ -139,4 +138,11 @@ td[data-code="3"]
 #msgform
 {
     display: flex;
+}
+
+/* Overwrite some bootstrap stuff */
+.form-control-sm
+{
+    height: 1.5rem;
+    line-height: 0;
 }

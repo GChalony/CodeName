@@ -61,4 +61,4 @@ socketio.on_namespace(game_manager)
 
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, debug=True)
