@@ -21,21 +21,25 @@ h1
 {
     display: flex;
     flex-direction: column;
-    /*background: cyan;*/
+    flex: 1 0 auto;
+    align-self: center;
 }
 .pseudo
 {
     margin: 10px 40px;
     font-size: 1.5em;
+    border: solid 2px;
+    border-radius: 5px;
+    padding: 5px;
+    width: 50%;
 }
 .current-player
 {
     margin-left: 50px;
-    font-weight: bold;
 }
 .pseudo[data-team="1"]
 {
-    color: #c00;
+    color: #ff5300;
 }
 .pseudo[data-team="2"]
 {
@@ -45,7 +49,9 @@ h1
 /* Center: grid */
 #center
 {
-    /*background: purple;*/
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
 }
 table
 {
@@ -59,7 +65,7 @@ td
     background: #fca;
     background-repeat: no-repeat;
     text-align: center;
-    padding: 1% 0;
+    padding: 1.5% 0;
     box-shadow: 0 1rem 3rem rgba(0,0,0,.5);
 }
 td:hover
@@ -99,10 +105,12 @@ td[data-code="3"]
 /* Right part: events and chat */
 #chats
 {
+    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 80vh;  /* Don't really like that */
+    align-self: center;
 }
 .msglist
 {

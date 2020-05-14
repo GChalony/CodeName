@@ -34,7 +34,7 @@ class GameManager(Namespace):
             is_spy = True
         return render_template("grid.html",
                                title=rs.game_title,
-                               title_color="blue" if rs.game.current_team_idx else "red",
+                               title_color="#0af" if rs.game.current_team_idx else "#ff5300",
                                words=rs.game.words,
                                teams=rs.teams,
                                spy_enabled=user_id == rs.game.current_spy,
@@ -158,8 +158,8 @@ class GameManager(Namespace):
     def switch_teams(self):
         logger.debug(f"Switching teams")
         rs.game.switch_teams()
-        self.change_title(f"Equipe {rs.game.current_team_name}", color="blue" if
-            rs.game.current_team_idx else "red")
+        self.change_title(f"Equipe {rs.game.current_team_name}", color="#0af"
+            if rs.game.current_team_idx else "#ff5300")
         self.change_current_player(rs.game.current_spy)
         self.enable_votes(*rs.game.current_guessers)
         self.enable_controls()
