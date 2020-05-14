@@ -12,7 +12,7 @@
 </head>
 <body>
 <div class="" class="d-flex flex-column">
-    <h1 id="toptitle">{{ title }}</h1>
+    <h1 id="toptitle" style="color: {{ title_color}}">{{ title }}</h1>
     <div id="container">
         <div id="players" class="mx-3 mt-5">
             {% for i in [1, 2] %}
@@ -48,12 +48,16 @@
                 {% if is_spy %}
                 <form id="controls" class="form-inline flex-nowrap justify-content-center">
                     <input id="hint" class="form-control form-control-sm" type="text">
-                    <input id="n" class="form-control form-control-sm mx-5" type="number" min="0" max="9">
+                    <select id="n" class="form-control form-control-sm mx-5">
+                        {% for i in range(10) %}<option value="{{i}}">{{i}}</option>{% endfor %}
+                    </select>
                     <input id="send-hint" class="btn btn-success form-control-sm"
                            type="submit" {% if not spy_enabled %}disabled{% endif %}>
                 </form>
                 {% else %}
-                <input id="pass"  class="btn btn-success form-control-sm" type="submit" value="passer" disabled>
+                <div class="d-flex justify-content-center">
+                    <input id="pass"  class="btn btn-success form-control-sm" type="submit" value="passer" disabled>
+                </div>
                 {% endif %}
             </div>
         </div>

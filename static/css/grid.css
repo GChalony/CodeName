@@ -80,7 +80,7 @@ td[data-code="0"]
 }
 td[data-code="1"]
 {
-    background: #c00;
+    background: #ff5300;
     color: white;
 }
 td[data-code="2"]
@@ -112,13 +112,18 @@ td[data-code="3"]
     padding: 0;
     margin: 0;
 }
+.msglist li
+{
+    padding: 2px 4px;
+    background: white;
+    overflow: visible;
+}
+.msglist li:nth-child(odd) { background: #eee; }
 #events
 {
     height: 40%;
     background: #eee;
 }
-#events li {background: white;}
-#events li:nth-child(odd) {background: #eee;}
 #chat
 {
     height: 50%;
@@ -128,13 +133,6 @@ td[data-code="3"]
     margin: 0;
     height: 90%;
 }
-#messages li
-{
-    padding: 2px 4px;
-    background: white;
-    overflow: visible;
-}
-#messages li:nth-child(odd) { background: #eee; }
 #msgform
 {
     display: flex;
@@ -151,4 +149,8 @@ td[data-code="3"]
 {
     height: 1.5rem;
     line-height: 0;
+}
+.form-control-sm, select
+{
+    padding: 0.1rem 0.4rem;
 }
