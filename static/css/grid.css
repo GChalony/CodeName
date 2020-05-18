@@ -112,6 +112,7 @@ td[data-code="3"]
     justify-content: space-between;
     height: 80vh;  /* Don't really like that */
     align-self: center;
+    width: 14%;
 }
 .msglist
 {
@@ -151,6 +152,7 @@ td[data-code="3"]
     background-image: url(/static/send.png);
     background-repeat: no-repeat;
     background-position: center;
+    width: 100%;
 }
 
 /* Overwrite some bootstrap stuff */
