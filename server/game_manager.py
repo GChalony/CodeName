@@ -1,4 +1,5 @@
 import logging
+import time
 
 from flask import request, render_template, flash, url_for
 from flask_socketio import Namespace, join_room
@@ -164,6 +165,15 @@ class GameManager(Namespace):
         self.enable_votes(*rs.game.current_guessers)
         self.enable_controls()
 
+    def _get_remaining_cells(self):
+        cells = list(rs.game.votes.values())  # Cells currently voted for
+        done_cells = list(rs.votes_history.keys())  # Cell already seen by everyone
+        all_cells = [f'r{r}c{c}' for r in range(5) for c in range(5)]  # All possible cells
+        cells += [cell for cell in all_cells if cell not in cells and cell not in done_cells]
+        logger.debug(cells)
+        logger.debug(done_cells)
+        return cells
+
     def game_over(self, winners):
         logger.info("GAME OVER")
         self.change_title(f"L'équipe {rs.game.team_names[winners]} a gagné !")
@@ -171,4 +181,8 @@ class GameManager(Namespace):
         emit_in_room('change_controls',
                      render_template("_gameover_controls.html", room_id=get_room_id()))
         # Get remaining cells values
-        # Remove votes
+        left_cells = self._get_remaining_cells()
+        for cell in left_cells:
+            value = rs.game.answers[parse_cell_code(cell)]
+            self.notify_cell_votes(cell, value)
+            time.sleep(2)
