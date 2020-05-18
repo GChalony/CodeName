@@ -4,8 +4,8 @@ from uuid import uuid4
 
 from flask import render_template, request, redirect, session
 
-from server.room_session import room_session
-from server.utils import parse_cell_code
+from codenameapp.room_session import room_session
+from codenameapp.utils import parse_cell_code
 
 logger = logging.getLogger(__name__)
 

@@ -7,18 +7,18 @@ from flask_session import Session
 from flask_socketio import SocketIO
 
 import config
-from server.game import Game
-from server.game_manager import GameManager
-from server.room import RoomNamespace
-from server.room_session import room_session
-from server.routes import RouteManager
-from server.tuto import TutoNamespace
-from server.users import User
+from codenameapp.game import Game
+from codenameapp.game_manager import GameManager
+from codenameapp.room import RoomNamespace
+from codenameapp.room_session import room_session
+from codenameapp.routes import RouteManager
+from codenameapp.tuto import TutoNamespace
+from codenameapp.users import User
 
 logging.basicConfig(level=logging.WARNING,
                     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
 logger = logging.getLogger(__name__)
-logging.getLogger("server").setLevel(logging.DEBUG)
+logging.getLogger("codenameapp").setLevel(logging.DEBUG)
 logger.info("Starting app!")
 
 logging.getLogger("werkzeug").setLevel(logging.ERROR)

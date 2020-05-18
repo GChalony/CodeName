@@ -6,9 +6,9 @@ from flask_socketio import Namespace, emit, join_room, leave_room, \
 import logging
 from uuid import uuid4
 
-from server.game import Game
-from server.room_session import room_session
-from server.users import User
+from codenameapp.game import Game
+from codenameapp.room_session import room_session
+from codenameapp.users import User
 
 logger = logging.getLogger(__name__)
 

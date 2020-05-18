@@ -4,8 +4,9 @@ import time
 from flask import request, render_template, flash, url_for, session
 from flask_socketio import Namespace, join_room
 
-from server.room_session import room_session as rs, get_room_id, emit_in_room
-from server.utils import parse_cell_code
+from codenameapp.frontend_config import BLUE, RED
+from codenameapp.room_session import room_session as rs, get_room_id, emit_in_room
+from codenameapp.utils import parse_cell_code
 
 logger = logging.getLogger(__name__)
 
