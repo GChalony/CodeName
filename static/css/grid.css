@@ -23,19 +23,20 @@ h1
     flex-direction: column;
     flex: 1 0 auto;
     align-self: center;
+    width: 14%;
 }
 .pseudo
 {
-    margin: 10px 40px;
+    margin: 10px 0;
     font-size: 1.5em;
     border: solid 2px;
     border-radius: 5px;
     padding: 5px;
-    width: 50%;
+    width: 70%;
 }
 .current-player
 {
-    margin-left: 50px;
+    margin-left: 40px;
 }
 .pseudo[data-team="1"]
 {
