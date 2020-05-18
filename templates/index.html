@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Code Name</title>
+{% extends "base.html" %}
+
+{% block stylesheets %}
     <link rel="stylesheet" href="{{url_for('static', filename='css/home.css') }}">
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
 <h1>Bienvenue sur Code Name !</h1>
 
 
@@ -35,11 +34,11 @@
 </div>
 <div id="home-buttons">
     <div class="one-button-area">
-        <button type="submit" class="buttons" id="new-game-button">Nouvelle partie</button>
+        <button type="submit" class="btn btn-success" id="new-game-button">Nouvelle partie</button>
     </div>
     <div class="one-button-area">
         <input type="text" class="inputs" id="join-game-link" placeholder="Inscris le lien à rejoindre">
-        <button type="submit" class="buttons" id="join-game-button">Rejoindre une partie</button>
+        <button type="submit" class="btn btn-success" id="join-game-button">Rejoindre une partie</button>
     </div>
 </div>
 
@@ -47,5 +46,4 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
 <script src="{{url_for('static', filename='js/home.js') }}"></script>
 <script src="{{url_for('static', filename='js/avatar.js') }}"></script>
-</body>
-</html>
+{% endblock %}

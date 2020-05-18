@@ -12,6 +12,7 @@
 </head>
 <body>
     <div id="container">
+        <!-- Left panel : players list  -->
         <div id="players" class="mx-2 mt-5">
             {% for i in [1, 2] %}
                 {% for player in teams[i-1] %}
@@ -24,6 +25,8 @@
                 {% endfor %}
             {% endfor %}
         </div>
+
+        <!-- Center panel : grid and controls -->
         <div id="center" class="">
             <h1 id="toptitle" style="color: {{ title_color}}">{{ title }}</h1>
 
@@ -62,6 +65,8 @@
                 {% endif %}
             </div>
         </div>
+
+        <!-- Right panel : events and chat  -->
         <div id="chats" class="mx-3">
             <div id="events" class="h-50 mb-3">
                 <ul id="events_msglist" class="msglist">
