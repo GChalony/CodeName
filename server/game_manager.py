@@ -79,7 +79,8 @@ class GameManager(Namespace):
     def on_hint(self, hint, n):
         pseudo = request.cookies["pseudo"]
         logger.debug(f"Received hint from {pseudo}: {hint} - {n}")
-        self.change_title(f"Indice : {hint} - {n}")
+        self.change_title(f"Indice : {hint} - {n}", color="#0af"
+            if rs.game.current_team_idx else "#ff5300")
         self.send_new_event(f"Indice de {pseudo}: {hint} - {n}")
         self.enable_votes(*rs.game.current_guessers)
 
