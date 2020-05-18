@@ -56,9 +56,9 @@
                 </form>
                 {% else %}
                 <div class="d-flex justify-content-center">
-                    <input id="pass"  class="btn btn-success form-control-sm" type="submit" value="passer" disabled>
+                    <input id="pass" class="btn btn-success form-control-sm" type="submit" value="passer"
+                           {% if not is_current_guesser %}disabled{% endif %}>
                 </div>
-
                 {% endif %}
             </div>
         </div>
