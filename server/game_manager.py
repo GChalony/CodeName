@@ -1,6 +1,6 @@
 import logging
 
-from flask import request, render_template, flash, url_for
+from flask import request, render_template, flash, url_for, session
 from flask_socketio import Namespace, join_room
 
 from server.room_session import room_session as rs, get_room_id, emit_in_room
@@ -27,7 +27,7 @@ class GameManager(Namespace):
     def load_page(self, room_id):
         if not (hasattr(rs, "has_started") and rs.has_started):
             self.init_game_session()
-        user_id = request.cookies["user_id"]
+        user_id = session["user_id"]
         answers, is_spy = None, False
         if user_id in rs.game.spies:
             answers = rs.game.answers
@@ -46,14 +46,14 @@ class GameManager(Namespace):
 
     # Socketio events handles
     def on_connect(self):
-        if "user_id" not in request.cookies:
+        if "user_id" not in session:
             raise Exception("User not authenticated")
-        user_id = request.cookies["user_id"]
-        logger.info(f'Welcome back user {request.cookies["pseudo"]} !')
+        user_id = session["user_id"]
+        logger.info(f'Welcome back user {session["pseudo"]} !')
         rs.socketio_id_from_user_id[user_id] = request.sid
         join_room(get_room_id())
 
-        pseudo = request.cookies["pseudo"]
+        pseudo = session["pseudo"]
         self.send_new_event(f"{pseudo} a rejoint la partie")
 
         if user_id in rs.votes_enabled:
@@ -61,32 +61,32 @@ class GameManager(Namespace):
         self.update_cell_votes(user_id)
 
     def on_disconnect(self):
-        user_id = request.cookies["user_id"]
-        pseudo = request.cookies["pseudo"]
+        user_id = session["user_id"]
+        pseudo = session["pseudo"]
         self.send_new_event(f"{pseudo} a quitté la partie")
         rs.socketio_id_from_user_id.pop(user_id)
-        pseudo = request.cookies.get("pseudo", None)
+        pseudo = session.get("pseudo", None)
         logger.info(f"User {pseudo} left the game !")
 
     def on_chat_message(self, msg):
         logger.debug("Chat : "+msg)
-        response = request.cookies.get("pseudo") + " : " + msg
+        response = session.get("pseudo") + " : " + msg
         rs.chat_history.append(response)
         emit_in_room("chat_msg", response)
 
     def on_hint(self, hint, n):
-        pseudo = request.cookies["pseudo"]
+        pseudo = session["pseudo"]
         logger.debug(f"Received hint from {pseudo}: {hint} - {n}")
         self.change_title(f"Indice : {hint} - {n}")
         self.send_new_event(f"Indice de {pseudo}: {hint} - {n}")
         self.enable_votes(*rs.game.current_guessers)
 
     def on_vote_cell(self, code):
-        user_id = request.cookies["user_id"]  # session["user_id"]  # TODO change back in production
+        user_id = session["user_id"]  # session["user_id"]  # TODO change back in production
         game = rs.game
         if (user_id not in game.current_guessers) and (user_id in rs.votes_enabled):
             raise PermissionError(f"Vote not allowed from user {user_id}")
-        pseudo = request.cookies["pseudo"]
+        pseudo = session["pseudo"]
         if code == "none":
             ev = f"{pseudo} a passé"
         else:

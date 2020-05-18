@@ -19,7 +19,6 @@ socket.on("response_initialize_room", function(data){
     player_panels = data.teams
     my_pseudo = data.pseudo
     my_user_id = data.user_id
-    // console.log
     InitiatePannelButtons(nb_players, my_pseudo, my_user_id)
     createPanelsFromObject(player_panels, my_pseudo, my_user_id)
 });
@@ -34,13 +33,11 @@ home.addEventListener("click", function(){
 var go = document.getElementById("go");
 go.addEventListener("click", function(e){
     e.preventDefault();
-    console.log("Go!");
     console.log(socket);
     socket.emit("start_game");
 });
 
 socket.on("url_redirection", function(data){
-    console.log(data);
     window.location = data.url;
 });
 
@@ -49,14 +46,6 @@ socket.on("response_teams", function(data){
     console.log("RETOUR player_panels", player_panels)
     createPanelsFromObject(player_panels, my_pseudo, my_user_id)
 })
-
-var debug_button = document.getElementById("debug_button")
-debug_button.addEventListener("click", function(e){
-    e.preventDefault()
-    player_location = document.getElementById(my_user_id)
-    createPanelsFromObject(player_panels, my_pseudo, my_user_id)
-
-});
 
 function InitiatePannelButtons(nb_players=10, pseudo, user_id) {
     blue_team_panel_body = document.getElementById("blue_team_panel_body")
@@ -162,7 +151,6 @@ function createPanelsFromObject(player_panels, pseudo, user_id){
             div.removeChild(div.firstElementChild); 
             if (user_id2) {
                 pseudo2 = getPseudoFromId(user_id2)
-                console.log("pseudo2", pseudo2)
                 div.appendChild(createPlayer(pseudo2, user_id2))
             } else {
                 div.appendChild(createJoinButton(pseudo, user_id))
@@ -172,7 +160,6 @@ function createPanelsFromObject(player_panels, pseudo, user_id){
 }
 
 function getPseudoFromId(user_id){
-    console.log("in getPseudoFromId, players", players, "user_id", user_id)
     for (var i = 0; i < players.length; i++) {
         p = players[i]
         if (p.id == user_id) {
@@ -182,9 +169,8 @@ function getPseudoFromId(user_id){
     return null
 }
 
-
-var go = document.getElementById("debug_button");
-go.addEventListener("click", function(e){
+var debug_button = document.getElementById("debug_button");
+debug_button.addEventListener("click", function(e){
     e.preventDefault();
     console.log("click debug_button!");
     // socket.emit("on_debug_button");
