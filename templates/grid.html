@@ -11,10 +11,8 @@
     {% else %}<link rel="stylesheet" href="{{ url_for('static', filename='css/guesser.css') }}">{% endif %}
 </head>
 <body>
-<div class="" class="d-flex flex-column">
-    <h1 id="toptitle">{{ title }}</h1>
     <div id="container">
-        <div id="players" class="mx-3 mt-5">
+        <div id="players" class="mx-2 mt-5">
             {% for i in [1, 2] %}
                 {% for player in teams[i-1] %}
                 <span
@@ -27,6 +25,8 @@
             {% endfor %}
         </div>
         <div id="center" class="">
+            <h1 id="toptitle" style="color: {{ title_color}}">{{ title }}</h1>
+
             <table id="table" class="mb-3 w-100">
                 {% for r in range(5) %}
                 <tr>
@@ -44,16 +44,21 @@
                 {% endfor %}
             </table>
 
-            <div>
+            <div id="control_panel">
                 {% if is_spy %}
                 <form id="controls" class="form-inline flex-nowrap justify-content-center">
                     <input id="hint" class="form-control form-control-sm" type="text">
-                    <input id="n" class="form-control form-control-sm mx-5" type="number" min="0" max="9">
+                    <select id="n" class="form-control form-control-sm mx-5">
+                        {% for i in range(10) %}<option value="{{i}}">{{i}}</option>{% endfor %}
+                    </select>
                     <input id="send-hint" class="btn btn-success form-control-sm"
                            type="submit" {% if not spy_enabled %}disabled{% endif %}>
                 </form>
                 {% else %}
-                <input id="pass"  class="btn btn-success form-control-sm" type="submit" value="passer" disabled>
+                <div class="d-flex justify-content-center">
+                    <input id="pass"  class="btn btn-success form-control-sm" type="submit" value="passer" disabled>
+                </div>
+
                 {% endif %}
             </div>
         </div>
@@ -77,7 +82,6 @@
                 </form>
             </div>
         </div>
-    </div>
 
     <!--  Scripts  -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>

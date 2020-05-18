@@ -1,4 +1,5 @@
 import logging
+import time
 
 from flask import request, render_template, flash, url_for, session
 from flask_socketio import Namespace, join_room
@@ -34,6 +35,7 @@ class GameManager(Namespace):
             is_spy = True
         return render_template("grid.html",
                                title=rs.game_title,
+                               title_color="#0af" if rs.game.current_team_idx else "#ff5300",
                                words=rs.game.words,
                                teams=rs.teams,
                                spy_enabled=user_id == rs.game.current_spy,
@@ -77,7 +79,8 @@ class GameManager(Namespace):
     def on_hint(self, hint, n):
         pseudo = session["pseudo"]
         logger.debug(f"Received hint from {pseudo}: {hint} - {n}")
-        self.change_title(f"Indice : {hint} - {n}")
+        self.change_title(f"Indice : {hint} - {n}", color="#0af"
+            if rs.game.current_team_idx else "#ff5300")
         self.send_new_event(f"Indice de {pseudo}: {hint} - {n}")
         self.enable_votes(*rs.game.current_guessers)
 
@@ -100,10 +103,10 @@ class GameManager(Namespace):
             self.update_cell_votes()
         else:
             # Votes are done
-            if game.is_game_over():
-                self.game_over()
             cell, value = game.end_votes()
-            if cell is not None:
+            if game.is_game_over():
+                self.game_over(rs.game.current_team_idx)
+            elif cell is not None:
                 self.notify_cell_votes(cell, value)
                 rs.votes_history[cell] = value
                 r, c = parse_cell_code(cell)
@@ -127,9 +130,9 @@ class GameManager(Namespace):
         vote = {"cell": cell, "value": str(value)}
         emit_in_room("vote_done", vote)
 
-    def change_title(self, new_title):
+    def change_title(self, new_title, color="white"):
         rs.game_title = new_title
-        emit_in_room('change_title', new_title)
+        emit_in_room('change_title', {"title": new_title, "color": color})
 
     def enable_controls(self):
         emit_in_room("enable_controls", room=rs.socketio_id_from_user_id[rs.game.current_spy])
@@ -157,10 +160,30 @@ class GameManager(Namespace):
     def switch_teams(self):
         logger.debug(f"Switching teams")
         rs.game.switch_teams()
-        self.change_title(f"Equipe {rs.game.current_team_name}")
+        self.change_title(f"Equipe {rs.game.current_team_name}", color="#0af"
+            if rs.game.current_team_idx else "#ff5300")
         self.change_current_player(rs.game.current_spy)
         self.enable_votes(*rs.game.current_guessers)
         self.enable_controls()
 
-    def game_over(self):
-        emit_in_room('redirect', f"/{get_room_id()}/room")
+    def _get_remaining_cells(self):
+        cells = list(rs.game.votes.values())  # Cells currently voted for
+        done_cells = list(rs.votes_history.keys())  # Cell already seen by everyone
+        all_cells = [f'r{r}c{c}' for r in range(5) for c in range(5)]  # All possible cells
+        cells += [cell for cell in all_cells if cell not in cells and cell not in done_cells]
+        logger.debug(cells)
+        logger.debug(done_cells)
+        return cells
+
+    def game_over(self, winners):
+        logger.info("GAME OVER")
+        self.change_title(f"L'équipe {rs.game.team_names[winners]} a gagné !")
+
+        emit_in_room('change_controls',
+                     render_template("_gameover_controls.html", room_id=get_room_id()))
+        # Get remaining cells values
+        left_cells = self._get_remaining_cells()
+        for cell in left_cells:
+            value = rs.game.answers[parse_cell_code(cell)]
+            self.notify_cell_votes(cell, value)
+            time.sleep(2)

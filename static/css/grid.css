@@ -21,21 +21,26 @@ h1
 {
     display: flex;
     flex-direction: column;
-    /*background: cyan;*/
+    flex: 1 0 auto;
+    align-self: center;
+    width: 14%;
 }
 .pseudo
 {
-    margin: 10px 40px;
+    margin: 10px 0;
     font-size: 1.5em;
+    border: solid 2px;
+    border-radius: 5px;
+    padding: 5px;
+    width: 70%;
 }
 .current-player
 {
-    margin-left: 50px;
-    font-weight: bold;
+    margin-left: 40px;
 }
 .pseudo[data-team="1"]
 {
-    color: #c00;
+    color: #ff5300;
 }
 .pseudo[data-team="2"]
 {
@@ -45,7 +50,9 @@ h1
 /* Center: grid */
 #center
 {
-    /*background: purple;*/
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
 }
 table
 {
@@ -59,7 +66,7 @@ td
     background: #fca;
     background-repeat: no-repeat;
     text-align: center;
-    padding: 1% 0;
+    padding: 1.5% 0;
     box-shadow: 0 1rem 3rem rgba(0,0,0,.5);
 }
 td:hover
@@ -80,7 +87,7 @@ td[data-code="0"]
 }
 td[data-code="1"]
 {
-    background: #c00;
+    background: #ff5300;
     color: white;
 }
 td[data-code="2"]
@@ -99,10 +106,13 @@ td[data-code="3"]
 /* Right part: events and chat */
 #chats
 {
+    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 80vh;  /* Don't really like that */
+    align-self: center;
+    width: 14%;
 }
 .msglist
 {
@@ -112,13 +122,18 @@ td[data-code="3"]
     padding: 0;
     margin: 0;
 }
+.msglist li
+{
+    padding: 2px 4px;
+    background: white;
+    overflow: visible;
+}
+.msglist li:nth-child(odd) { background: #eee; }
 #events
 {
     height: 40%;
     background: #eee;
 }
-#events li {background: white;}
-#events li:nth-child(odd) {background: #eee;}
 #chat
 {
     height: 50%;
@@ -128,13 +143,6 @@ td[data-code="3"]
     margin: 0;
     height: 90%;
 }
-#messages li
-{
-    padding: 2px 4px;
-    background: white;
-    overflow: visible;
-}
-#messages li:nth-child(odd) { background: #eee; }
 #msgform
 {
     display: flex;
@@ -144,6 +152,7 @@ td[data-code="3"]
     background-image: url(/static/send.png);
     background-repeat: no-repeat;
     background-position: center;
+    width: 100%;
 }
 
 /* Overwrite some bootstrap stuff */
@@ -151,4 +160,8 @@ td[data-code="3"]
 {
     height: 1.5rem;
     line-height: 0;
+}
+.form-control-sm, select
+{
+    padding: 0.1rem 0.4rem;
 }

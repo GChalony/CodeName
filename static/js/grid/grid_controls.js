@@ -61,6 +61,13 @@ socket.on('change_current_player', function(player_id){
 
 var title = document.getElementById('toptitle');
 socket.on('change_title', function(new_title){
-    title.textContent = new_title;
+    title.textContent = new_title.title;
+    title.style.color = new_title.color;
 });
 
+/* On Game End */
+var control_panel = document.getElementById('control_panel');
+socket.on('change_controls', function(html){
+    console.log('html');
+    control_panel.innerHTML = html;
+});
