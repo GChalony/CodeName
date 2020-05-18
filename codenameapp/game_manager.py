@@ -37,7 +37,7 @@ class GameManager(Namespace):
             is_spy = True
         return render_template("grid.html",
                                title=rs.game_title,
-                               title_color="#0af" if rs.game.current_team_idx else "#ff5300",
+                               title_color=BLUE if rs.game.current_team_idx else RED,
                                words=rs.game.words,
                                answers=answers,
                                teams=rs.teams,
@@ -83,8 +83,8 @@ class GameManager(Namespace):
     def on_hint(self, hint, n):
         pseudo = session["pseudo"]
         logger.debug(f"Received hint from {pseudo}: {hint} - {n}")
-        self.change_title(f"Indice : {hint} - {n}", color="#0af"
-            if rs.game.current_team_idx else "#ff5300")
+        self.change_title(f"Indice : {hint} - {n}", color=BLUE
+        if rs.game.current_team_idx else RED)
         self.send_new_event(f"Indice de {pseudo}: {hint} - {n}")
         self.enable_votes(*rs.game.current_guessers)
 
@@ -168,8 +168,8 @@ class GameManager(Namespace):
     def switch_teams(self):
         logger.debug(f"Switching teams")
         rs.game.switch_teams()
-        self.change_title(f"Equipe {rs.game.current_team_name}", color="#0af"
-            if rs.game.current_team_idx else "#ff5300")
+        self.change_title(f"Equipe {rs.game.current_team_name}", color=BLUE if
+            rs.game.current_team_idx else RED)
         self.change_current_player(rs.game.current_spy)
         self.enable_controls()
 
