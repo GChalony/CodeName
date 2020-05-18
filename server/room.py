@@ -15,14 +15,19 @@ logger = logging.getLogger(__name__)
 temp_default_teams = [[User("1", "Greg"), User("2", "Sol")],
                       [User("3", "Clem"), User("4", "Axel")]]
 
+team_number_from_color = {
+    "red": 0,
+    "blue": 1
+}
+
 room_teams_default = {
-    "blue": [
+    "red": [
         None,
         None,
         None,
         None
     ],
-    "red": [
+    "blue": [
         None,
         None,
         None,
@@ -74,7 +79,8 @@ class RoomNamespace(Namespace):
 
     def on_start_game(self):
         logger.info("start game")
-        room_session.teams = temp_default_teams
+        # room_session.teams = temp_default_teams
+        # room_session.teams = room_session.room_teams
         url = request.environ["HTTP_REFERER"]  # Access to request context
         grid_url = url.replace("room", "grid")
         game = Game([[u.id for u in team] for team in room_session.teams])
@@ -111,20 +117,6 @@ class RoomNamespace(Namespace):
         join_room(room_id)
         print("rooms()", rooms())
         room_url = f"{room_id}/room"
-        room_session.room_teams = {
-            "blue": [
-                None,
-                "ebb1e650986c444baa2078977e854acb",
-                None,
-                None
-            ],
-            "red": [
-                "reztoztiurevgoezr",
-                None,
-                None,
-                None
-            ]
-        }
         emit("url_redirection", {"url": room_url})
 
     def on_leave_room(self, data):
@@ -173,6 +165,24 @@ class RoomNamespace(Namespace):
 
     def on_update_teams(self, teams):
         room_session.room_teams = teams
+        # room_teams_default = {
+        #     "red": [None,None,None,None],
+        #     "blue": [None,None,None,None]
+        # }
+        # temp_default_teams = [[User("1", "Greg"), User("2", "Sol")],
+        #                     [User("3", "Clem"), User("4", "Axel")]]
+        room_session.teams = temp_default_teams
+        # room_session.teams = []
+        for color, team_list in teams.items():
+            room_session.teams.append([])
+            for user_id in team_list:
+                if user_id:
+                    user = self.get_user_by_id(user_id)
+                    index = team_number_from_color.get(color)
+                    room_session.teams[index].append(user)
+        print("room_session.teams", room_session.teams)
+
+
         emit("response_teams", {"teams": teams}, broadcast=True)
 
     def on_get_user_infos(self):
