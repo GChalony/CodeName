@@ -24,6 +24,7 @@ class GameManager(Namespace):
         rs.socketio_id_from_user_id = {}
         rs.votes_enabled = []
         rs.game_title = f"Equipe {rs.game.current_team_name}"
+        rs.guessers_enabled = False
 
     def load_page(self, room_id):
         if not (hasattr(rs, "has_started") and rs.has_started):
@@ -42,7 +43,8 @@ class GameManager(Namespace):
                                spy_enabled=user_id == rs.game.current_spy,
                                current_spy=rs.game.current_spy,
                                is_spy=is_spy,
-                               is_current_guesser=user_id in rs.game.current_guessers,
+                               is_current_guesser=user_id in rs.game.current_guessers
+                                                        and rs.guessers_enabled,
                                chat_history=rs.chat_history,
                                events_history=rs.events_history,
                                votes_history=rs.votes_history)
@@ -108,6 +110,7 @@ class GameManager(Namespace):
             if game.is_game_over():
                 self.game_over(rs.game.current_team_idx)
             elif cell is not None:
+                # Vote cell then start votes again
                 self.notify_cell_votes(cell, value)
                 rs.votes_history[cell] = value
                 r, c = parse_cell_code(cell)
@@ -125,7 +128,8 @@ class GameManager(Namespace):
             if user_id is None:
                 emit_in_room("update_votes", votes_counts)
             else:
-                emit_in_room("update_votes", votes_counts, room=rs.socketio_id_from_user_id[user_id])
+                emit_in_room("update_votes", votes_counts,
+                             room=rs.socketio_id_from_user_id[user_id])
 
     def notify_cell_votes(self, cell, value):
         vote = {"cell": cell, "value": str(value)}
@@ -143,12 +147,14 @@ class GameManager(Namespace):
 
     def enable_votes(self, *player_ids):
         logger.debug(f"Enabling votes for users ids {player_ids}")
+        rs.guessers_enabled = True
         for player_id in player_ids:
             rs.votes_enabled.append(player_id)
             emit_in_room("enable_vote", room=rs.socketio_id_from_user_id[player_id])
 
     def disable_votes(self, *player_ids):
         logger.debug(f"Disabling votes for users ids {player_ids}")
+        rs.guessers_enabled = False
         for player_id in player_ids:
             rs.votes_enabled.remove(player_id)
             emit_in_room("disable_vote", room=rs.socketio_id_from_user_id[player_id])
@@ -164,7 +170,6 @@ class GameManager(Namespace):
         self.change_title(f"Equipe {rs.game.current_team_name}", color="#0af"
             if rs.game.current_team_idx else "#ff5300")
         self.change_current_player(rs.game.current_spy)
-        self.enable_votes(*rs.game.current_guessers)
         self.enable_controls()
 
     def _get_remaining_cells(self):
