@@ -84,7 +84,7 @@ class Game:
 
     def is_game_over(self):
         # Check black
-        if self.current_mask[np.where(self.answers) == 3]:
+        if self.current_mask[np.where(self.answers == 3)]:
             return True
         # Check nb blue/red left
         not_guessed_idx = np.where(1-self.current_mask)

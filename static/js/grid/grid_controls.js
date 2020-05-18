@@ -65,3 +65,9 @@ socket.on('change_title', function(new_title){
     title.style.color = new_title.color;
 });
 
+/* On Game End */
+var control_panel = document.getElementById('control_panel');
+socket.on('change_controls', function(html){
+    console.log('html');
+    control_panel.innerHTML = html;
+});

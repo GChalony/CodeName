@@ -101,10 +101,10 @@ class GameManager(Namespace):
             self.update_cell_votes()
         else:
             # Votes are done
-            if game.is_game_over():
-                self.game_over()
             cell, value = game.end_votes()
-            if cell is not None:
+            if game.is_game_over():
+                self.game_over(rs.game.current_team_idx)
+            elif cell is not None:
                 self.notify_cell_votes(cell, value)
                 rs.votes_history[cell] = value
                 r, c = parse_cell_code(cell)
@@ -164,5 +164,11 @@ class GameManager(Namespace):
         self.enable_votes(*rs.game.current_guessers)
         self.enable_controls()
 
-    def game_over(self):
-        emit_in_room('redirect', f"/{get_room_id()}/room")
+    def game_over(self, winners):
+        logger.info("GAME OVER")
+        self.change_title(f"L'équipe {rs.game.team_names[winners]} a gagné !")
+
+        emit_in_room('change_controls',
+                     render_template("_gameover_controls.html", room_id=get_room_id()))
+        # Get remaining cells values
+        # Remove votes
