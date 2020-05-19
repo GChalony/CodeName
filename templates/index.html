@@ -8,39 +8,29 @@
 <h1>Bienvenue sur Code Name !</h1>
 
 
-<div id="pseudo-container">
-    <label class="inputs">Pseudo :</label>
-    <input type="text" class="inputs" id="pseudo-input" placeholder="Inscris ton pseudo" maxlength="10">
-</div>
-<div id="avatar-container">
-    <div id="avatar">
-        <h1>Avatar</h1>
-        <div>
-            <div class="h"><canvas id="av"></canvas></div>
-            <div id="avatar-controls">
-                <div class="controls">
-                    <input type="color" value="#ffff00" id="backcol"/>
-                    <input type="submit" value="<">
-                    <input type="submit" value=">">
-                </div>
-                <div class="controls">
-                    <input type="color" value="#ff0000" id="mouthcol"/>
-                    <input type="submit" value="<">
-                    <input type="submit" value=">">
-                </div>
-            </div>
-        </div>
+<form id="pseudo-container" class="form-inline justify-content-center">
+    <div class="form-group mx-sm-3 mb-2">
+        <label for="inputPseudo" class="sr-only">Pseudo</label>
+        <input type="text" maxlength="10" class="form-control" id="inputPseudo" placeholder="Password">
     </div>
+</form>
+<div id="avatar-container"
+     class="d-flex flex-column justify-content-center align-self-center">
+    <h1>Avatar</h1>
+    <div class="w-100 d-flex bg-white"><canvas id="av"></canvas></div>
+
+    <form class="form-inline justify-content-center">
+        <input type="color" value="#ffff00" id="backcol" class="colorpicker"/>
+        <input type="color" value="#ff0000" id="mouthcol" class="colorpicker"/>
+    </form>
 </div>
-<div id="home-buttons">
-    <div class="one-button-area">
-        <button type="submit" class="btn btn-success" id="new-game-button">Nouvelle partie</button>
-    </div>
-    <div class="one-button-area">
-        <input type="text" class="inputs" id="join-game-link" placeholder="Inscris le lien à rejoindre">
-        <button type="submit" class="btn btn-success" id="join-game-button">Rejoindre une partie</button>
-    </div>
+<div class="align-self-center my-3">
+    <button type="submit" class="btn btn-success form-control-sm" id="new-game-button">Nouvelle partie</button>
 </div>
+<form class="form-inline align-self-center">
+    <input type="text" class="form-control form-control-sm mr-3" id="join-game-link" placeholder="Inscris le lien à rejoindre">
+    <button type="submit" class="btn btn-success form-control-sm" id="join-game-button">Rejoindre une partie</button>
+</form>
 
 <footer><p>Designed with love - provided on an as-is basis, no guarantee.</p></footer>
 <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
