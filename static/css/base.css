@@ -1,3 +1,22 @@
+@font-face {
+    font-family: AllertaStencil;
+    src: url(/static/fonts/AllertaStencil/AllertaStencil-Regular.ttf) format('truetype');
+}
+@font-face {
+    font-family: Poppins;
+    src: url(/static/fonts/Poppins/Poppins-Regular.ttf) format('truetype');
+}
+@font-face {
+    font-family: Press_Start_2P;
+    src: url(/static/fonts/Press_Start_2P/Press_Start_2P-Regular.ttf) format('truetype');
+}
+
 body{
+    font-family: Poppins;
     background: #005580;
+}
+
+.navbar
+{
+    background-color: #073b4c;
 }

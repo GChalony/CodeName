@@ -11,23 +11,6 @@ newGameBtn.addEventListener("click", function(e){
     });
 });
 
-// newGameBtn.addEventListener("click", function(e){
-//     pseudo = document.getElementById("pseudo-input").value;
-//     col1 = document.getElementById("backcol").value.slice(1);  // Remove #
-//     col2 = document.getElementById("mouthcol").value.slice(1);
-//     new_loc = "/new_room?pseudo="+pseudo+"&col1="+col1+"&col2="+col2;
-//     console.log(new_loc);
-//     // Simply change loc and redirection will handle the rest
-//     window.location = new_loc;
-
-// });
-
-// socket.on("return_user_infos", function(data){
-//     console.log("return_user_infos", pseudo)
-//     document.getElementById("pseudo-input").value = data.pseudo
-//     document.getElementById("backcol").value = data.backcol
-//     document.getElementById("mouthcol").value = data.mouthcol
-// });
 
 
 socket.on("url_redirection", function(data){
