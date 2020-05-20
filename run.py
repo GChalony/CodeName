@@ -7,13 +7,12 @@ from flask_session import Session
 from flask_socketio import SocketIO
 
 import config
-from codenameapp.game import Game
-from codenameapp.game_manager import GameManager
-from codenameapp.room import RoomNamespace
+from codenameapp.game.game import Game
+from codenameapp.game.game_manager import GameManager
+from codenameapp.waiting_room.room_manager import RoomManager
 from codenameapp.room_session import room_session
 from codenameapp.routes import RouteManager
-from codenameapp.tuto import TutoNamespace
-from codenameapp.users import User
+from codenameapp.models import User
 
 logging.basicConfig(level=logging.WARNING,
                     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
@@ -26,9 +25,10 @@ logging.getLogger("werkzeug").setLevel(logging.ERROR)
 # To remove error about packets
 Payload.max_decode_packets = 50
 
+
 ### FLASK APP ###
 app = Flask(__name__)
-app.config.from_object(config)
+app.config.from_object(config.default_config)
 
 use_session = True
 # use_session = False
@@ -46,14 +46,12 @@ g = Game([[u.id for u in team] for team in temp_default_teams])
 # Should never do that, this is just to add a default room for tests only
 room_session._all_rooms_data["0"] = {"game": g, "teams": temp_default_teams}
 
-room_namespace = RoomNamespace('/room')
-tuto_namespace = TutoNamespace('/tuto')
+room_manager = RoomManager('/room')
+room_manager.init_routes(app)
+socketio.on_namespace(room_manager)
 
-socketio.on_namespace(room_namespace)
-socketio.on_namespace(tuto_namespace)
-
-route_manager = RouteManager(app)
-route_manager.init_routes()
+route_manager = RouteManager()
+route_manager.init_routes(app)
 
 game_manager = GameManager('/grid')
 game_manager.init_routes(app)

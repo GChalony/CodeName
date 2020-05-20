@@ -3,6 +3,7 @@ from collections import Counter
 from random import shuffle
 
 import numpy as np
+from flask import url_for
 
 from codenameapp.utils import generate_random_words, generate_response_grid, parse_cell_code
 
@@ -17,7 +18,7 @@ class Game:
         self.spies = (teams[0][spies[0]], teams[1][spies[1]])
         self.guessers = [[u for u in team if u not in self.spies] for team in teams]
 
-        self.words = generate_random_words("codenameapp/ressources/words.csv")
+        self.words = generate_random_words("static/ressources/words.csv")
         # 0: nothing, 1: red, 2: blue, 3: black
         self.answers = generate_response_grid()
         self.current_mask = np.zeros((5, 5))
