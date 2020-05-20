@@ -1,11 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, TextAreaField, SubmitField
-from wtforms.fields.html5 import EmailField
+from wtforms import TextAreaField, SubmitField, StringField
 
 
 class ContactForm(FlaskForm):
-    email = EmailField("email")
-    contact_me = BooleanField("me contacter")
-    msg = TextAreaField("message")
+    email = StringField("Nom ou email")
+    msg = TextAreaField("Message")
     submit = SubmitField("envoyer")
 

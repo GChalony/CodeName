@@ -33,3 +33,7 @@ def generate_response_grid():
     map = np.array(map, dtype=np.uint8)
     return map
 
+
+def send_email():
+    pass
+
