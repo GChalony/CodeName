@@ -147,12 +147,15 @@ td[data-code="3"]
 {
     display: flex;
 }
+#m {
+    width: calc(100% - 1.5rem);
+}
 #s
 {
     background-image: url(/static/send.png);
     background-repeat: no-repeat;
     background-position: center;
-    width: 100%;
+    width: 1.5rem;
 }
 
 /* Overwrite some bootstrap stuff */

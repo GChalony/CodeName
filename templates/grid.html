@@ -1,100 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Code Name</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
+{% extends "base.html" %}
+
+{% block styles %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/grid.css') }}">
     {% if is_spy %}<link rel="stylesheet" href="{{ url_for('static', filename='css/spy.css') }}">
     {% else %}<link rel="stylesheet" href="{{ url_for('static', filename='css/guesser.css') }}">{% endif %}
-</head>
-<body>
-    <div id="container">
-        <!-- Left panel : players list  -->
-        <div id="players" class="mx-2 mt-5">
-            {% for i in [1, 2] %}
-                {% for player in teams[i-1] %}
-                <span
-                        id="{{ player.id }}"
-                        data-team="{{ ''~i }}"
-                        class="pseudo{% if player.id==current_spy %} current-player{% endif %}">
-                    {{ player.pseudo }}
-                </span>
-                {% endfor %}
+{% endblock %}
+
+{% block content %}
+<div id="container">
+    <!-- Left panel : players list  -->
+    <div id="players" class="mx-2 mt-5">
+        {% for i in [1, 2] %}
+            {% for player in teams[i-1] %}
+            <span
+                    id="{{ player.id }}"
+                    data-team="{{ ''~i }}"
+                    class="pseudo{% if player.id==current_spy %} current-player{% endif %}">
+                {{ player.pseudo }}
+            </span>
             {% endfor %}
-        </div>
-
-        <!-- Center panel : grid and controls -->
-        <div id="center" class="">
-            <h1 id="toptitle" style="color: {{ title_color}}">{{ title }}</h1>
-
-            <table id="table" class="mb-3 w-100">
-                {% for r in range(5) %}
-                <tr>
-                    {% for c in range(5) %}
-                    {% set cell = 'r'~r~'c'~c %}
-                    <td id="{{ cell }}"
-                        class="rounded"
-                        data-votedfor="{%if votes_history[cell] is defined %}true{% else %}false{% endif %}"
-                        data-code="{% if is_spy %}{{ answers[r][c] }}{% elif votes_history[cell] is defined %}{{ votes_history[cell] }}{% else %}-1{% endif %}"
-                        data-enabled="false"
-                    >
-                        {{words[r, c]}} </td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </table>
-
-            <div id="control_panel">
-                {% if is_spy %}
-                <form id="controls" class="form-inline flex-nowrap justify-content-center">
-                    <input id="hint" class="form-control form-control-sm" type="text">
-                    <select id="n" class="form-control form-control-sm mx-5">
-                        {% for i in range(10) %}<option value="{{i}}">{{i}}</option>{% endfor %}
-                    </select>
-                    <input id="send-hint" class="btn btn-success form-control-sm"
-                           type="submit" {% if not spy_enabled %}disabled{% endif %}>
-                </form>
-                {% else %}
-                <div class="d-flex justify-content-center">
-                    <input id="pass" class="btn btn-success form-control-sm" type="submit" value="passer"
-                           {% if not is_current_guesser %}disabled{% endif %}>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Right panel : events and chat  -->
-        <div id="chats" class="mx-3">
-            <div id="events" class="h-50 mb-3">
-                <ul id="events_msglist" class="msglist">
-                    {% for msg in events_history %}
-                    <li>{{ msg }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div id="chat" class="d-flex flex-column h-50">
-                <ul id="messages" class="msglist">
-                    {% for msg in chat_history %}
-                    <li>{{ msg }}</li>
-                    {% endfor %}
-                </ul>
-                <form id="msgform" class="form-inline flex-nowrap p-1">
-                    <input type="text" id="m" class="form-control form-control-sm" autocomplete="off">
-                    <input type="submit" id="s" class="form-control form-control-sm" value="">
-                </form>
-            </div>
-        </div>
-
-    <!--  Scripts  -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/grid/grid_controls.js') }}"></script>
-    {% if is_spy %}<script src="{{ url_for('static', filename='js/grid/spy.js') }}"></script>
-    {% else %}<script src="{{ url_for('static', filename='js/grid/guesser.js') }}"></script>{% endif %}
-    <script src="{{ url_for('static', filename='js/grid/chat.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/grid/events_chat.js') }}"></script>
+        {% endfor %}
     </div>
-</body>
-</html>
+
+    <!-- Center panel : grid and controls -->
+    <div id="center" class="">
+        <h1 id="toptitle" style="color: {{ title_color}}">{{ title }}</h1>
+
+        <table id="table" class="mb-3 w-100">
+            {% for r in range(5) %}
+            <tr>
+                {% for c in range(5) %}
+                {% set cell = 'r'~r~'c'~c %}
+                <td id="{{ cell }}"
+                    class="rounded"
+                    data-votedfor="{%if votes_history[cell] is defined %}true{% else %}false{% endif %}"
+                    data-code="{% if is_spy %}{{ answers[r][c] }}{% elif votes_history[cell] is defined %}{{ votes_history[cell] }}{% else %}-1{% endif %}"
+                    data-enabled="false"
+                >
+                    {{words[r, c]}} </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div id="control_panel">
+            {% if is_spy %}
+            <form id="controls" class="form-inline flex-nowrap justify-content-center">
+                <input id="hint" class="form-control form-control-sm" type="text">
+                <select id="n" class="form-control form-control-sm mx-5">
+                    {% for i in range(10) %}<option value="{{i}}">{{i}}</option>{% endfor %}
+                </select>
+                <input id="send-hint" class="btn btn-success form-control-sm"
+                       type="submit" {% if not spy_enabled %}disabled{% endif %}>
+            </form>
+            {% else %}
+            <div class="d-flex justify-content-center">
+                <input id="pass" class="btn btn-success form-control-sm" type="submit" value="passer"
+                       {% if not is_current_guesser %}disabled{% endif %}>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right panel : events and chat  -->
+    <div id="chats" class="mx-3">
+        <div id="events" class="h-50 mb-3">
+            <ul id="events_msglist" class="msglist">
+                {% for msg in events_history %}
+                <li>{{ msg }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="chat" class="d-flex flex-column h-50">
+            <ul id="messages" class="msglist">
+                {% for msg in chat_history %}
+                <li>{{ msg }}</li>
+                {% endfor %}
+            </ul>
+            <form id="msgform" class="form-inline flex-nowrap p-1">
+                <input type="text" id="m" class="form-control form-control-sm" autocomplete="off">
+                <input type="submit" id="s" class="form-control form-control-sm" value="">
+            </form>
+        </div>
+    </div>
+
+<!--  Scripts  -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/grid/grid_controls.js') }}"></script>
+{% if is_spy %}<script src="{{ url_for('static', filename='js/grid/spy.js') }}"></script>
+{% else %}<script src="{{ url_for('static', filename='js/grid/guesser.js') }}"></script>{% endif %}
+<script src="{{ url_for('static', filename='js/grid/chat.js') }}"></script>
+<script src="{{ url_for('static', filename='js/grid/events_chat.js') }}"></script>
+</div>
+
+{% endblock %}
