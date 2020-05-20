@@ -60,6 +60,7 @@ table
     table-layout: fixed ;
     border-collapse: initial;
     border-spacing: 2rem;
+    font-family: AllertaStencil, Poppins;
 }
 td
 {

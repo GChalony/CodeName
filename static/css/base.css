@@ -7,8 +7,8 @@
     src: url(/static/fonts/Poppins/Poppins-Regular.ttf) format('truetype');
 }
 @font-face {
-    font-family: Press_Start_2P;
-    src: url(/static/fonts/Press_Start_2P/Press_Start_2P-Regular.ttf) format('truetype');
+    font-family: PressStart2P;
+    src: url(/static/fonts/Press_Start_2P/PressStart2P-Regular.ttf) format('truetype');
 }
 
 body{
