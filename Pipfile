@@ -16,6 +16,7 @@ flask = "*"
 flask-socketio = "*"
 flask-Session = "*"
 werkzeug = "<1"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.7"
