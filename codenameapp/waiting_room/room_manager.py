@@ -1,14 +1,15 @@
-import logging
-
-from flask import session, request
-from flask_socketio import Namespace, emit, join_room, leave_room, \
-    close_room, rooms, disconnect, send
+import datetime
 import logging
 from uuid import uuid4
 
-from codenameapp.game import Game
+from flask import render_template, request, session
+from flask_socketio import emit, join_room, rooms, leave_room, close_room
+from flask_socketio import Namespace
+from werkzeug.utils import redirect
+
+from codenameapp.game.game import Game
+from codenameapp.models import User
 from codenameapp.room_session import room_session
-from codenameapp.users import User
 
 logger = logging.getLogger(__name__)
 
@@ -35,9 +36,46 @@ room_teams_default = {
     ]
 }
 
-class RoomNamespace(Namespace):
+
+class RoomManager(Namespace):
     def __init__(self, name):
-        super(RoomNamespace, self).__init__(name)
+        super(RoomManager, self).__init__(name)
+
+    def init_routes(self, app):
+        app.add_url_rule('/new_room', view_func=self.create_new_room)
+        app.add_url_rule('/<room_id>/room', view_func=self.get_room)
+
+    def create_new_room(self):
+        room_id = uuid4().hex
+        # Should store this room id somewhere, and possibly the user who created it
+
+        logger.debug(f"Created new room {room_id}")
+        pseudo = request.args.get("pseudo", None)
+        col1 = request.args.get("col1", None)
+        col2 = request.args.get("col2", None)
+
+        if pseudo is None or col1 is None or col2 is None:
+            return "Missing parameters", 400
+
+        user_id = session.get("user_id", uuid4().hex)  # Create new user_id if not already stored
+        session["user_id"] = user_id
+        session["pseudo"] = pseudo
+        session["avatar-col1"] = col1
+        session["avatar-col2"] = col2
+
+        # Here we should store the user in DB and in a dict or smth
+
+        resp = redirect(f"{room_id}/room")
+        # Add cookies (could attach them to the home page to avoid sending them all the time...)
+        expire_date = datetime.datetime.now() + datetime.timedelta(30)  # 30 days ahead
+        resp.set_cookie("user_id", user_id, expires=expire_date)
+        resp.set_cookie("pseudo", pseudo, expires=expire_date)
+        resp.set_cookie("avatar-col1", col1, expires=expire_date)
+        resp.set_cookie("avatar-col2", col2, expires=expire_date)
+        return resp
+
+    def get_room(self, room_id):
+        return render_template("room.html")
 
     def on_connect(self):
         # Have access to session here
