@@ -24,7 +24,6 @@ class RoomManager(Namespace):
 
     def create_new_room(self):
         room_id = uuid4().hex
-        # Should store this room id somewhere, and possibly the user who created it
 
         logger.debug(f"Created new room {room_id}")
         pseudo = request.args.get("pseudo", None)
@@ -55,7 +54,7 @@ class RoomManager(Namespace):
 
     def notify_team_change(self):
         # Send event in room about new teams (or changes only ?)
-        emit_in_room("teams_changed", room_session.teams.to_dict())
+        emit_in_room("teams_changed", {i: t.to_json() for i, t in enumerate(room_session.teams)})
 
     def on_connect(self):
         # Initialize teams if first connection
@@ -112,7 +111,7 @@ class RoomManager(Namespace):
         pass
 
     def _add_to_available_position(self, user):
-        (tred, tblue) = room_session.teams()
+        (tred, tblue) = room_session.teams
         if tred.spy is None:
             tred.spy = user
         elif tblue.spy is None:

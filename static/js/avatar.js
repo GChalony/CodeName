@@ -48,25 +48,14 @@ mouthcol.addEventListener('change', function(e){
     drawAvatar(backcol.value, backcol.value, e.target.value);
 });
 
-// var pseudo = getCookie("pseudo", "");
-// var col1 = "#" + getCookie("avatar-col1", "ffff00");
-// var col2 = "#" + getCookie("avatar-col2", "ff0000");
+var pseudo = getCookie("pseudo", "");
+var col1 = "#" + getCookie("avatar-col1", "ffff00");
+var col2 = "#" + getCookie("avatar-col2", "ff0000");
 
-socket.emit("get_user_infos");
-socket.on("return_user_infos", function(data){
-    console.log("avatar-return_user_infos", data)
-    col1 = data.backcol
-    col2 = data.mouthcol
-    drawAvatar(col1, col1, col2)
+console.log(col1, col2);
+drawAvatar(col1, col1, col2);
 
-    document.getElementById("pseudo-input").value = data.pseudo
-    backcol.value = col1
-    mouthcol.value = col2
-});
-// console.log(col1, col2);
-// drawAvatar(col1, col1, col2);
-
-// document.getElementById("pseudo-input").value = pseudo;
-// backcol.value = col1;
-// mouthcol.value = col2;
+document.getElementById("inputPseudo").value = pseudo;
+backcol.value = col1;
+mouthcol.value = col2;
 

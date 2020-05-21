@@ -22,4 +22,9 @@ socket.on("url_redirection", function(data){
  - Add function to update team display when receiving "teams_changed" event
     - Need to add / hide buttons if spot available
  */
+function askChangePosition(event){
+    var pos = event.target.dataset.pos;
+    socket.emit("change_position", pos);
+}
+
 

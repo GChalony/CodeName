@@ -8,6 +8,9 @@ class User():
     def __repr__(self):
         return f"<pseudo={self.pseudo}>"
 
+    def to_json(self):
+        return self.__dict__
+
 
 class Team:
     def __init__(self, spy=None, guessers=None):
@@ -17,5 +20,8 @@ class Team:
     def __repr__(self):
         return "<spy={spy} - guessers={guessers}>".format(spy=self.spy, guessers=self.guessers)
 
-    def to_dict(self):
-        return {"spy": self.spy, "guessers": self.guessers}
+    def to_json(self):
+        return {"spy": self.spy.to_json() if self.spy is not None else "None",
+                "guessers": [g.to_json() for g in self.guessers]}
+
+
