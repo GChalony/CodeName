@@ -3,7 +3,7 @@ import logging
 from uuid import uuid4
 
 from flask import render_template, request, session
-from flask_socketio import emit, join_room, rooms, leave_room, close_room
+from flask_socketio import join_room, rooms, emit
 from flask_socketio import Namespace
 from werkzeug.utils import redirect
 
@@ -49,17 +49,22 @@ class RoomManager(Namespace):
         return resp
 
     def get_room(self, room_id):
-        # TODO add button only for room creator
-        return render_template("room.html")
+        if not hasattr(room_session, "teams"):
+            logger.debug("Initiating waiting room!")
+            room_session.teams = (Team(), Team())
+
+        return render_template("room.html",
+                               teams=room_session.teams,
+                               is_creator=True)  # TODO add button only for room creator
 
     def notify_team_change(self):
         # Send event in room about new teams (or changes only ?)
-        emit_in_room("teams_changed", {i: t.to_json() for i, t in enumerate(room_session.teams)})
+        emit_in_room("teams_changed", {i: t.to_json() for i, t in enumerate(room_session.teams)},
+                     broadcast=True)
 
     def on_connect(self):
+        logger.debug(f"User {session['pseudo']} connected! (sid={request.sid})")
         # Initialize teams if first connection
-        if not hasattr(room_session, "teams"):
-            room_session.teams = (Team(), Team())
         join_room(get_room_id())
         # Assign user to some position / team
         user = User(session["user_id"], session["pseudo"], session["avatar-col1"],
@@ -79,7 +84,8 @@ class RoomManager(Namespace):
         # new_pos: 0: team red, spy - 1: team red, guesser -
         #           2: team blue, spy - 3: team blue, guesser
         (tred, tblue) = room_session.teams
-        user = self._pop_user_by_id(session["user_id"])
+        user = self._pop_user_by_id(session["user_id"])  # TODO put back if wrong pos
+        logger.debug(f"Changing pos to {new_pos} for user {user} ({session['user_id']})")
         # Check that position is available before changing
         flag = False
         if new_pos == 0:
@@ -102,7 +108,6 @@ class RoomManager(Namespace):
             flag = True
         # Notify
         self.notify_team_change()
-        return flag
 
     def on_start_game(self):
         # Check that teams are ok
@@ -123,7 +128,7 @@ class RoomManager(Namespace):
 
     def _pop_user_by_id(self, user_id):
         for team in room_session.teams:
-            if team.spy.id == user_id:
+            if team.spy is not None and team.spy.id == user_id:
                 team.spy = None
                 return team.spy
             for u in team.guessers:
