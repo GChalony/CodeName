@@ -1,6 +1,8 @@
 import json
 from uuid import uuid4
 import numpy as np
+from flask import current_app
+from flask_mail import Message, Mail
 
 
 def generate_random_words(path_to_words="ressources/words.csv"):
@@ -34,6 +36,12 @@ def generate_response_grid():
     return map
 
 
-def send_email():
-    pass
+def send_email(subject, text_body, html_body):
+    msg = Message(subject,
+                  sender=current_app.config["DEFAULT_MAIL_SENDER"],
+                  recipients=[current_app.config["MAIL_DEFAULT_MONITOR"]])
+    msg.body = text_body
+    msg.html = html_body
+    mail = Mail(current_app)
+    mail.send(msg)
 
