@@ -1,6 +1,4 @@
-/* h2 {
-    text-align: center;
-} */
+h1 { text-align: center }
 
 .panel-group {
     display: flex;
@@ -14,6 +12,7 @@
 
 .size-panel {
     width: 30%;
+    min-height: 15rem;
 }
 
 .pseudo-div {
@@ -21,19 +20,25 @@
 }
 
 .red-border {
-    border-color: #c9302c !important;
+    border: 2px solid #ff5300;
 }
 
-.red-bg {
-    background-color: #c9302c !important;
+.blue-border {
+    border: 2px solid #0af;
 }
+
+.red-bg { background-color: #ff5300; }
+
+.blue-bg { background-color: #0af; }
 
 .join-btn {
     width: 100%;
+    background: #eee;
+    margin-top: 5px;
 }
 
 .spy-border {
-    border-bottom: 1px solid transparent;
+    border-bottom: 2px solid transparent;
     border-color: #337ab7;
 }
 

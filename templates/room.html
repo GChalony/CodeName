@@ -1,56 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Salle d'attente</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+{% extends "base.html" %}
+
+{% block styles %}
     <link rel="stylesheet" href="{{url_for('static', filename='css/room.css') }}">
-</head>
-<body>
-    {% set (tred, tblue) = teams %}
-    <div class="container">
-        <h2>Salle d'attente</h2>
-        <div class="panel-group" id="teams">
-            <div id="red_team_panel" class="panel panel-primary size-panel red-border">
-                <div class="panel-heading red-bg">Equipe rouge</div>
-                <div id="red_team_panel_body">
-                    <div class="panel-body spy-border" id="spyred">
-                       {% if tred.spy is none %}
-                       <button class="btn btn-default join-btn" data-pos="0">Rejoindre</button>
-                       {% else %}
-                       <div class="pseudo-div">{{ tred.spy.pseudo }}</div>
-                       {% endif %}
-                   </div>
-                    {% for g in tred.guessers %}
-                    <div class="pseudo-div">{{ g.pseudo }}</div>
-                    {% endfor %}
-                    <button class="btn btn-default join-btn" data-pos="1">Rejoindre</button>
-                </div>
+{% endblock %}
+
+{% block content %}
+{% set (tred, tblue) = teams %}
+<div class="container">
+    <h1 class="my-5 text-align-center">Salle d'attente</h1>
+    <div class="panel-group" id="teams">
+        <div id="red_team_panel" class="panel panel-primary size-panel red-border">
+            <div class="panel-heading red-bg">Equipe rouge</div>
+            <div id="red_team_panel_body" class="p-2">
+                <div class="panel-body spy-border" id="spyred">
+                   {% if tred.spy is none %}
+                   <button class="btn btn-default join-btn" data-pos="0">Rejoindre</button>
+                   {% else %}
+                   <div class="pseudo-div">{{ tred.spy.pseudo }}</div>
+                   {% endif %}
+               </div>
+                {% for g in tred.guessers %}
+                <div class="pseudo-div">{{ g.pseudo }}</div>
+                {% endfor %}
+                <button class="btn btn-default join-btn" data-pos="1">Rejoindre</button>
             </div>
-            <div id="blue_team_panel" class="panel panel-primary size-panel">
-                <div id="panel_heading" class="panel-heading">Equipe bleue</div>
-                <div id="blue_team_panel_body">
-                   <div class="panel-body spy-border" id="spyblue">
-                       {% if tred.spy is none %}
-                       <button class="btn btn-default join-btn" data-pos="2">Rejoindre</button>
-                       {% else %}
-                       <div class="pseudo-div">{{ tred.spy.pseudo }}</div>
-                       {% endif %}
-                   </div>
-                    {% for g in tred.guessers %}
-                    <div class="pseudo-div">{{ g.pseudo }}</div>
-                    {% endfor %}
-                    <button class="btn btn-default join-btn" data-pos="3">Rejoindre</button>
-                </div>
+        </div>
+        <div id="blue_team_panel" class="panel panel-primary size-panel blue-border">
+            <div id="panel_heading" class="panel-heading blue-bg">Equipe bleue</div>
+            <div id="blue_team_panel_body" class="p-2">
+               <div class="panel-body spy-border" id="spyblue">
+                   {% if tred.spy is none %}
+                   <button class="btn btn-default join-btn" data-pos="2">Rejoindre</button>
+                   {% else %}
+                   <div class="pseudo-div">{{ tred.spy.pseudo }}</div>
+                   {% endif %}
+               </div>
+                {% for g in tred.guessers %}
+                <div class="pseudo-div">{{ g.pseudo }}</div>
+                {% endfor %}
+                <button class="btn btn-default join-btn" data-pos="3">Rejoindre</button>
             </div>
         </div>
     </div>
-    <div id="start">
-        <button class="btn btn-default" type="submit" id="home">Retour à l'accueil</button>
-        <button class="btn btn-success" type="submit" id="go">Commencer la partie</button>
-    </div>
-    <!-- <script src="test.js"></script> -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-    <script src="{{url_for('static', filename='js/room.js') }}"></script>
-</body>
-</html>
+</div>
+<div id="start">
+    <button class="btn btn-default" type="submit" id="home">Retour à l'accueil</button>
+    <button class="btn btn-success" type="submit" id="go">Commencer la partie</button>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static', filename='js/room.js') }}"></script>
+{% endblock %}
