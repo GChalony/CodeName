@@ -7,3 +7,15 @@ class User():
 
     def __repr__(self):
         return f"<pseudo={self.pseudo}>"
+
+
+class Team:
+    def __init__(self, spy=None, guessers=None):
+        self.spy = spy
+        self.guessers = guessers if guessers is not None else []
+
+    def __repr__(self):
+        return "<spy={spy} - guessers={guessers}>".format(spy=self.spy, guessers=self.guessers)
+
+    def to_dict(self):
+        return {"spy": self.spy, "guessers": self.guessers}

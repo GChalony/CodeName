@@ -17,4 +17,9 @@ socket.on("url_redirection", function(data){
     window.location = data.url;
 });
 
+/* Need to
+ - Add listener on buttons to send "change_position" event with position code
+ - Add function to update team display when receiving "teams_changed" event
+    - Need to add / hide buttons if spot available
+ */
 
