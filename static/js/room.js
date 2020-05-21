@@ -89,8 +89,8 @@ socket.on('teams_changed', function(teams){
     } else {
         red_panel.children[0].append(createPseudoDiv(tred.spy.pseudo));
     }
-    for (var g=0; g<tred.length; g++){
-        red_panel.insertBefore(createPseudoDiv(tred.guessers[g]), b1);
+    for (var g=0; g<tred.guessers.length; g++){
+        red_panel.insertBefore(createPseudoDiv(tred.guessers[g].pseudo), b1);
     }
     // Blue team
     if (tblue.spy == "None"){
@@ -98,8 +98,8 @@ socket.on('teams_changed', function(teams){
     } else {
         blue_panel.children[0].append(createPseudoDiv(tblue.spy.pseudo));
     }
-    for (var g=0; g<tblue.length; g++){
-        blue_panel.insertBefore(createPseudoDiv(tblue.guessers[g]), b1);
+    for (var g=0; g<tblue.guessers.length; g++){
+        blue_panel.insertBefore(createPseudoDiv(tblue.guessers[g].pseudo), b3);
     }
     addJoinButtonListeners();
 });
