@@ -6,7 +6,7 @@ class User():
         self.mouthcol = mouthcol
 
     def __repr__(self):
-        return f"<pseudo={self.pseudo}>"
+        return f"<pseudo={self.pseudo}, id={self.id}>"
 
     def to_json(self):
         return self.__dict__

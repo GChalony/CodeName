@@ -58,6 +58,7 @@ class RoomManager(Namespace):
                                is_creator=True)  # TODO add button only for room creator
 
     def notify_team_change(self):
+        logger.debug(f"Sending teams={room_session.teams}")
         # Send event in room about new teams (or changes only ?)
         emit_in_room("teams_changed", {i: t.to_json() for i, t in enumerate(room_session.teams)},
                      broadcast=True)
@@ -81,15 +82,17 @@ class RoomManager(Namespace):
         self.notify_team_change()
 
     def on_change_position(self, new_pos):
+        new_pos = int(new_pos)
         # new_pos: 0: team red, spy - 1: team red, guesser -
         #           2: team blue, spy - 3: team blue, guesser
         (tred, tblue) = room_session.teams
+        logger.debug(f"Teams={room_session.teams}")
         user = self._pop_user_by_id(session["user_id"])  # TODO put back if wrong pos
-        logger.debug(f"Changing pos to {new_pos} for user {user} ({session['user_id']})")
+        logger.debug(f"Changing pos to {new_pos} for user {user}")
         # Check that position is available before changing
         flag = False
         if new_pos == 0:
-            if tred.spy is None:
+            if tred.spy is not None:
                 flag = False
             else:
                 tred.spy = user
@@ -98,15 +101,18 @@ class RoomManager(Namespace):
             tred.guessers.append(user)
             flag = True
         elif new_pos == 2:
-            if tblue.spy is None:
+            if tblue.spy is not None:
                 flag = False
             else:
                 tblue.spy = user
                 flag = True
-        elif new_pos == 1:
+        elif new_pos == 3:
             tblue.guessers.append(user)
             flag = True
         # Notify
+        logger.debug(flag)
+        logger.debug(f"{tred}")
+        logger.debug(f"{tblue}")
         self.notify_team_change()
 
     def on_start_game(self):
@@ -129,8 +135,9 @@ class RoomManager(Namespace):
     def _pop_user_by_id(self, user_id):
         for team in room_session.teams:
             if team.spy is not None and team.spy.id == user_id:
+                spy = team.spy
                 team.spy = None
-                return team.spy
+                return spy
             for u in team.guessers:
                 if u.id == user_id:
                     team.guessers.remove(u)
