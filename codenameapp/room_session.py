@@ -6,8 +6,13 @@ from flask_socketio import emit
 
 def _get_room_id_from_url(url):
     # URL is smth like http://domainname.com/<room_id>/maybe/smth/here
-    # TODO be more robust and raise Exception if working outside of context !
-    return url.split("/")[3]
+    try:
+        room_id = url.split("/")[3]
+    except IndexError as e:
+        raise RuntimeError(f"Working outside of room context: {e}")
+    if not len(room_id) == 32:  # UUID is exactly 32 bytes
+        raise RuntimeError("Working outside of room context")
+    return room_id
 
 
 def get_room_id():
