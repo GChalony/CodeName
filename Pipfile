@@ -18,7 +18,6 @@ flask-Session = "*"
 werkzeug = "<1"
 flask-wtf = "*"
 flask-mail = "*"
-pyopenssl = "*"
 
 [requires]
 python_version = "3.7"
