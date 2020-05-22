@@ -49,11 +49,15 @@ class RoomManager(Namespace):
         resp.set_cookie("avatar-col2", col2, expires=expire_date)
         return resp
 
+    def init_room(self):
+        logger.debug("Initiating waiting room!")
+        room_session.teams = (Team(), Team())
+        room_session.creator = session["user_id"]
+        room_session.started = False
+
     def get_room(self, room_id):
         if not hasattr(room_session, "teams"):
-            logger.debug("Initiating waiting room!")
-            room_session.teams = (Team(), Team())
-            room_session.creator = session["user_id"]
+            self.init_room()
 
         return render_template("room.html",
                                teams=room_session.teams,
@@ -79,12 +83,14 @@ class RoomManager(Namespace):
         self.notify_team_change()
 
     def on_disconnect(self):
-        # TODO handle creator disconnect: assign to someone else, close room ..?
-        # Remove user from team
-        user_id = session["user_id"]
-        self._pop_user_by_id(user_id)
-        # Notify team change
-        self.notify_team_change()
+        # Check if disconnected because of game starting or smth else
+        if not room_session.started:
+            # TODO handle creator disconnect: assign to someone else, close room ..?
+            # Remove user from team
+            user_id = session["user_id"]
+            self._pop_user_by_id(user_id)
+            # Notify team change
+            self.notify_team_change()
 
     def on_change_position(self, new_pos):
         new_pos = int(new_pos)
@@ -125,6 +131,7 @@ class RoomManager(Namespace):
         if self._are_teams_ready():
             # Emit URL redirection
             logger.info("Starting game !")
+            room_session.started = True
             url = request.environ["HTTP_REFERER"]  # Access to request context
             grid_url = url.replace("room", "grid")
             game = Game([team.get_ids_list() for team in room_session.teams])

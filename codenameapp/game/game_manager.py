@@ -36,6 +36,7 @@ class GameManager(Namespace):
         if user_id in rs.game.spies:
             answers = rs.game.answers
             is_spy = True
+        logger.debug(f"Teams: {rs.teams}")
         return render_template("grid.html",
                                toptitle=rs.game_title,
                                title_color=BLUE if rs.game.current_team_idx else RED,
