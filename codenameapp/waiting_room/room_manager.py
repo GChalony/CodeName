@@ -77,8 +77,8 @@ class RoomManager(Namespace):
         # Assign user to some position / team
         user = User(session["user_id"], session["pseudo"], session["avatar-col1"],
                     session["avatar-col2"])
-        # TODO only if not already positioned
-        self._add_to_available_position(user)
+        if self._get_user_by_id(session["user_id"]) is None:
+            self._add_to_available_position(user)
         # Notify team change
         self.notify_team_change()
 
@@ -98,30 +98,25 @@ class RoomManager(Namespace):
         #           2: team blue, spy - 3: team blue, guesser
         (tred, tblue) = room_session.teams
         logger.debug(f"Teams={room_session.teams}")
-        user = self._pop_user_by_id(session["user_id"])  # TODO put back if wrong pos
+        user_id = session["user_id"]
+        user = self._get_user_by_id(user_id)
         logger.debug(f"Changing pos to {new_pos} for user {user}")
         # Check that position is available before changing
-        flag = False
         if new_pos == 0:
-            if tred.spy is not None:
-                flag = False
-            else:
+            if tred.spy is None:
                 tred.spy = user
-                flag = True
+                self._pop_user_by_id(user_id)
         elif new_pos == 1:
             tred.guessers.append(user)
-            flag = True
+            self._pop_user_by_id(user_id)
         elif new_pos == 2:
-            if tblue.spy is not None:
-                flag = False
-            else:
+            if tblue.spy is None:
                 tblue.spy = user
-                flag = True
+                self._pop_user_by_id(user_id)
         elif new_pos == 3:
             tblue.guessers.append(user)
-            flag = True
+            self._pop_user_by_id(user_id)
         # Notify
-        logger.debug(flag)
         logger.debug(f"{tred}")
         logger.debug(f"{tblue}")
         self.notify_team_change()
@@ -150,6 +145,14 @@ class RoomManager(Namespace):
             tred.guessers.append(user)
         else:
             tblue.guessers.append(user)
+
+    def _get_user_by_id(self, user_id):
+        for i, team in enumerate(room_session.teams):
+            if team.spy is not None and team.spy.id == user_id:
+                return team.spy
+            for u in team.guessers:
+                if u.id == user_id:
+                    return u
 
     def _pop_user_by_id(self, user_id):
         for team in room_session.teams:
