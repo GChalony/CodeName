@@ -101,11 +101,14 @@ class RoomManager(Namespace):
         user_id = session["user_id"]
         user = self._get_user_by_id(user_id)
         logger.debug(f"Changing pos to {new_pos} for user {user}")
-        # Check that position is available before changing
+        # Check that position is available before changing (though should never happen that not)
         if new_pos == 0:
             if tred.spy is None:
                 tred.spy = user
                 self._pop_user_by_id(user_id)
+            else:
+                logger.warning(f"User {user} asking to change to occupied position {new_pos} ("
+                               f"({tred.spy})")
         elif new_pos == 1:
             tred.guessers.append(user)
             self._pop_user_by_id(user_id)
@@ -113,6 +116,9 @@ class RoomManager(Namespace):
             if tblue.spy is None:
                 tblue.spy = user
                 self._pop_user_by_id(user_id)
+            else:
+                logger.warning(f"User {user} asking to change to occupied position {new_pos}"
+                               f"({tblue.spy})")
         elif new_pos == 3:
             tblue.guessers.append(user)
             self._pop_user_by_id(user_id)
