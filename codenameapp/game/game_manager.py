@@ -32,10 +32,8 @@ class GameManager(Namespace):
         if not (hasattr(rs, "has_started") and rs.has_started):
             self.init_game_session()
         user_id = session["user_id"]
-        answers, is_spy = None, False
-        if user_id in rs.game.spies:
-            answers = rs.game.answers
-            is_spy = True
+        is_spy = user_id in rs.game.spies
+        answers = rs.game.answers if is_spy else None
         logger.debug(f"Teams: {rs.teams}")
         return render_template("grid.html",
                                toptitle=rs.game_title,
@@ -43,9 +41,9 @@ class GameManager(Namespace):
                                words=rs.game.words,
                                answers=answers,
                                teams=rs.teams,
+                               is_spy=is_spy,
                                spy_enabled=user_id == rs.game.current_spy,
                                current_spy=rs.game.current_spy,
-                               is_spy=is_spy,
                                is_current_guesser=user_id in rs.game.current_guessers
                                                         and rs.guessers_enabled,
                                chat_history=rs.chat_history,
