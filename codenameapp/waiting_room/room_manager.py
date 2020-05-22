@@ -64,6 +64,7 @@ class RoomManager(Namespace):
         # Send event in room about new teams (or changes only ?)
         emit_in_room("teams_changed", {i: t.to_json() for i, t in enumerate(room_session.teams)},
                      broadcast=True)
+        emit_in_room("toggle_start", self._are_teams_ready())
 
     def on_connect(self):
         logger.debug(f"User {session['pseudo']} connected! (sid={request.sid})")

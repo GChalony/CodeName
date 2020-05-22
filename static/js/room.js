@@ -12,6 +12,16 @@ if (go !== null) {
         console.log(socket);
         socket.emit("start_game");
     });
+
+    socket.on('toggle_start', function(on){
+        console.log("toggling: "+on);
+        if (on == 0){
+            go.disabled = true;
+        }
+        else{
+            go.disabled = false;
+        }
+    });
 }
 
 /* Received when starting game */
