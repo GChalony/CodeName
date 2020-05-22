@@ -9,8 +9,8 @@
     <form action="{{ url_for('send_contact_form_as_email') }}" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32, class="w-100") }}
+            {{ form.contact.label }}<br>
+            {{ form.contact(size=32, class="w-100") }}
         </p>
         <p>{{ form.msg.label }}<br>
             {{ form.msg(class="w-100") }}</p>

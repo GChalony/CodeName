@@ -1,20 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container w-50">
+<div class="container w-50 d-flex flex-column">
     <h1 class="text-center my-5">Proposer des mots</h1>
-    <p>Que ce soit une critique (constructive) du design, du site, ou un petit message d'amour,
-        n'hésitez pas !
+    <p>Vous pouvez proposer n'importe quels mots a ajouter dans la base de données d'Enigma,
+        et peut-être que vous les retrouverez dans une prochaine partie !
     </p>
-    <form action="" method="post" novalidate>
+    <p>L'important est que les mots aient <em>un double sens</em>.
+        Ils peuvent être constitués de plusieurs mots séparés ou non par un tiret,
+        mais doivent faire moins de 15 caractères.
+    </p>
+    <p>Un mot par ligne svp ;)</p>
+    <form action="{{ url_for('send_words_in_email') }}" method="post" novalidate
+          class="w-50 align-self-center mt-3">
         {{ form.hidden_tag() }}
         <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32, class="w-100") }}
+            {{ form.contact.label }}<br>
+            {{ form.contact(size=32, class="w-100 form-control") }}
         </p>
-        <p>{{ form.msg.label }}<br>
-            {{ form.msg(class="w-100") }}</p>
-        <p>{{ form.submit(class="ml-auto btn btn-success") }}</p>
+        <p>{{ form.words.label }}<br>
+            {{ form.words(class="w-100 form-control", rows=5,
+                placeholder="Bonjour\nBlabla\nBibulou") }}</p>
+        <p>{{ form.submit(class="btn btn-success") }}</p>
     </form>
 </div>
 {% endblock %}
