@@ -37,7 +37,7 @@ class GameManager(Namespace):
             answers = rs.game.answers
             is_spy = True
         return render_template("grid.html",
-                               title=rs.game_title,
+                               toptitle=rs.game_title,
                                title_color=BLUE if rs.game.current_team_idx else RED,
                                words=rs.game.words,
                                answers=answers,
