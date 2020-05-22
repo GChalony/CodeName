@@ -13,7 +13,7 @@
         <div id="{{col}}_team_panel" class="panel panel-primary size-panel {{col}}-border d-flex flex-column">
             <div class="panel-heading {{col}}-bg text-center">Equipe {{"rouge" if i==0 else "bleue"}}</div>
             <div id="{{col}}_team_panel_body" class="p-2 flex-grow-1">
-                <div class="panel-body spy-container-{{col}}">
+                <div class="panel-body spy-container {{col}}">
                    {% if team.spy is none %}
                    <button class="btn btn-default join-btn" data-pos="{{2*i}}">Rejoindre</button>
                    {% else %}

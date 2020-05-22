@@ -3,7 +3,7 @@ import logging
 from uuid import uuid4
 
 from flask import render_template, request, session
-from flask_socketio import join_room, rooms, emit
+from flask_socketio import join_room
 from flask_socketio import Namespace
 from werkzeug.utils import redirect
 
@@ -121,9 +121,16 @@ class RoomManager(Namespace):
 
     def on_start_game(self):
         # Check that teams are ok
-        # Store teams ..?
-        # Emit URL redirection
-        pass
+        if self._are_teams_ready():
+            # Emit URL redirection
+            logger.info("Starting game !")
+            url = request.environ["HTTP_REFERER"]  # Access to request context
+            grid_url = url.replace("room", "grid")
+            game = Game([team.get_ids_list() for team in room_session.teams])
+            room_session.game = game
+            emit_in_room("url_redirection", {"url": grid_url}, broadcast=True)
+        else:
+            logger.debug("Teams not ready yet")
 
     def _add_to_available_position(self, user):
         (tred, tblue) = room_session.teams
@@ -146,3 +153,9 @@ class RoomManager(Namespace):
                 if u.id == user_id:
                     team.guessers.remove(u)
                     return u
+
+    def _are_teams_ready(self):
+        # Check have spies and at least one guesser per team
+        (tred, tblue) = room_session.teams
+        return tred.spy is not None and tblue.spy is not None \
+               and len(tred.guessers) and len(tblue.guessers)

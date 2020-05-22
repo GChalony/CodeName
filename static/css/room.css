@@ -35,14 +35,11 @@
     margin-top: 5px;
 }
 
-.spy-container-red {
+.spy-container {
     border-bottom: 1px solid transparent;
-    border-color: #ff5300;
 }
-.spy-container-blue {
-    border-bottom: 1px solid transparent;
-    border-color: #0af;
-}
+.spy-container.red { border-color: #ff5300; }
+.spy-container.blue { border-color: #0af; }
 
 #start {
     display: flex;

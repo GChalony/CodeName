@@ -6,7 +6,7 @@ home.addEventListener("click", function(){
 });
 
 var go = document.getElementById("go");
-if (typeof myVar !== 'undefined') {
+if (go !== null) {
     go.addEventListener("click", function(e){
         e.preventDefault();
         console.log(socket);
