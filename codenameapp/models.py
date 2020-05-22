@@ -20,11 +20,13 @@ class Team:
     def __repr__(self):
         return "<spy={spy} - guessers={guessers}>".format(spy=self.spy, guessers=self.guessers)
 
+    def __iter__(self):
+        return iter([self.spy, *self.guessers])
+
     def to_json(self):
         return {"spy": self.spy.to_json() if self.spy is not None else "None",
                 "guessers": [g.to_json() for g in self.guessers]}
 
     def get_ids_list(self):
-        guessers_ids = [g.id for g in self.guessers]
-        return [self.spy.id, *guessers_ids]
+        return [p.id for p in self]
 
