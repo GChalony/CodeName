@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-import eventlet
-eventlet.monkey_patch()
-
 import logging
 
 from engineio.payload import Payload
