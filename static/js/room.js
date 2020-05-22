@@ -6,11 +6,13 @@ home.addEventListener("click", function(){
 });
 
 var go = document.getElementById("go");
-go.addEventListener("click", function(e){
-    e.preventDefault();
-    console.log(socket);
-    socket.emit("start_game");
-});
+if (typeof myVar !== 'undefined') {
+    go.addEventListener("click", function(e){
+        e.preventDefault();
+        console.log(socket);
+        socket.emit("start_game");
+    });
+}
 
 /* Received when starting game */
 socket.on("url_redirection", function(data){
@@ -54,8 +56,6 @@ function createButton(pos){
     return b;
 }
 var b0 = createButton(0), b2 = createButton(2);
-var b1 = red_panel.children[red_panel.childElementCount-1],
-    b3 = blue_panel.children[blue_panel.childElementCount-1];
 
 function createPseudoDiv(pseudo){
     var d = document.createElement("div");
@@ -67,14 +67,14 @@ function createPseudoDiv(pseudo){
 function emptyTeams(){
     var nred = red_panel.children.length, nblue = blue_panel.children.length;
     // Spies
-    red_panel.children[0].innerHTML = "";
-    blue_panel.children[0].innerHTML = "";
+    red_panel.getElementsByClassName("spy-container")[0].innerHTML = "";
+    blue_panel.getElementsByClassName("spy-container")[0].innerHTML = "";
     // Guessers
-    for (var i=1; i<nred-1; i++){
-        red_panel.removeChild(red_panel.children[i]);
+    for (var i=1; i<nred; i++){
+        red_panel.removeChild(red_panel.children[1]);
     }
-    for (var i=1; i<nblue-1; i++){
-        blue_panel.removeChild(blue_panel.children[i]);
+    for (var i=1; i<nblue; i++){
+        blue_panel.removeChild(blue_panel.children[1]);
     }
 }
 
@@ -90,7 +90,7 @@ socket.on('teams_changed', function(teams){
         red_panel.children[0].append(createPseudoDiv(tred.spy.pseudo));
     }
     for (var g=0; g<tred.guessers.length; g++){
-        red_panel.insertBefore(createPseudoDiv(tred.guessers[g].pseudo), b1);
+        red_panel.append(createPseudoDiv(tred.guessers[g].pseudo));
     }
     // Blue team
     if (tblue.spy == "None"){
@@ -99,7 +99,7 @@ socket.on('teams_changed', function(teams){
         blue_panel.children[0].append(createPseudoDiv(tblue.spy.pseudo));
     }
     for (var g=0; g<tblue.guessers.length; g++){
-        blue_panel.insertBefore(createPseudoDiv(tblue.guessers[g].pseudo), b3);
+        blue_panel.append(createPseudoDiv(tblue.guessers[g].pseudo));
     }
     addJoinButtonListeners();
 });

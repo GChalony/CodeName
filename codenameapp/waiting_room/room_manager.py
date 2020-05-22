@@ -34,6 +34,7 @@ class RoomManager(Namespace):
             return "Missing parameters", 400
 
         user_id = session.get("user_id", uuid4().hex)  # Create new user_id if not already stored
+
         session["user_id"] = user_id
         session["pseudo"] = pseudo
         session["avatar-col1"] = col1
@@ -52,10 +53,11 @@ class RoomManager(Namespace):
         if not hasattr(room_session, "teams"):
             logger.debug("Initiating waiting room!")
             room_session.teams = (Team(), Team())
+            room_session.creator = session["user_id"]
 
         return render_template("room.html",
                                teams=room_session.teams,
-                               is_creator=True)  # TODO add button only for room creator
+                               is_creator=session["user_id"] == room_session.creator)
 
     def notify_team_change(self):
         logger.debug(f"Sending teams={room_session.teams}")
@@ -70,11 +72,13 @@ class RoomManager(Namespace):
         # Assign user to some position / team
         user = User(session["user_id"], session["pseudo"], session["avatar-col1"],
                     session["avatar-col2"])
+        # TODO only if not already positioned
         self._add_to_available_position(user)
         # Notify team change
         self.notify_team_change()
 
     def on_disconnect(self):
+        # TODO handle creator disconnect: assign to someone else, close room ..?
         # Remove user from team
         user_id = session["user_id"]
         self._pop_user_by_id(user_id)

@@ -7,45 +7,33 @@
 {% block content %}
 {% set (tred, tblue) = teams %}
 <div class="container">
-    <h1 class="my-5 text-align-center">Salle d'attente</h1>
+    <h1 class="my-5 text-center">Salle d'attente</h1>
     <div class="panel-group" id="teams">
-        <div id="red_team_panel" class="panel panel-primary size-panel red-border">
-            <div class="panel-heading red-bg">Equipe rouge</div>
-            <div id="red_team_panel_body" class="p-2">
-                <div class="panel-body spy-border" id="spyred">
-                   {% if tred.spy is none %}
-                   <button class="btn btn-default join-btn" data-pos="0">Rejoindre</button>
+        {% for i, col, team in [(0, 'red', tred), (1, 'blue', tblue)] %}
+        <div id="{{col}}_team_panel" class="panel panel-primary size-panel {{col}}-border d-flex flex-column">
+            <div class="panel-heading {{col}}-bg text-center">Equipe {{"rouge" if i==0 else "bleue"}}</div>
+            <div id="{{col}}_team_panel_body" class="p-2 flex-grow-1">
+                <div class="panel-body spy-container-{{col}}">
+                   {% if team.spy is none %}
+                   <button class="btn btn-default join-btn" data-pos="{{2*i}}">Rejoindre</button>
                    {% else %}
-                   <div class="pseudo-div">{{ tred.spy.pseudo }}</div>
+                   <div class="pseudo-div">{{ team.spy.pseudo }}</div>
                    {% endif %}
                </div>
-                {% for g in tred.guessers %}
+                {% for g in team.guessers %}
                 <div class="pseudo-div">{{ g.pseudo }}</div>
                 {% endfor %}
-                <button class="btn btn-default join-btn" data-pos="1">Rejoindre</button>
             </div>
+            <button class="btn btn-default join-btn" data-pos="{{2*i+1}}">Rejoindre</button>
         </div>
-        <div id="blue_team_panel" class="panel panel-primary size-panel blue-border">
-            <div id="panel_heading" class="panel-heading blue-bg">Equipe bleue</div>
-            <div id="blue_team_panel_body" class="p-2">
-               <div class="panel-body spy-border" id="spyblue">
-                   {% if tred.spy is none %}
-                   <button class="btn btn-default join-btn" data-pos="2">Rejoindre</button>
-                   {% else %}
-                   <div class="pseudo-div">{{ tred.spy.pseudo }}</div>
-                   {% endif %}
-               </div>
-                {% for g in tred.guessers %}
-                <div class="pseudo-div">{{ g.pseudo }}</div>
-                {% endfor %}
-                <button class="btn btn-default join-btn" data-pos="3">Rejoindre</button>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 <div id="start">
     <button class="btn btn-default" type="submit" id="home">Retour à l'accueil</button>
+    {% if is_creator %}
     <button class="btn btn-success" type="submit" id="go">Commencer la partie</button>
+    {% endif %}
 </div>
 
 {% endblock %}
