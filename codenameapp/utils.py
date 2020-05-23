@@ -1,14 +1,11 @@
 import json
 import logging
-import multiprocessing
+import multiprocessing as mp
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from multiprocessing import Process
 
 import numpy as np
 from flask import current_app
-
-multiprocessing.set_start_method('spawn')
 
 
 def generate_random_words(path_to_words="ressources/words.csv"):
@@ -55,7 +52,9 @@ def send_email(subject, text_body, html_body):
     html = MIMEText(html_body, 'html')
     msg.attach(txt)
     msg.attach(html)
-    p = Process(target=send_async_email, args=(current_app.config, msg))
+
+    ctx = mp.get_context("spawn")
+    p = ctx.Process(target=send_async_email, args=(current_app.config, msg))
     p.start()
 
 
