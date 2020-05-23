@@ -3,7 +3,6 @@ import logging
 
 from engineio.payload import Payload
 from flask import Flask
-from flask_mail import Mail
 from flask_session import Session
 from flask_socketio import SocketIO
 
@@ -29,7 +28,6 @@ Payload.max_decode_packets = 50
 
 # FLASK APP
 app = Flask(__name__)
-Mail(app)
 app.config.from_object(config.default_config)
 
 use_session = True

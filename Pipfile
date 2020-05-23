@@ -17,7 +17,6 @@ flask-socketio = "*"
 flask-Session = "*"
 werkzeug = "<1"
 flask-wtf = "*"
-flask-mail = "*"
 
 [requires]
 python_version = "3.7"

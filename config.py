@@ -6,12 +6,12 @@ class AppConfig:
     SESSION_TYPE = os.environ.get("SESSION_TYPE", "filesystem")
     # Mail config
     MAIL_SERVER = "smtp.gmail.com"
-    MAIL_PORT = 587
+    MAIL_PORT = 465
     MAIL_USE_TLS = True
     DEFAULT_MAIL_SENDER = "enigma.heroku@gmail.com"
     MAIL_USERNAME = "enigma.heroku@gmail.com"
     MAIL_PASSWORD = os.environ["MAIL_PASSWORD"]
-    MAIL_DEFAULT_MONITOR = "enigma.heroku.monitor@gmail.com"
+    DEFAULT_MAIL_MONITOR = "enigma.heroku.monitor@gmail.com"
 
 
 default_config = AppConfig()

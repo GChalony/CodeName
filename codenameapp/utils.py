@@ -1,8 +1,11 @@
 import json
-from uuid import uuid4
+import logging
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from multiprocessing import Process
+
 import numpy as np
 from flask import current_app
-from flask_mail import Message, Mail
 
 
 def generate_random_words(path_to_words="ressources/words.csv"):
@@ -37,11 +40,30 @@ def generate_response_grid():
 
 
 def send_email(subject, text_body, html_body):
-    msg = Message(subject,
-                  sender=current_app.config["DEFAULT_MAIL_SENDER"],
-                  recipients=[current_app.config["MAIL_DEFAULT_MONITOR"]])
-    msg.body = text_body
-    msg.html = html_body
-    mail = Mail(current_app)
-    mail.send(msg)
+    from_addr, to_addr = current_app.config["DEFAULT_MAIL_SENDER"], \
+                         current_app.config["DEFAULT_MAIL_MONITOR"]
+
+    msg = MIMEMultipart('alternative')
+    msg["Subject"] = subject
+    msg["From"] = from_addr
+    msg["To"] = to_addr
+
+    txt = MIMEText(text_body, 'plain')
+    html = MIMEText(html_body, 'html')
+    msg.attach(txt)
+    msg.attach(html)
+    p = Process(target=send_async_email, args=(current_app.config, msg))
+    p.start()
+
+
+def send_async_email(config, msg):
+    import smtplib
+    import ssl
+    logging.getLogger(__name__).info(f"Sending async email")
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(config["MAIL_SERVER"], config["MAIL_PORT"], context=context) as server:
+        server.login(config["DEFAULT_MAIL_SENDER"], config["MAIL_PASSWORD"])
+        server.sendmail(config["DEFAULT_MAIL_SENDER"], [config["DEFAULT_MAIL_MONITOR"]],
+                        msg.as_string())
+    logging.getLogger(__name__).debug("Done sending mail")
 
