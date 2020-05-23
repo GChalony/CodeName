@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from flask import render_template, url_for
+from flask import redirect
 
 from codenameapp.contact_us.forms import ContactForm, ProposeWordsForm
 from codenameapp.utils import send_email
@@ -24,7 +24,7 @@ def send_contact_form_as_email():
                f"<p><i>envoyé à {time}</i></p>\n"
                f"<p style='padding: 20px'>{html_words}</p>"
                )
-    return render_template("index.html")
+    return redirect("/")
 
 
 def send_words_in_email():
@@ -39,4 +39,4 @@ def send_words_in_email():
                f"<p><i>envoyé à {time}</i></p>\n"
                f"{form.words}"
                )
-    return render_template("index.html")
+    return redirect("/")
