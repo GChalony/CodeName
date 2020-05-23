@@ -1,11 +1,14 @@
 import json
 import logging
+import multiprocessing
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from multiprocessing import Process
 
 import numpy as np
 from flask import current_app
+
+multiprocessing.set_start_method('spawn')
 
 
 def generate_random_words(path_to_words="ressources/words.csv"):
