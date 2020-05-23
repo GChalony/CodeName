@@ -139,7 +139,7 @@ class RoomManager(Namespace):
             room_session.game = game
             emit_in_room("url_redirection", {"url": grid_url}, broadcast=True)
         else:
-            logger.debug("Teams not ready yet")
+            logger.warning("Teams not ready yet")
 
     def _add_to_available_position(self, user):
         (tred, tblue) = room_session.teams
