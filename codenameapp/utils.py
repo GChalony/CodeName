@@ -57,13 +57,8 @@ def send_email(subject, text_body, html_body):
 
 
 def send_async_email(config, msg):
-    # Revert monkey patch
-    import sys
-    del sys.modules["socket"]
-    sys.modules["socket"] = __import__("socket")
-
-    import ssl
     import smtplib
+    import ssl
     logging.getLogger(__name__).info(f"Sending async email")
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL(config["MAIL_SERVER"], config["MAIL_PORT"], context=context) as server:
