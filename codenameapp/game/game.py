@@ -25,6 +25,8 @@ class Game:
 
         self.current_team_idx = 0
 
+        self.guessers_enabled_list = []
+
         self.votes = {}
 
     def __str__(self):
@@ -66,19 +68,25 @@ class Game:
     def other_team_name(self):
         return self.team_names[self.other_team_idx]
 
+    @property
+    def guessers_enabled(self):
+        return len(self.guessers_enabled_list) > 0
+
     def get_votes_counts(self):
         count = Counter(list(self.votes.values()))
         votes_counts = {cell: n for cell, n in count.most_common() if cell != "none"}
         return votes_counts
 
+    def send_hint(self, hint, number):
+        # Receive spy's hint (and do nothing with it)
+        self.guessers_enabled_list = self.current_guessers.copy()
+
     def vote(self, user_id, code):
+        if user_id not in self.guessers_enabled_list:
+            raise PermissionError(f"Votes not allowed for user {user_id}")
         logger.debug(f"User {user_id} is voting {code}")
-        if user_id not in self.current_team:
-            raise PermissionError(f"Vote from wrong team: {user_id} !")
-        if user_id == self.current_spy:
-            raise PermissionError(f"Vote from current player {user_id}!")
+        self.guessers_enabled_list.remove(user_id)
         self.votes[user_id] = code
-        logger.debug(f"Votes: {self.votes}")
 
     def is_voting_done(self):
         return len(self.votes) == len(self.current_team) - 1
@@ -105,17 +113,20 @@ class Game:
         logger.debug("Ending votes")
         voted = self.get_team_vote()
         self.votes = {}
-
+        self.guessers_enabled_list = self.current_guessers.copy()
+        logger.debug(f"End votes: {self.guessers}")
         if voted is None:
             return None, None
 
         r, c = parse_cell_code(voted)
         value = self.answers[r, c]
         self.current_mask[r, c] = 1
+
         return voted, value
 
     def switch_teams(self):
         self.current_team_idx = self.other_team_idx
+        self.guessers_enabled_list = []
 
 
 if __name__ == "__main__":

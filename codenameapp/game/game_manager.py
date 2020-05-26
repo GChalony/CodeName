@@ -24,17 +24,18 @@ class GameManager(Namespace):
         rs.events_history = []
         rs.votes_history = {}
         rs.socketio_id_from_user_id = {}
-        rs.votes_enabled = []
         rs.game_title = f"Equipe {rs.game.current_team_name}"
-        rs.guessers_enabled = False
 
     def load_page(self, room_id):
         if not (hasattr(rs, "has_started") and rs.has_started):
             self.init_game_session()
         user_id = session["user_id"]
+        logger.info(f'Welcome back user {session["pseudo"]} !')
+
         is_spy = user_id in rs.game.spies
         answers = rs.game.answers if is_spy else None
-        logger.debug(f"Teams: {rs.teams}")
+        is_spy_enabled = user_id == rs.game.current_spy and not rs.game.guessers_enabled
+
         return render_template("grid.html",
                                toptitle=rs.game_title,
                                title_color=BLUE if rs.game.current_team_idx else RED,
@@ -42,87 +43,86 @@ class GameManager(Namespace):
                                answers=answers,
                                teams=rs.teams,
                                is_spy=is_spy,
-                               spy_enabled=user_id == rs.game.current_spy,
+                               is_spy_enabled=is_spy_enabled,
                                current_spy=rs.game.current_spy,
-                               is_current_guesser=user_id in rs.game.current_guessers
-                                                        and rs.guessers_enabled,
+                               is_enabled_guesser=user_id in rs.game.guessers_enabled_list,
                                chat_history=rs.chat_history,
                                events_history=rs.events_history,
                                votes_history=rs.votes_history)
 
-    # Socketio events handles
+    # Socketio events handlers
     def on_connect(self):
-        if "user_id" not in session:
-            raise Exception("User not authenticated")
         user_id = session["user_id"]
-        logger.info(f'Welcome back user {session["pseudo"]} !')
-        if hasattr(rs, "socketio_id_from_user_id"):
-            # Check otherwise causes bugs during server reload
-            rs.socketio_id_from_user_id[user_id] = request.sid
-            join_room(get_room_id())
+        rs.socketio_id_from_user_id[user_id] = request.sid
+        join_room(get_room_id())
 
-            pseudo = session["pseudo"]
-            self.send_new_event(f"{pseudo} a rejoint la partie")
+        pseudo = session["pseudo"]
+        self.send_new_event(f"{pseudo} a rejoint la partie")
 
-            if user_id in rs.votes_enabled:
-                self.enable_votes(user_id)
-            self.update_cell_votes(user_id)
+        if user_id in rs.game.guessers_enabled_list:
+            self.enable_votes(user_id)  # TODO really needed?
+        self.update_cell_votes(user_id)
 
     def on_disconnect(self):
         user_id = session["user_id"]
+        rs.socketio_id_from_user_id.pop(user_id)
         pseudo = session["pseudo"]
         self.send_new_event(f"{pseudo} a quitté la partie")
-        rs.socketio_id_from_user_id.pop(user_id)
-        pseudo = session.get("pseudo", None)
         logger.info(f"User {pseudo} left the game !")
 
     def on_chat_message(self, msg):
         logger.debug("Chat : " + msg)
         response = session.get("pseudo") + " : " + msg
+        # TODO parse response for emojis here
         rs.chat_history.append(response)
         emit_in_room("chat_msg", response)
 
     def on_hint(self, hint, n):
         pseudo = session["pseudo"]
         logger.debug(f"Received hint from {pseudo}: {hint} - {n}")
+        rs.game.send_hint(hint, n)
         self.change_title(f"Indice : {hint} - {n}", color=BLUE
-        if rs.game.current_team_idx else RED)
+                if rs.game.current_team_idx else RED)
         self.send_new_event(f"Indice de {pseudo}: {hint} - {n}")
         self.enable_votes(*rs.game.current_guessers)
 
     def on_vote_cell(self, code):
         user_id = session["user_id"]
-        game = rs.game
-        if (user_id not in game.current_guessers) and (user_id in rs.votes_enabled):
-            raise PermissionError(f"Vote not allowed from user {user_id}")
         pseudo = session["pseudo"]
+
+        game = rs.game
+        game.vote(user_id, code)
+
         if code == "none":
             ev = f"{pseudo} a passé"
         else:
             r, c = parse_cell_code(code)
             ev = f"{pseudo} a voté {rs.game.words[r, c]}"
         self.send_new_event(ev)
-        game.vote(user_id, code)
         self.disable_votes(user_id)
         if not game.is_voting_done():
             # Not everyone has voted
             self.update_cell_votes()
         else:
             # Votes are done
-            cell, value = game.end_votes()
-            if game.is_game_over():
-                self.game_over(rs.game.current_team_idx)
-            elif cell is not None:
-                # Vote cell then start votes again
-                self.notify_cell_votes(cell, value)
-                rs.votes_history[cell] = value
-                r, c = parse_cell_code(cell)
-                self.send_new_event(f"L'équipe {game.current_team_name} a voté {game.words[r, c]}")
-                self.enable_votes(*rs.game.current_guessers)
-            else:
-                # Everybody passed -> change teams
-                self.send_new_event(f"Team {rs.game.current_team_name} a passé")
-                self.switch_teams()
+            self.end_votes()
+
+    def end_votes(self):
+        cell, value = rs.game.end_votes()
+        if rs.game.is_game_over():
+            self.game_over(rs.game.current_team_idx)
+        elif cell is not None:
+            # Vote cell then start votes again
+            # TODO only if vote is correct else switch teams
+            self.notify_cell_votes(cell, value)
+            rs.votes_history[cell] = value
+            r, c = parse_cell_code(cell)
+            self.send_new_event(f"L'équipe {rs.game.current_team_name} a voté {rs.game.words[r, c]}")
+            self.enable_votes(*rs.game.current_guessers)
+        else:
+            # Everybody passed -> change teams
+            self.send_new_event(f"Team {rs.game.current_team_name} a passé")
+            self.switch_teams()
 
     def update_cell_votes(self, user_id=None):
         votes_counts = rs.game.get_votes_counts()
@@ -133,6 +133,14 @@ class GameManager(Namespace):
             else:
                 emit_in_room("update_votes", votes_counts,
                              room=rs.socketio_id_from_user_id[user_id])
+
+    def switch_teams(self):
+        logger.debug(f"Switching teams")
+        rs.game.switch_teams()
+        self.change_title(f"Equipe {rs.game.current_team_name}", color=BLUE if
+                rs.game.current_team_idx else RED)
+        self.change_current_player(rs.game.current_spy)
+        self.enable_controls()
 
     def notify_cell_votes(self, cell, value):
         vote = {"cell": cell, "value": str(value)}
@@ -149,31 +157,23 @@ class GameManager(Namespace):
         emit_in_room("change_current_player", new_player_id)
 
     def enable_votes(self, *player_ids):
+        logger.debug(f"Enabling votes: {rs.game.guessers_enabled_list}")
+        if not rs.game.guessers_enabled:
+            raise PermissionError("Guessers not enabled!")
+
         logger.debug(f"Enabling votes for users ids {player_ids}")
-        rs.guessers_enabled = True
         for player_id in player_ids:
-            rs.votes_enabled.append(player_id)
             emit_in_room("enable_vote", room=rs.socketio_id_from_user_id[player_id])
 
     def disable_votes(self, *player_ids):
         logger.debug(f"Disabling votes for users ids {player_ids}")
-        rs.guessers_enabled = False
         for player_id in player_ids:
-            rs.votes_enabled.remove(player_id)
             emit_in_room("disable_vote", room=rs.socketio_id_from_user_id[player_id])
 
     def send_new_event(self, event_msg):
         logger.debug(f"Sending new event {event_msg}")
         rs.events_history.append(event_msg)
         emit_in_room("add_event", event_msg)
-
-    def switch_teams(self):
-        logger.debug(f"Switching teams")
-        rs.game.switch_teams()
-        self.change_title(f"Equipe {rs.game.current_team_name}", color=BLUE if
-            rs.game.current_team_idx else RED)
-        self.change_current_player(rs.game.current_spy)
-        self.enable_controls()
 
     def _get_remaining_cells(self):
         cells = list(rs.game.votes.values())  # Cells currently voted for
