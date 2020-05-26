@@ -19,3 +19,5 @@ flask_session
 test.html
 test.css
 test.js
+
+captures/
