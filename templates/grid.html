@@ -15,7 +15,7 @@
             <span
                     id="{{ player.id }}"
                     data-team="{{ ''~i }}"
-                    class="pseudo{% if player.id==current_spy %} current-player{% endif %}">
+                    class="pseudo{% if player.id in current_players %} current-player{% endif %}">
                 {{ player.pseudo }}
             </span>
             {% endfor %}

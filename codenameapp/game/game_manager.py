@@ -35,7 +35,7 @@ class GameManager(Namespace):
         is_spy = user_id in rs.game.spies
         answers = rs.game.answers if is_spy else None
         is_spy_enabled = user_id == rs.game.current_spy and not rs.game.guessers_enabled
-
+        logger.debug(f"Load: {rs.game.current_players}")
         return render_template("grid.html",
                                toptitle=rs.game_title,
                                title_color=BLUE if rs.game.current_team_idx else RED,
@@ -44,7 +44,7 @@ class GameManager(Namespace):
                                teams=rs.teams,
                                is_spy=is_spy,
                                is_spy_enabled=is_spy_enabled,
-                               current_spy=rs.game.current_spy,
+                               current_players=rs.game.current_players,
                                is_enabled_guesser=user_id in rs.game.guessers_enabled_list,
                                chat_history=rs.chat_history,
                                events_history=rs.events_history,
@@ -85,6 +85,7 @@ class GameManager(Namespace):
                 if rs.game.current_team_idx else RED)
         self.send_new_event(f"Indice de {pseudo}: {hint} - {n}")
         self.enable_votes(*rs.game.current_guessers)
+        self.update_current_players()
 
     def on_vote_cell(self, code):
         user_id = session["user_id"]
@@ -139,7 +140,7 @@ class GameManager(Namespace):
         rs.game.switch_teams()
         self.change_title(f"Equipe {rs.game.current_team_name}", color=BLUE if
                 rs.game.current_team_idx else RED)
-        self.change_current_player(rs.game.current_spy)
+        self.update_current_players()
         self.enable_controls()
 
     def notify_cell_votes(self, cell, value):
@@ -153,8 +154,9 @@ class GameManager(Namespace):
     def enable_controls(self):
         emit_in_room("enable_controls", room=rs.socketio_id_from_user_id[rs.game.current_spy])
 
-    def change_current_player(self, new_player_id):
-        emit_in_room("change_current_player", new_player_id)
+    def update_current_players(self):
+        logger.debug(f"Updating current players: {rs.game.current_players}")
+        emit_in_room("change_current_player", rs.game.current_players)
 
     def enable_votes(self, *player_ids):
         logger.debug(f"Enabling votes: {rs.game.guessers_enabled_list}")

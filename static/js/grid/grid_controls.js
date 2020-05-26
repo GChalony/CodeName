@@ -46,14 +46,14 @@ socket.on('vote_done', function(data){
 var players = document.getElementById("players").children,
     nplayers = players.length;
 
-socket.on('change_current_player', function(player_id){
-    console.log('Switching '+player_id);
+socket.on('change_current_player', function(players_id){
+    console.log('Switching '+players_id);
     for (var i=0; i<nplayers; i++){
         var player = players[i];
-        if ( player.classList.contains('current-player') ){
+        if (players_id.indexOf(player.id) == -1){
             player.classList.remove('current-player');
         }
-        if (player.id == player_id){
+        else{
             player.classList.add('current-player');
         }
     }

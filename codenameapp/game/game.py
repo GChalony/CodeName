@@ -72,6 +72,10 @@ class Game:
     def guessers_enabled(self):
         return len(self.guessers_enabled_list) > 0
 
+    @property
+    def current_players(self):
+        return self.current_guessers if self.guessers_enabled else [self.current_spy]
+
     def get_votes_counts(self):
         count = Counter(list(self.votes.values()))
         votes_counts = {cell: n for cell, n in count.most_common() if cell != "none"}
