@@ -31,8 +31,8 @@ class RoomManager(Namespace):
         col2 = request.args.get("col2", None)
         if pseudo is None:  # Read from cookies
             pseudo = request.cookies.get("pseudo", None)
-            col1 = request.cookies.get("col2", None)
-            col2 = request.cookies.get("col2", None)
+            col1 = request.cookies.get("avatar-col1", None)
+            col2 = request.cookies.get("avatar-col2", None)
 
         if pseudo is None or col1 is None or col2 is None:
             return "Missing parameters", 400

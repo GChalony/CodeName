@@ -1,4 +1,5 @@
 function startGame(e){
+    e.preventDefault();
     pseudo = document.getElementById("inputPseudo").value;
     backcol = document.getElementById("backcol").value;
     mouthcol = document.getElementById("mouthcol").value;
