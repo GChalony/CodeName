@@ -51,7 +51,7 @@
                     {% for i in range(10) %}<option value="{{i}}">{{i}}</option>{% endfor %}
                 </select>
                 <input id="send-hint" class="btn btn-success form-control-sm"
-                       type="submit" autocomplete="off" {% if not is_spy_enabled %}disabled{% endif %}>
+                       type="submit" autocomplete="off" maxlength="20" {% if not is_spy_enabled %}disabled{% endif %}>
             </form>
             {% else %}
             <div class="d-flex justify-content-center">
