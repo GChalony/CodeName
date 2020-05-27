@@ -35,6 +35,11 @@
     margin-top: 5px;
 }
 
+.btn-bottom {
+    width: auto;
+    margin: 0.5rem;
+}
+
 .spy-container {
     border-bottom: 1px solid transparent;
 }
