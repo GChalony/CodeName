@@ -198,3 +198,5 @@ class GameManager(Namespace):
             value = rs.game.answers[parse_cell_code(cell)]
             self.notify_cell_votes(cell, value)
             time.sleep(2)
+
+        rs.has_started = False
