@@ -18,7 +18,7 @@ class RouteManager:
         app.add_url_rule('/contact/post_words', view_func=send_words_in_email, methods=["POST"])
 
     def get_home(self):
-        return render_template("index.html")
+        return render_template("home.html")
 
     def get_contact_us(self):
         return render_template("contact_us.html", form=ContactForm())
