@@ -1,6 +1,4 @@
-newGameBtn = document.getElementById("new-game-button");
-
-newGameBtn.addEventListener("click", function(e){
+function startGame(e){
     pseudo = document.getElementById("inputPseudo").value;
     backcol = document.getElementById("backcol").value;
     mouthcol = document.getElementById("mouthcol").value;
@@ -8,4 +6,9 @@ newGameBtn.addEventListener("click", function(e){
     console.log(new_loc);
     // Simply change loc and redirection will handle the rest
     window.location = new_loc;
-});
+}
+
+newGameBtn = document.getElementById("new-game-button");
+newGameBtn.addEventListener("click", startGame);
+navNew = document.getElementById("nav-new-room");
+navNew.addEventListener("click", startGame);
