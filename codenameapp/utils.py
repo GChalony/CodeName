@@ -14,6 +14,7 @@ def generate_random_words(path_to_words="ressources/words.csv"):
     words = [w.replace("\n", "").capitalize() for w in words]
     np.random.shuffle(words)
     words = words[:25]
+    words = [w.capitalize() for w in words]
     return np.array(words).reshape((5, 5))
 
 
