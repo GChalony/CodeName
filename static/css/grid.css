@@ -9,7 +9,7 @@ h1
     font-size: 2em;
     font-weight: bold;
     text-align: center;
-    margin-top: 30px;
+    margin-top: 1.5rem;
 }
 #container
 {
@@ -23,7 +23,7 @@ h1
     flex-direction: column;
     flex: 1 0 auto;
     align-self: center;
-    width: 14%;
+    width: 14rem;
 }
 .pseudo
 {
@@ -56,7 +56,9 @@ h1
 }
 table
 {
-    margin: auto;
+    margin-right: -2rem;
+    margin-left: -2rem;
+    width: calc(100% + 4rem);
     table-layout: fixed ;
     border-collapse: initial;
     border-spacing: 2rem;
