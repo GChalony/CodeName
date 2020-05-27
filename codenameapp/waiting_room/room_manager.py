@@ -24,11 +24,15 @@ class RoomManager(Namespace):
 
     def create_new_room(self):
         room_id = uuid4().hex
+        logger.debug(f"Creating new room {room_id}")
 
-        logger.debug(f"Created new room {room_id}")
         pseudo = request.args.get("pseudo", None)
         col1 = request.args.get("col1", None)
         col2 = request.args.get("col2", None)
+        if pseudo is None:  # Read from cookies
+            pseudo = request.cookies.get("pseudo", None)
+            col1 = request.cookies.get("col2", None)
+            col2 = request.cookies.get("col2", None)
 
         if pseudo is None or col1 is None or col2 is None:
             return "Missing parameters", 400
