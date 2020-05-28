@@ -2,7 +2,7 @@ import datetime
 import logging
 from uuid import uuid4
 
-from flask import render_template, request, session
+from flask import render_template, request, session, url_for
 from flask_socketio import join_room
 from flask_socketio import Namespace
 from werkzeug.utils import redirect
@@ -41,8 +41,9 @@ class RoomManager(Namespace):
         # Basically the same as create room, except that it gets its room_id from request params
         room_id = request.args["room_id"]
         resp = redirect(f"{room_id}/room")
+        user_id = session.get("user_id", uuid4().hex)  # Create new user_id if not already stored
         try:
-            read_and_store_avatar_params(resp)
+            read_and_store_avatar_params(resp, user_id)
         except ValueError:
             return "Missing parameters", 400
 
@@ -56,9 +57,13 @@ class RoomManager(Namespace):
 
     def get_room(self, room_id):
         # TODO If doesn't have cookies -> redirect to home, with link in join room form
+        if "pseudo" not in request.cookies or "user_id" not in request.cookies:
+            return redirect(url_for("get_home", target_room_id=room_id))
+        print(session)
+        print("cookies", request.cookies)
+
         if not hasattr(room_session, "teams"):
             self.init_room()
-
         return render_template("room.html",
                                teams=room_session.teams,
                                is_creator=session["user_id"] == room_session.creator)

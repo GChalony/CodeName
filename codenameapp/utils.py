@@ -72,12 +72,10 @@ def send_async_email(config, msg):
     logging.getLogger(__name__).debug("Done sending mail")
 
 
-def read_and_store_avatar_params(resp, user_id=None):
+def read_and_store_avatar_params(resp, user_id):
     """Read pseudo and avator colors from either cookies or request params.
     Then store them in both cookies and session.
     """
-    if user_id is None:
-        user_id = session["user_id"]
 
     pseudo = request.args.get("pseudo", None)
     col1 = request.args.get("col1", None)

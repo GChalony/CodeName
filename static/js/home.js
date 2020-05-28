@@ -32,6 +32,7 @@ function joinRoom(e){
     }
     else{
         // TODO say url invalid
+        console.log('Url is invalid');
     }
 }
 

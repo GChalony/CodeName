@@ -1,6 +1,6 @@
 import logging
 
-from flask import render_template
+from flask import render_template, request
 
 from codenameapp.contact_us.contacts_handler import send_contact_form_as_email, send_words_in_email
 from codenameapp.contact_us.forms import ContactForm, ProposeWordsForm
@@ -18,7 +18,7 @@ class RouteManager:
         app.add_url_rule('/contact/post_words', view_func=send_words_in_email, methods=["POST"])
 
     def get_home(self):
-        return render_template("home.html")
+        return render_template("home.html", target_room_id=request.args.get("target_room_id", None))
 
     def get_contact_us(self):
         return render_template("contact_us.html", form=ContactForm())
