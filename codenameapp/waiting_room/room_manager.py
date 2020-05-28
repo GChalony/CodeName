@@ -10,6 +10,7 @@ from werkzeug.utils import redirect
 from codenameapp.game.game import Game
 from codenameapp.models import User, Team
 from codenameapp.room_session import room_session, emit_in_room, get_room_id
+from codenameapp.utils import read_and_store_avatar_params
 
 logger = logging.getLogger(__name__)
 
@@ -20,37 +21,31 @@ class RoomManager(Namespace):
 
     def init_routes(self, app):
         app.add_url_rule('/new_room', view_func=self.create_new_room)
+        app.add_url_rule('/join_room', view_func=self.join_room)
         app.add_url_rule('/<room_id>/room', view_func=self.get_room)
 
     def create_new_room(self):
         room_id = uuid4().hex
         logger.debug(f"Creating new room {room_id}")
-
-        pseudo = request.args.get("pseudo", None)
-        col1 = request.args.get("col1", None)
-        col2 = request.args.get("col2", None)
-        if pseudo is None:  # Read from cookies
-            pseudo = request.cookies.get("pseudo", None)
-            col1 = request.cookies.get("avatar-col1", None)
-            col2 = request.cookies.get("avatar-col2", None)
-
-        if pseudo is None or col1 is None or col2 is None:
-            return "Missing parameters", 400
-
         user_id = session.get("user_id", uuid4().hex)  # Create new user_id if not already stored
 
-        session["user_id"] = user_id
-        session["pseudo"] = pseudo
-        session["avatar-col1"] = col1
-        session["avatar-col2"] = col2
-
         resp = redirect(f"{room_id}/room")
-        # Add cookies
-        expire_date = datetime.datetime.now() + datetime.timedelta(30)  # 30 days ahead
-        resp.set_cookie("user_id", user_id, expires=expire_date)
-        resp.set_cookie("pseudo", pseudo, expires=expire_date)
-        resp.set_cookie("avatar-col1", col1, expires=expire_date)
-        resp.set_cookie("avatar-col2", col2, expires=expire_date)
+        try:
+            read_and_store_avatar_params(resp, user_id=user_id)
+        except ValueError:
+            return "Missing parameters", 400
+
+        return resp
+
+    def join_room(self):
+        # Basically the same as create room, except that it gets its room_id from request params
+        room_id = request.args["room_id"]
+        resp = redirect(f"{room_id}/room")
+        try:
+            read_and_store_avatar_params(resp)
+        except ValueError:
+            return "Missing parameters", 400
+
         return resp
 
     def init_room(self):
@@ -60,6 +55,7 @@ class RoomManager(Namespace):
         room_session.started = False
 
     def get_room(self, room_id):
+        # TODO If doesn't have cookies -> redirect to home, with link in join room form
         if not hasattr(room_session, "teams"):
             self.init_room()
 
@@ -180,3 +176,5 @@ class RoomManager(Namespace):
         (tred, tblue) = room_session.teams
         return tred.spy is not None and tblue.spy is not None \
                and len(tred.guessers) and len(tblue.guessers)
+
+

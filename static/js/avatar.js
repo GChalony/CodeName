@@ -36,6 +36,8 @@ function drawAvatar(body, head, mouth){
     context.beginPath(); // L'œil droit
     context.arc(w/2 + 20, h/2 - 5, 20, (Math.PI / 180) * 220, (Math.PI / 180) * 320);
     context.stroke();
+
+    // TODO set colors to backcol and mouthcol too
 }
 
 backcol = document.getElementById("backcol");
@@ -58,4 +60,11 @@ drawAvatar(col1, col1, col2);
 document.getElementById("inputPseudo").value = pseudo;
 backcol.value = col1;
 mouthcol.value = col2;
+
+function updateAvatarData(){
+    pseudo = document.getElementById("inputPseudo").value;
+    backcol = document.getElementById("backcol").value;
+    mouthcol = document.getElementById("mouthcol").value;
+}
+
 
