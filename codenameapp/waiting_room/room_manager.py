@@ -80,8 +80,8 @@ class RoomManager(Namespace):
         # Initialize teams if first connection
         join_room(get_room_id())
         # Assign user to some position / team
-        user = User(session["user_id"], session["pseudo"], session["avatar-col1"],
-                    session["avatar-col2"])
+        user = User(session["user_id"], session["pseudo"], session["avatar_col1"],
+                    session["avatar_col2"])
         if self._get_user_by_id(session["user_id"]) is None:
             self._add_to_available_position(user)
         # Notify team change
