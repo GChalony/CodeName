@@ -7,12 +7,9 @@ from flask_session import Session
 from flask_socketio import SocketIO
 
 import config
-from codenameapp.game.game import Game
 from codenameapp.game.game_manager import GameManager
-from codenameapp.waiting_room.room_manager import RoomManager
-from codenameapp.room_session import room_session
 from codenameapp.routes import RouteManager
-from codenameapp.models import User
+from codenameapp.waiting_room.room_manager import RoomManager
 
 logging.basicConfig(level=logging.WARNING,
                     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
@@ -32,12 +29,6 @@ app.config.from_object(config.default_config)
 Session(app)
 socketio = SocketIO(app, manage_session=False)
 
-
-temp_default_teams = [[User("1", "Greg"), User("2", "Sol"), User("5", "Vic")],
-                      [User("3", "Clem"), User("4", "Axel")]]
-g = Game([[u.id for u in team] for team in temp_default_teams])
-# Should never do that, this is just to add a default room for tests only
-room_session._all_rooms_data["0"] = {"game": g, "teams": temp_default_teams}
 
 room_manager = RoomManager('/room')
 room_manager.init_routes(app)

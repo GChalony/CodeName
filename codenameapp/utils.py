@@ -77,13 +77,13 @@ def read_and_store_avatar_params(resp, user_id):
     Then store them in both cookies and session.
     """
 
-    pseudo = request.args.get("pseudo", None)
-    col1 = request.args.get("col1", None)
-    col2 = request.args.get("col2", None)
+    pseudo = request.args.get("pseudo")
+    col1 = request.args.get("col1")
+    col2 = request.args.get("col2")
     if pseudo is None:  # Read from cookies
-        pseudo = request.cookies.get("pseudo", None)
-        col1 = request.cookies.get("avatar_col1", None)
-        col2 = request.cookies.get("avatar_col2", None)
+        pseudo = request.cookies.get("pseudo")
+        col1 = request.cookies.get("avatar_col1")
+        col2 = request.cookies.get("avatar_col2")
     if pseudo is None or col1 is None or col2 is None:
         raise ValueError("Missing parameter")
 
