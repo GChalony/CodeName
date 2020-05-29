@@ -15,7 +15,6 @@ eventlet = "*"
 flask = "*"
 flask-socketio = "*"
 flask-Session = "*"
-werkzeug = "<1"
 flask-wtf = "*"
 
 [requires]

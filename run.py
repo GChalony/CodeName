@@ -29,15 +29,8 @@ Payload.max_decode_packets = 50
 # FLASK APP
 app = Flask(__name__)
 app.config.from_object(config.default_config)
-
-use_session = True
-# use_session = False
-
-if use_session:
-    Session(app)
-    socketio = SocketIO(app, manage_session=False)
-else:
-    socketio = SocketIO(app)
+Session(app)
+socketio = SocketIO(app, manage_session=False)
 
 
 temp_default_teams = [[User("1", "Greg"), User("2", "Sol"), User("5", "Vic")],
