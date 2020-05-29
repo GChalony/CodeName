@@ -56,10 +56,10 @@ class RoomManager(Namespace):
         room_session.started = False
 
     def get_room(self, room_id):
-        # TODO If doesn't have cookies -> redirect to home, with link in join room form
-        if "pseudo" not in request.cookies or "user_id" not in request.cookies:
+        print("get", session, request.cookies.get("session", None))
+        if "pseudo" not in session or "user_id" not in session:
             return redirect(url_for("get_home", target_room_id=room_id))
-        print(session)
+
         print("cookies", request.cookies)
 
         if not hasattr(room_session, "teams"):
