@@ -51,8 +51,8 @@ mouthcol.addEventListener('change', function(e){
 });
 
 var pseudo = getCookie("pseudo", "");
-var col1 = "#" + getCookie("avatar-col1", "ffff00");
-var col2 = "#" + getCookie("avatar-col2", "ff0000");
+var col1 = "#" + getCookie("avatar_col1", "ffff00");
+var col2 = "#" + getCookie("avatar_col2", "ff0000");
 
 console.log(col1, col2);
 drawAvatar(col1, col1, col2);
