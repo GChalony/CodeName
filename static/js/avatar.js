@@ -37,7 +37,8 @@ function drawAvatar(body, head, mouth){
     context.arc(w/2 + 20, h/2 - 5, 20, (Math.PI / 180) * 220, (Math.PI / 180) * 320);
     context.stroke();
 
-    // TODO set colors to backcol and mouthcol too
+    backcol.value = body;
+    mouthcol.value = mouth;
 }
 
 backcol = document.getElementById("backcol");
