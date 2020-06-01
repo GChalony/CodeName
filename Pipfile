@@ -7,8 +7,6 @@ verify_ssl = true
 matplotlib = "*"
 
 [packages]
-matplotlib = "*"
-opencv-python = "*"
 numpy = "*"
 gunicorn = "*"
 eventlet = "*"
