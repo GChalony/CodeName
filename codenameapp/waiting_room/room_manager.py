@@ -32,9 +32,9 @@ class RoomManager(Namespace):
         resp = redirect(f"{room_id}/room")
         try:
             read_and_store_avatar_params(resp, user_id=user_id)
-        except ValueError:
+        except ValueError as e:
+            logger.error(f"Missing parameter to create room: {e}")
             return "Missing parameters", 400
-
         return resp
 
     def join_room(self):
@@ -46,7 +46,6 @@ class RoomManager(Namespace):
             read_and_store_avatar_params(resp, user_id)
         except ValueError:
             return "Missing parameters", 400
-
         return resp
 
     def init_room(self):
@@ -56,11 +55,8 @@ class RoomManager(Namespace):
         room_session.started = False
 
     def get_room(self, room_id):
-        print("get", session, request.cookies.get("session", None))
         if "pseudo" not in session or "user_id" not in session:
             return redirect(url_for("get_home", target_room_id=room_id))
-
-        print("cookies", request.cookies)
 
         if not hasattr(room_session, "teams"):
             self.init_room()
@@ -128,8 +124,6 @@ class RoomManager(Namespace):
             self._pop_user_by_id(user_id)
             tblue.guessers.append(user)
         # Notify
-        logger.debug(f"{tred}")
-        logger.debug(f"{tblue}")
         self.notify_team_change()
 
     def on_start_game(self):

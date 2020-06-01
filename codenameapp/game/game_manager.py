@@ -182,8 +182,6 @@ class GameManager(Namespace):
         done_cells = list(rs.votes_history.keys())  # Cell already seen by everyone
         all_cells = [f'r{r}c{c}' for r in range(5) for c in range(5)]  # All possible cells
         cells += [cell for cell in all_cells if cell not in cells and cell not in done_cells]
-        logger.debug(cells)
-        logger.debug(done_cells)
         return cells
 
     def game_over(self, winners):

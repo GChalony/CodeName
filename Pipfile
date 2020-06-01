@@ -12,7 +12,8 @@ gunicorn = "*"
 eventlet = "*"
 flask = "*"
 flask-socketio = "*"
-flask-Session = "*"
+werkzeug = "<1"
+flask-Session = "<0.3.2"
 flask-wtf = "*"
 
 [requires]
