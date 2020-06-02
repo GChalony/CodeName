@@ -7,6 +7,7 @@ from flask_session import Session
 from flask_socketio import SocketIO
 
 import config
+from codenameapp.avatar.avatar_manager import AvatarManager
 from codenameapp.game.game_manager import GameManager
 from codenameapp.routes import RouteManager
 from codenameapp.waiting_room.room_manager import RoomManager
@@ -40,6 +41,9 @@ route_manager.init_routes(app)
 game_manager = GameManager('/grid')
 game_manager.init_routes(app)
 socketio.on_namespace(game_manager)
+
+avatar_manager = AvatarManager()
+avatar_manager.init_routes(app)
 
 
 if __name__ == '__main__':
