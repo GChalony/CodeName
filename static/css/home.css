@@ -9,30 +9,27 @@ h1 {
     margin: 10px 0;
 }
 
+.btn-avatar {
+    border: none;
+    background: transparent;
+    margin: 1rem;
+    width: 3rem;
+}
+#avatar-container img{
+    width: 100%;
+    height: auto;
+}
+#avatar-container
+{
+    width: 15%;
+    margin: auto;
+}
+
 footer {
     text-align: right;
     font-style: italic;
+    font-size: 0.75rem;
     padding: 5px;
     margin-top: 20px;
 }
 
-#avatar-container {
-    width: 30%;
-    border-radius: 30px;
-    background: #8af
-}
-
-#av {
-    width: 240px;
-    height: 120px;
-    margin: auto;
-    background: white;
-    margin-bottom: 20px;
-}
-.colorpicker{
-    padding: 0;
-    height: 25px;
-    width: 25px;
-    border: none;
-    margin: 1.5rem;
-}

@@ -14,14 +14,22 @@
         <input type="text" maxlength="10" class="form-control" id="inputPseudo" placeholder="Pseudo">
     </div>
 </form>
-<div id="avatar-container"
-     class="d-flex flex-column justify-content-center align-self-center">
-    <h1>Avatar</h1>
-    <div class="w-100 d-flex bg-white"><canvas id="av"></canvas></div>
+<div class="d-flex flex-column justify-content-center align-self-center w-100">
+    <div id="avatar-container" class="d-flex">
+        <img id="avatar" alt="avatar" title="chargement" src="{{ avatar_src }}" data-id="{{ avatar_id }}"/>
+    </div>
 
     <form class="form-inline justify-content-center">
-        <input type="color" value="#ffff00" id="backcol" class="colorpicker"/>
-        <input type="color" value="#ff0000" id="mouthcol" class="colorpicker"/>
+        <button onclick="prevImg(); return false;" class="btn btn-avatar">
+            <svg class="bi bi-arrow-left-circle-fill" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-7.646 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L6.207 7.5H11a.5.5 0 0 1 0 1H6.207l2.147 2.146z"/>
+            </svg>
+        </button>
+        <button onclick="nextImg(); return false;" class="btn btn-avatar">
+            <svg class="bi bi-arrow-right-circle-fill" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-8.354 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L9.793 7.5H5a.5.5 0 0 0 0 1h4.793l-2.147 2.146z"/>
+            </svg>
+        </button>
     </form>
 </div>
 <div class="align-self-center my-3">
@@ -35,9 +43,8 @@
 </form>
 
 <footer><p>
-Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
-    from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></p>
-<p>Icons made by <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a>
+Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> and
+    <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a>
     from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></p></footer>
 {% endblock %}
 {% block scripts %}
