@@ -76,22 +76,19 @@ def read_and_store_avatar_params(resp, user_id):
     """Read pseudo and avator colors from either cookies or request params.
     Then store them in both cookies and session.
     """
-
     pseudo = request.args.get("pseudo")
-    col1 = request.args.get("col1")
-    col2 = request.args.get("col2")
+    avatar_src = request.args.get("avatar_src")
     if pseudo is None:  # Read from cookies
         pseudo = request.cookies.get("pseudo")
-        col1 = request.cookies.get("avatar_col1")
-        col2 = request.cookies.get("avatar_col2")
-    if pseudo is None or col1 is None or col2 is None:
+        avatar_src = request.cookies.get("avatar_src")
+    if pseudo is None or avatar_src is None:
         raise ValueError("Missing parameter")
 
     # Add cookies and store data in session
-    data_to_store = dict(user_id=user_id, pseudo=pseudo, avatar_col1=col1, avatar_col2=col2)
+    data_to_store = dict(user_id=user_id, pseudo=pseudo, avatar_src=avatar_src)
     expire_date = datetime.datetime.now() + datetime.timedelta(30)  # 30 days ahead
     for key, val in data_to_store.items():
         session[key] = val
         resp.set_cookie(key, val, expires=expire_date)
 
-    return pseudo, col1, col2
+    return pseudo, avatar_src
