@@ -46,6 +46,13 @@
 .spy-container.red { border-color: #ff5300; }
 .spy-container.blue { border-color: #0af; }
 
+.icon
+{
+    width: 10%;
+    height: auto;
+    margin-right: 2rem;
+}
+
 #start {
     display: flex;
     justify-content: center;

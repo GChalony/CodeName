@@ -17,11 +17,17 @@
                    {% if team.spy is none %}
                    <button class="btn btn-default join-btn" data-pos="{{2*i}}">Rejoindre</button>
                    {% else %}
-                   <div class="pseudo-div">{{ team.spy.pseudo }}</div>
+                   <div class="pseudo-div">
+                       <img src="{{ team.spy.avatar_src }}" class="icon">
+                       {{ team.spy.pseudo }}
+                   </div>
                    {% endif %}
                </div>
                 {% for g in team.guessers %}
-                <div class="pseudo-div">{{ g.pseudo }}</div>
+                <div class="pseudo-div">
+                    <img src="{{ g.avatar_src }}" class="icon">
+                    {{ g.pseudo }}
+                </div>
                 {% endfor %}
             </div>
             <button class="btn btn-default join-btn btn-bottom" data-pos="{{2*i+1}}">Rejoindre</button>

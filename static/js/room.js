@@ -67,10 +67,14 @@ function createButton(pos){
 }
 var b0 = createButton(0), b2 = createButton(2);
 
-function createPseudoDiv(pseudo){
+function createPseudoDiv(user){
     var d = document.createElement("div");
     d.classList.add("pseudo-div");
-    d.innerHTML = pseudo;
+    var av = new Image();
+    av.classList.add("icon");
+    av.src = user.avatar_src
+    d.append(av);
+    d.innerHTML += user.pseudo;
     return d;
 }
 
@@ -97,19 +101,19 @@ socket.on('teams_changed', function(teams){
     if (tred.spy == "None"){
         red_panel.children[0].append(b0);
     } else {
-        red_panel.children[0].append(createPseudoDiv(tred.spy.pseudo));
+        red_panel.children[0].append(createPseudoDiv(tred.spy));
     }
     for (var g=0; g<tred.guessers.length; g++){
-        red_panel.append(createPseudoDiv(tred.guessers[g].pseudo));
+        red_panel.append(createPseudoDiv(tred.guessers[g]));
     }
     // Blue team
     if (tblue.spy == "None"){
         blue_panel.children[0].append(b2);
     } else {
-        blue_panel.children[0].append(createPseudoDiv(tblue.spy.pseudo));
+        blue_panel.children[0].append(createPseudoDiv(tblue.spy));
     }
     for (var g=0; g<tblue.guessers.length; g++){
-        blue_panel.append(createPseudoDiv(tblue.guessers[g].pseudo));
+        blue_panel.append(createPseudoDiv(tblue.guessers[g]));
     }
     addJoinButtonListeners();
 });
