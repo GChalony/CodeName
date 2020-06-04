@@ -19,11 +19,11 @@ class RouteManager:
         app.add_url_rule('/contact/post_words', view_func=send_words_in_email, methods=["POST"])
 
     def get_home(self):
-        avatar_path = AvatarManager.choose_random_avatar_img()
+        avatar_path = request.cookies["avatar_src"] if "avatar_src" in request.cookies else \
+            AvatarManager.choose_random_avatar_img().as_posix()
         return render_template("home.html",
                                target_room_id=request.args.get("target_room_id"),
-                               avatar_src=avatar_path.as_posix(),
-                               avatar_id=avatar_path.relative_to('static').as_posix())
+                               avatar_src=avatar_path)
 
     def get_contact_us(self):
         return render_template("contact_us.html", form=ContactForm())
