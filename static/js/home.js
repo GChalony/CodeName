@@ -1,5 +1,6 @@
 function startGame(e){
     e.preventDefault();
+    pseudo = document.getElementById("inputPseudo").value;
     new_loc = "/new_room?pseudo="+pseudo+"&avatar_src="+avatar.src;
     console.log(new_loc);
     // Simply change loc and redirection will handle the rest
@@ -23,10 +24,10 @@ function parseJoinRoomURL(url){
 
 function joinRoom(e){
     e.preventDefault();
-    updateAvatarData();
     var room_id = parseJoinRoomURL(document.getElementById('join-game-url').value);
     if (room_id != null){
-        new_loc = "/join_room?pseudo="+pseudo+"&avatar_src="+avatar.src+"&room_id="+room_id;
+        pseudo = document.getElementById("inputPseudo").value;
+        new_loc = "/join_room?pseudo="+pseudo+"&room_id="+room_id+"&avatar_src="+avatar.src;
         window.location = new_loc;
     }
     else{

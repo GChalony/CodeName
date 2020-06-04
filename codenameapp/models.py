@@ -1,9 +1,8 @@
 class User:
-    def __init__(self, user_id, pseudo="", backcol="#ffff00", mouthcol="#ff0000"):
+    def __init__(self, user_id, pseudo="", avatar_src=None):
         self.id = user_id
         self.pseudo = pseudo
-        self.backcol = backcol
-        self.mouthcol = mouthcol
+        self.avatar_src = avatar_src
 
     def __repr__(self):
         return f"<pseudo={self.pseudo}, id={self.id}>"
