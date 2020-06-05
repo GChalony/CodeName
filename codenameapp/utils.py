@@ -93,3 +93,25 @@ def read_and_store_avatar_params(resp, user_id):
         resp.set_cookie(key, val, expires=expire_date)
 
     return pseudo, avatar_src
+
+emoji_to_unicode = {
+    ":)": "\U0001F60A",
+    ":D": "\U0001F601",
+    ":p": "\U0001F60B",
+    "--": "\U0001F613",
+    ";p": "\U0001F61C",
+    "XP": "\U0001F61D",
+    "xp": "\U0001F61D",
+    "Xp": "\U0001F61D",
+    "><": "\U0001F623",
+    ";,(": "\U0001F622",
+    ":'(": "\U0001F622",
+    "OMG": "\U0001F631",
+    "omg": "\U0001F631"
+}
+
+
+def parse_for_emojis(msg):
+    for key, ucode in emoji_to_unicode.items():
+        msg = msg.replace(key, ucode)
+    return msg

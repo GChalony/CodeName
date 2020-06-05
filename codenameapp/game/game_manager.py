@@ -7,7 +7,7 @@ from flask_socketio import Namespace, join_room
 from codenameapp.frontend_config import BLUE, RED
 from codenameapp.room_session import get_room_id, emit_in_room
 from codenameapp.room_session import room_session as rs
-from codenameapp.utils import parse_cell_code
+from codenameapp.utils import parse_cell_code, parse_for_emojis
 
 logger = logging.getLogger(__name__)
 
@@ -72,8 +72,7 @@ class GameManager(Namespace):
 
     def on_chat_message(self, msg):
         logger.debug("Chat : " + msg)
-        response = session.get("pseudo") + " : " + msg
-        # TODO parse response for emojis here
+        response = session.get("pseudo") + " : " + parse_for_emojis(msg)
         rs.chat_history.append(response)
         emit_in_room("chat_msg", response)
 
