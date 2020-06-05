@@ -114,12 +114,17 @@ class GameManager(Namespace):
             self.game_over(rs.game.current_team_idx)
         elif cell is not None:
             # Vote cell then start votes again
-            # TODO only if vote is correct else switch teams
             self.notify_cell_votes(cell, value)
             rs.votes_history[cell] = value
             r, c = parse_cell_code(cell)
-            self.send_new_event(f"L'équipe {rs.game.current_team_name} a voté {rs.game.words[r, c]}")
-            self.enable_votes(*rs.game.current_guessers)
+            value = rs.game.words[r, c]
+            self.send_new_event(f"L'équipe {rs.game.current_team_name} a voté {value}")
+            if rs.game.is_good_answer(value):
+                self.enable_votes(*rs.game.current_guessers)
+            else:
+                # Wrong answer -> switch teams
+                self.send_new_event("Raté !")
+                self.switch_teams()
         else:
             # Everybody passed -> change teams
             self.send_new_event(f"Team {rs.game.current_team_name} a passé")

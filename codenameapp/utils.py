@@ -9,7 +9,7 @@ import numpy as np
 from flask import current_app, request, session
 
 
-def generate_random_words(path_to_words="ressources/words.csv"):
+def generate_random_words(path_to_words="static/ressources/words.csv"):
     with open(path_to_words, encoding="utf8") as words_file:
         words = words_file.readlines()
     words = [w.replace("\n", "").capitalize() for w in words]
@@ -34,6 +34,7 @@ def parse_cell_code(cell_code):
 
 
 def generate_response_grid():
+    """1: red, 2: blue, 3: black, 0: nothing"""
     base_array = [1] * 9 + [2] * 8 + [3] + [0] * 7
     np.random.shuffle(base_array)
     map = np.resize(base_array, (5, 5))

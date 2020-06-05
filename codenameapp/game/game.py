@@ -132,6 +132,9 @@ class Game:
         self.current_team_idx = self.other_team_idx
         self.guessers_enabled_list = []
 
+    def is_good_answer(self, value):
+        return value == self.current_team_idx + 1
+
 
 if __name__ == "__main__":
     logging.basicConfig()
