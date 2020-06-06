@@ -25,3 +25,10 @@ captures/
 # Icons
 static/icons/*
 !static/icons/**/svg/
+
+# Words
+static/ressources
+!static/ressources/words.csv
+
+generated
+!generated/.gitkeep
