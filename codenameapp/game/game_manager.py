@@ -116,8 +116,7 @@ class GameManager(Namespace):
             self.notify_cell_votes(cell, value)
             rs.votes_history[cell] = value
             r, c = parse_cell_code(cell)
-            value = rs.game.words[r, c]
-            self.send_new_event(f"L'équipe {rs.game.current_team_name} a voté {value}")
+            self.send_new_event(f"L'équipe {rs.game.current_team_name} a voté {rs.game.words[r, c]}")
             if rs.game.is_good_answer(value):
                 self.enable_votes(*rs.game.current_guessers)
             else:

@@ -32,7 +32,7 @@ h1
     border: solid 2px;
     border-radius: 5px;
     padding: 5px;
-    width: 70%;
+    width: calc(100% - 40px);
 }
 .current-player
 {
@@ -45,6 +45,17 @@ h1
 .pseudo[data-team="2"]
 {
     color: #0af;
+}
+.icon
+{
+    width: 20%;
+    height: auto;
+    margin-right: 0.5rem;
+}
+.pseudo-text
+{
+    overflow: hidden;
+    max-height: 2.5rem;
 }
 
 /* Center: grid */
@@ -155,9 +166,6 @@ td[data-code="3"]
 }
 #s
 {
-    background-image: url(/static/send.png);
-    background-repeat: no-repeat;
-    background-position: center;
     width: 1.5rem;
 }
 
