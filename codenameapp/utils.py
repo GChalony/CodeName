@@ -4,6 +4,7 @@ import logging
 import multiprocessing as mp
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import Iterable
 
 import numpy as np
 from flask import current_app, request, session
@@ -110,8 +111,24 @@ emoji_to_unicode = {
     "omg": "\U0001F631"
 }
 
+swear_words = [
+    "bite", "connard", "con", "couille", "encule", "niquer", "pute", "salaud", "fdp", "salaud"
+]
+
+
+def replace_words(s: str, words_to_replace: Iterable[str], replace_with: str):
+    words = s.split()
+    res = []
+    for word in words:
+        if word in words_to_replace:
+            res.append(replace_with)
+        else:
+            res.append(word)
+    return " ".join(res)
+
 
 def parse_for_emojis(msg):
     for key, ucode in emoji_to_unicode.items():
         msg = msg.replace(key, ucode)
+    msg = replace_words(msg, swear_words, "\U0001F4A5")  # Censoring
     return msg
