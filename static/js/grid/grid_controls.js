@@ -61,7 +61,7 @@ socket.on('change_current_player', function(players_id){
 
 var title = document.getElementById('toptitle');
 socket.on('change_title', function(new_title){
-    title.textContent = new_title.title;
+    title.innerHTML = new_title.title;
     title.style.color = new_title.color;
 });
 

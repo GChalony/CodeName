@@ -65,6 +65,16 @@ h1
     flex-direction: column;
     flex: 1 1 auto;
 }
+.badge-Rouge
+{
+    color: #fff;
+    background: #ff5300;
+}
+.badge-Bleue
+{
+    color: #fff;
+    background: #0af;
+}
 table
 {
     margin-right: -2rem;

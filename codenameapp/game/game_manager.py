@@ -80,7 +80,8 @@ class GameManager(Namespace):
         pseudo = session["pseudo"]
         logger.debug(f"Received hint from {pseudo}: {hint} - {n}")
         rs.game.send_hint(hint, n)
-        self.change_title(f"Indice : {hint} - {n}", color=BLUE
+        self.change_title(f"Indice : {hint}  <span class='badge badge-{rs.game.current_team_name}'>{n}</span>",
+                          color=BLUE
                 if rs.game.current_team_idx else RED)
         self.send_new_event(f"Indice de {pseudo}: {hint} - {n}")
         self.enable_votes(*rs.game.current_guessers)
@@ -200,4 +201,4 @@ class GameManager(Namespace):
             self.notify_cell_votes(cell, value)
             time.sleep(2)
 
-        rs.has_started = False
+        rs.release()
