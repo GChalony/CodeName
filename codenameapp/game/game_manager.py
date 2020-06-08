@@ -111,7 +111,7 @@ class GameManager(Namespace):
     def end_votes(self):
         cell, value = rs.game.end_votes()
         if rs.game.is_game_over():
-            self.game_over(rs.game.current_team_idx)
+            self.game_over(rs.game.other_team_idx)
         elif cell is not None:
             # Vote cell then start votes again
             self.notify_cell_votes(cell, value)
