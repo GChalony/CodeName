@@ -3,6 +3,7 @@ import time
 
 from flask import request, render_template, session
 from flask_socketio import Namespace, join_room
+from werkzeug.utils import redirect
 
 from codenameapp.frontend_config import BLUE, RED
 from codenameapp.room_session import get_room_id, emit_in_room
@@ -27,7 +28,10 @@ class GameManager(Namespace):
         rs.game_title = f"Equipe {rs.game.current_team_name}"
 
     def load_page(self, room_id):
-        if not (hasattr(rs, "has_started") and rs.has_started):
+        if not hasattr(rs, "game"):
+            logger.warning("No game in room session")
+            return redirect(f"/{room_id}/room")
+        if not hasattr(rs, "has_started") or not rs.has_started:
             self.init_game_session()
         user_id = session["user_id"]
         logger.info(f'Welcome back user {session["pseudo"]} !')
@@ -35,7 +39,6 @@ class GameManager(Namespace):
         is_spy = user_id in rs.game.spies
         answers = rs.game.answers if is_spy else None
         is_spy_enabled = user_id == rs.game.current_spy and not rs.game.guessers_enabled
-        logger.debug(f"Load: {rs.game.current_players}")
         return render_template("grid.html",
                                toptitle=rs.game_title,
                                title_color=BLUE if rs.game.current_team_idx else RED,
@@ -62,6 +65,7 @@ class GameManager(Namespace):
         if user_id in rs.game.guessers_enabled_list:
             self.enable_votes(user_id)  # TODO really needed?
         self.update_cell_votes(user_id)
+        logger.debug(f"Socketio mapping: {rs.socketio_id_from_user_id}")
 
     def on_disconnect(self):
         user_id = session["user_id"]
