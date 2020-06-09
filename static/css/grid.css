@@ -137,6 +137,7 @@ td[data-code="3"]
     height: 80vh;  /* Don't really like that */
     align-self: center;
     width: 14%;
+    font-size: 0.9rem;
 }
 .msglist
 {
@@ -177,6 +178,8 @@ td[data-code="3"]
 #s
 {
     width: 1.5rem;
+    padding: 0;
+    margin: 0;
 }
 
 /* Overwrite some bootstrap stuff */
