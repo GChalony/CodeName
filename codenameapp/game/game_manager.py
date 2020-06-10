@@ -68,11 +68,13 @@ class GameManager(Namespace):
         logger.debug(f"Socketio mapping: {rs.socketio_id_from_user_id}")
 
     def on_disconnect(self):
+        pseudo = session["pseudo"]
+        logger.info(f"User {pseudo} left the game !")
         user_id = session["user_id"]
         rs.socketio_id_from_user_id.pop(user_id)
-        pseudo = session["pseudo"]
         self.send_new_event(f"{pseudo} a quitté la partie")
-        logger.info(f"User {pseudo} left the game !")
+        if len(rs.socketio_id_from_user_id) == 0:  # Remove entire game instance
+            rs.release()
 
     def on_chat_message(self, msg):
         logger.debug("Chat : " + msg)
@@ -204,5 +206,3 @@ class GameManager(Namespace):
             value = rs.game.answers[parse_cell_code(cell)]
             self.notify_cell_votes(cell, value)
             time.sleep(2)
-
-        rs.release()
