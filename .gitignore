@@ -24,7 +24,7 @@ captures/
 
 # Icons
 static/icons/*
-!static/icons/**/svg/
+!static/icons/**/*.svg
 
 # Words
 static/ressources

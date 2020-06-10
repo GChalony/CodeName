@@ -8,9 +8,12 @@ logger = logging.getLogger(__name__)
 
 AVATAR_FOLDER_WEIGHTS = {
     Path("static/icons/avatars/svg"): 0,
-    Path("static/icons/services/svg"): 5,
+    Path("static/icons/avatars-with-medical-masks/svg"): 1,
     Path("static/icons/crime-protection/svg"): 2,
-    Path("static/icons/avatars-with-medical-masks/svg"): 1
+    Path("static/icons/people-avatars/svg"): 4,
+    Path("static/icons/profession-avatars/svg"): 4,
+    Path("static/icons/services/svg"): 5,
+    Path("static/icons/sport-avatars/svg"): 5,
 }
 
 
