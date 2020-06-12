@@ -40,7 +40,7 @@ function preloadImg(){
     req.send(null);
 }
 
-// TODO preload only when main is loaded
-var n_preload = 5;
-for (var i=0; i<n_preload; i++){ preloadImg() }
-
+$(function(){
+    var n_preload = 10;
+    for (var i=0; i<n_preload; i++){ preloadImg() }
+});

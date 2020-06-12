@@ -71,10 +71,11 @@ class GameManager(Namespace):
         pseudo = session["pseudo"]
         logger.info(f"User {pseudo} left the game !")
         user_id = session["user_id"]
-        rs.socketio_id_from_user_id.pop(user_id)
-        self.send_new_event(f"{pseudo} a quitté la partie")
-        if len(rs.socketio_id_from_user_id) == 0:  # Remove entire game instance
-            rs.release()
+        if hasattr(rs, "socketio_id_from_user_id"):  # Avoid bug when rs reset for some reason
+            rs.socketio_id_from_user_id.pop(user_id)
+            self.send_new_event(f"{pseudo} a quitté la partie")
+            if len(rs.socketio_id_from_user_id) == 0:  # Remove entire game instance
+                rs.release()
 
     def on_chat_message(self, msg):
         logger.debug("Chat : " + msg)

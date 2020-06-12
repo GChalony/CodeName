@@ -2,12 +2,13 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="shortcut icon" type="image/svg+xml" href="{{ url_for('static', filename='detective.svg') }}">
         {% if title %}
         <title>{{ title }}</title>
         {% else %}
         <title>CodeName</title>
         {% endif %}
-        <link rel="shortcut icon" type="image/svg+xml" href="{{ url_for('static', filename='detective.svg') }}">
 
         <!-- Bootstrap -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
