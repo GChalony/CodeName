@@ -15,6 +15,7 @@ flask-socketio = "*"
 werkzeug = "<1"
 flask-Session = "<0.3.2"
 flask-wtf = "*"
+colorama = "*"
 
 [requires]
 python_version = "3.7"

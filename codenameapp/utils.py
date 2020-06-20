@@ -7,6 +7,7 @@ from email.mime.text import MIMEText
 from typing import Iterable
 
 import numpy as np
+from colorama import Fore, Style
 from flask import current_app, request, session
 
 
@@ -132,3 +133,17 @@ def parse_for_emojis(msg):
         msg = msg.replace(key, ucode)
     msg = replace_words(msg, swear_words, "\U0001F4A5")  # Censoring
     return msg
+
+
+class ColorFormatter(logging.Formatter):
+    levels_colors = {
+        logging.ERROR: Fore.RED,
+        logging.INFO: Fore.GREEN,
+        logging.WARNING: Fore.YELLOW,
+        logging.DEBUG: Fore.MAGENTA,
+    }
+
+    def formatMessage(self, record):
+        color = self.levels_colors[record.levelno]
+        message = Style.BRIGHT + color + self._fmt % record.__dict__ + Fore.RESET + Style.RESET_ALL
+        return message

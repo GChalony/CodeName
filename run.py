@@ -10,10 +10,11 @@ import config
 from codenameapp.avatar.avatar_manager import AvatarManager
 from codenameapp.game.game_manager import GameManager
 from codenameapp.routes import RouteManager
+from codenameapp.utils import ColorFormatter
 from codenameapp.waiting_room.room_manager import RoomManager
 
-logging.basicConfig(level=logging.WARNING,
-                    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
+logging.basicConfig(level=logging.WARNING)
+logging.root.handlers[0].setFormatter(ColorFormatter("%(asctime)s - %(levelname)s - %(name)s - %(message)s"))
 logger = logging.getLogger(__name__)
 logging.getLogger("codenameapp").setLevel(logging.DEBUG)
 logger.info("Starting app!")
@@ -47,4 +48,4 @@ avatar_manager.init_routes(app)
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, host="0.0.0.0", debug=True)
