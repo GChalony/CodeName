@@ -56,6 +56,10 @@ class GameManager(Namespace):
     # Socketio events handlers
     def on_connect(self):
         user_id = session["user_id"]
+        if not hasattr(rs, "socketio_id_from_user_id"):
+            logger.warning("No socketio_id_from_user_id -> ignoring connect event")
+            return
+
         rs.socketio_id_from_user_id[user_id] = request.sid
         join_room(get_room_id())
 
@@ -71,11 +75,14 @@ class GameManager(Namespace):
         pseudo = session["pseudo"]
         logger.info(f"User {pseudo} left the game !")
         user_id = session["user_id"]
-        if hasattr(rs, "socketio_id_from_user_id"):  # Avoid bug when rs reset for some reason
-            rs.socketio_id_from_user_id.pop(user_id)
-            self.send_new_event(f"{pseudo} a quitté la partie")
-            if len(rs.socketio_id_from_user_id) == 0:  # Remove entire game instance
-                rs.release()
+        if not hasattr(rs, "socketio_id_from_user_id"):  # Avoid bug when rs reset for some reason
+            logger.warning("No socketio_id_from_user_id -> ignoring disconnect event")
+            return
+        rs.socketio_id_from_user_id.pop(user_id)
+        self.send_new_event(f"{pseudo} a quitté la partie")
+        if len(rs.socketio_id_from_user_id) == 0:  # Remove entire game instance
+            logger.info("Releasing whole game")
+            rs.release()
 
     def on_chat_message(self, msg):
         logger.debug("Chat : " + msg)

@@ -77,6 +77,9 @@ class RoomManager(Namespace):
         join_room(get_room_id())
         # Assign user to some position / team
         user = User(session["user_id"], session["pseudo"], session["avatar_src"])
+        if not hasattr(room_session, "teams"):
+            logging.warning("No teams in room_session -> ignoring connect event")
+            return
         if self._get_user_by_id(session["user_id"]) is None:
             self._add_to_available_position(user)
         # Notify team change
@@ -84,13 +87,15 @@ class RoomManager(Namespace):
 
     def on_disconnect(self):
         # Check if disconnected because of game starting or smth else
-        if not room_session.started:
-            # TODO handle creator disconnect: assign to someone else, close room ..?
-            # Remove user from team
-            user_id = session["user_id"]
-            self._pop_user_by_id(user_id)
-            # Notify team change
-            self.notify_team_change()
+        if not hasattr(room_session, "teams"):
+            logging.warning("No teams in room_session -> ignoring disconnect event")
+            return
+        # TODO handle creator disconnect: assign to someone else, close room ..?
+        # Remove user from team
+        user_id = session["user_id"]
+        self._pop_user_by_id(user_id)
+        # Notify team change
+        self.notify_team_change()
 
     def on_change_position(self, new_pos):
         new_pos = int(new_pos)
