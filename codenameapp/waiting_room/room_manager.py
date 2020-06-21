@@ -91,7 +91,7 @@ class RoomManager(Namespace):
             logging.warning("No teams in room_session -> ignoring disconnect event")
             return
         if not room_session.started:
-            # TODO handle creator disconnect: assign to someone else, close room ..?
+            # If creator is disconnected, no one can start the game
             # Remove user from team
             user_id = session["user_id"]
             self._pop_user_by_id(user_id)

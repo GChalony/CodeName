@@ -66,8 +66,6 @@ class GameManager(Namespace):
         pseudo = session["pseudo"]
         self.send_new_event(f"{pseudo} a rejoint la partie")
 
-        if user_id in rs.game.guessers_enabled_list:
-            self.enable_votes(user_id)  # TODO really needed?
         self.update_cell_votes(user_id)
         logger.debug(f"Socketio mapping: {rs.socketio_id_from_user_id}")
 
