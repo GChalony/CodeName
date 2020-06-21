@@ -46,6 +46,10 @@ class RoomSession:
             context_data = self._all_rooms_data.setdefault(room_id, {})
             context_data[name] = value
 
+    def __delattr__(self, item):
+        room_id = get_room_id()
+        del self._all_rooms_data[room_id][item]
+
     def release(self):
         room_id = get_room_id()
         self._all_rooms_data.pop(room_id, None)

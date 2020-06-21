@@ -208,9 +208,10 @@ class GameManager(Namespace):
 
         emit_in_room('change_controls',
                      render_template("_gameover_controls.html", room_id=get_room_id()))
+        del rs.teams  # Remove teams so they appear empty when redirected to room
         # Get remaining cells values
         left_cells = self._get_remaining_cells()
         for cell in left_cells:
             value = rs.game.answers[parse_cell_code(cell)]
             self.notify_cell_votes(cell, value)
-            time.sleep(2)
+            time.sleep(1)
