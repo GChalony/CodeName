@@ -144,6 +144,6 @@ class ColorFormatter(logging.Formatter):
     }
 
     def formatMessage(self, record):
-        color = self.levels_colors[record.levelno]
+        color = self.levels_colors.get(record.levelno, "")
         message = Style.BRIGHT + color + self._fmt % record.__dict__ + Fore.RESET + Style.RESET_ALL
         return message

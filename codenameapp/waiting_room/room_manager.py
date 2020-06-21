@@ -90,12 +90,13 @@ class RoomManager(Namespace):
         if not hasattr(room_session, "teams"):
             logging.warning("No teams in room_session -> ignoring disconnect event")
             return
-        # TODO handle creator disconnect: assign to someone else, close room ..?
-        # Remove user from team
-        user_id = session["user_id"]
-        self._pop_user_by_id(user_id)
-        # Notify team change
-        self.notify_team_change()
+        if not room_session.started:
+            # TODO handle creator disconnect: assign to someone else, close room ..?
+            # Remove user from team
+            user_id = session["user_id"]
+            self._pop_user_by_id(user_id)
+            # Notify team change
+            self.notify_team_change()
 
     def on_change_position(self, new_pos):
         new_pos = int(new_pos)
