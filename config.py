@@ -14,12 +14,13 @@ class AppConfig:
     MAIL_PASSWORD = os.environ["MAIL_PASSWORD"]
     DEFAULT_MAIL_MONITOR = "enigma.heroku.monitor@gmail.com"
     # Session config
-    SESSION_TYPE = "filesystem"
+    SESSION_TYPE = "sqlalchemy"
     SESSION_COOKIE_SECURE = True
     SESSION_USE_SIGNER = True
     # DB
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///" +
                                              os.path.join(basedir, "app.db"))
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 default_config = AppConfig()

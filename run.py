@@ -30,14 +30,18 @@ Payload.max_decode_packets = 50
 # FLASK APP
 app = Flask(__name__)
 app.config.from_object(config.default_config)
-Session(app)
-socketio = SocketIO(app, manage_session=False)
 
 # DataBase
 db.init_app(app)
+app.config["SESSION_SQLALCHEMY"] = db
+
 @app.cli.command()
 def reset_db():
     database.reset_db()
+
+
+Session(app)
+socketio = SocketIO(app, manage_session=False)
 
 
 room_manager = RoomManager('/room')
