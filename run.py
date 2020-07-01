@@ -7,11 +7,13 @@ from flask_session import Session
 from flask_socketio import SocketIO
 
 import config
+from codenameapp import database
 from codenameapp.avatar.avatar_manager import AvatarManager
 from codenameapp.game.game_manager import GameManager
 from codenameapp.routes import RouteManager
 from codenameapp.utils import ColorFormatter
 from codenameapp.waiting_room.room_manager import RoomManager
+from codenameapp.database import db
 
 logging.basicConfig(level=logging.WARNING)
 logging.root.handlers[0].setFormatter(ColorFormatter("%(asctime)s - %(levelname)s - %(name)s - %(message)s"))
@@ -30,6 +32,12 @@ app = Flask(__name__)
 app.config.from_object(config.default_config)
 Session(app)
 socketio = SocketIO(app, manage_session=False)
+
+# DataBase
+db.init_app(app)
+@app.cli.command()
+def reset_db():
+    database.reset_db()
 
 
 room_manager = RoomManager('/room')
