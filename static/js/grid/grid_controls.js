@@ -2,6 +2,15 @@ var socket;
 function initGrid(){
     socket = io("/grid");
 
+    socket.on('disconnect', function(){
+        console.log('Disconnected');
+        $.snackbar({content: 'Déconnecté'});
+    });
+    socket.on('connect', function(){
+        console.log('Connected');
+        $.snackbar({content: 'Connecté'});
+    });
+
     votes = []
 
     function drawVotes(cell, n){
