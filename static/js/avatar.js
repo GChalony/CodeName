@@ -30,7 +30,7 @@ function prevImg(){
 // Preload images
 function preloadImg(){
     var req = new XMLHttpRequest();
-    req.open('GET', '/avatar/random');
+    req.open('GET', '/avatar/random?t=' + Date.now());
     req.addEventListener('readystatechange', function() {
         if (req.readyState === XMLHttpRequest.DONE) {
             var resp = JSON.parse(req.responseText);
