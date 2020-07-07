@@ -20,3 +20,14 @@ body{
 {
     background-color: #073b4c;
 }
+
+.toast
+{
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+    text-align: center;
+    width: 40%;
+    max-width: 60%;
+    left: 30%;
+}

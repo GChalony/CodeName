@@ -38,8 +38,3 @@ function joinRoom(e){
 
 var joinForm = document.getElementById('join-form');
 joinForm.addEventListener('submit', joinRoom);
-
-setTimeout(function(){
-    $.snackbar({content: 'URL invalide'});
-    console.log('triggered');
-}, 2000);

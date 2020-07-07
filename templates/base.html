@@ -53,6 +53,11 @@
         </nav>
 
         {% block content %}{% endblock %}
+         <div id="toast" class="toast hide fixed-bottom" role="alert" aria-live="assertive" aria-atomic="true" data-delay="1000">
+          <div class="toast-body">
+            Connecté
+          </div>
+        </div>
 
         <!--  Socket IO  -->
         <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"

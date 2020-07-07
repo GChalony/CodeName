@@ -2,13 +2,17 @@ var socket;
 function initGrid(){
     socket = io("/grid");
 
+    var toastContent = $('#toast').children()[0]
+
     socket.on('disconnect', function(){
         console.log('Disconnected');
-        $.snackbar({content: 'Déconnecté'});
+        toastContent.innerText = "Déconnecté";
+        $('#toast').toast('show');
     });
     socket.on('connect', function(){
         console.log('Connected');
-        $.snackbar({content: 'Connecté'});
+        toastContent.innerText = "Connecté";
+        $('#toast').toast('show');
     });
 
     votes = []
