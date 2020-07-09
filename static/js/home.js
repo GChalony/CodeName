@@ -33,6 +33,8 @@ function joinRoom(e){
     else{
         $.snackbar({content: 'URL invalide'});
         console.log('Url is invalid');
+        $('#toast').children()[0].innerText = "Lien invalide";
+        $('#toast').toast('show');
     }
 }
 
