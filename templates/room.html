@@ -6,9 +6,9 @@
 
 {% block content %}
 {% set (tred, tblue) = teams %}
-<div class="container">
-    <h1 class="my-5 text-center">Salle d'attente</h1>
-    <div class="panel-group" id="teams">
+<div class="container mx-auto p-0 p-md-2">
+    <h1 class="my-md-5 text-center">Salle d'attente</h1>
+    <div class="panel-group my-md-3" id="teams">
         {% for i, col, team in [(0, 'red', tred), (1, 'blue', tblue)] %}
         <div id="{{col}}_team_panel" class="panel panel-primary size-panel {{col}}-border d-flex flex-column">
             <div class="panel-heading {{col}}-bg text-center">Equipe {{"rouge" if i==0 else "bleue"}}</div>
@@ -35,10 +35,10 @@
         {% endfor %}
     </div>
 </div>
-<div id="start">
-    <button class="btn btn-default" type="submit" id="home">Retour à l'accueil</button>
+<div id="start" class="pd-md-3">
+    <button class="btn btn-default p-md-2 m-md-2" type="submit" id="home">Retour à l'accueil</button>
     {% if is_creator %}
-    <button class="btn btn-success" type="submit" id="go" disabled>Commencer la partie</button>
+    <button class="btn btn-success p-md-2 m-md-2" type="submit" id="go" disabled>Commencer la partie</button>
     {% endif %}
 </div>
 

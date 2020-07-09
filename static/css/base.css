@@ -16,6 +16,10 @@ body{
     background: #005580;
 }
 
+@media (max-width: 768px) {
+    h1{ font-size: 2rem; }
+}
+
 .navbar
 {
     background-color: #073b4c;

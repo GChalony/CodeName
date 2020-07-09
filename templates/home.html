@@ -35,8 +35,8 @@
 <div class="align-self-center my-3">
     <button type="submit" class="btn btn-success form-control-sm" id="new-game-button">Nouvelle partie</button>
 </div>
-<form class="form-inline align-self-center flex-nowrap mx-2" id="join-form">
-    <input type="text" class="form-control form-control-sm mr-3" id="join-game-url"
+<form class="form-inline align-self-center flex-nowrap mx-md-2" id="join-form">
+    <input type="text" class="form-control form-control-sm mr-md-3" id="join-game-url"
            placeholder="Inscris le lien à rejoindre"
            value="{% if target_room_id is not none %}/{{target_room_id}}/room{% endif %}">
     <button type="submit" class="btn btn-success form-control-sm" id="join-game-button">Rejoindre une partie</button>
