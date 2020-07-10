@@ -7,9 +7,9 @@
 {% endblock %}
 
 {% block content %}
-<div id="container">
+<div id="container" class="flex-column flex-md-row">
     <!-- Left panel : players list  -->
-    <div id="players" class="mx-2 mt-5">
+    <div id="players" class="mx-2 mt-5 d-none d-md-flex">
         {% for i in [1, 2] %}
             {% for player in teams[i-1] %}
             <span
@@ -25,7 +25,7 @@
 
     <!-- Center panel : grid and controls -->
     <div id="center" class="">
-        <h1 id="toptitle" style="color: {{ title_color}}">{{ toptitle|safe }}</h1>
+        <h1 id="toptitle" class="mt-md-2 mt-0" style="color: {{ title_color}}">{{ toptitle|safe }}</h1>
 
         <table id="table" class="mb-3">
             {% for r in range(5) %}
@@ -64,15 +64,15 @@
     </div>
 
     <!-- Right panel : events and chat  -->
-    <div id="chats" class="mx-3">
-        <div id="events" class="h-50 mb-3">
+    <div id="chats" class="mx-3 flex-row my-2 my-md-0">
+        <div id="events" class="h-50 mb-md-3 mr-2 mr-md-0 h-100 h-md-50">
             <ul id="events_msglist" class="msglist">
                 {% for msg in events_history %}
                 <li>{{ msg }}</li>
                 {% endfor %}
             </ul>
         </div>
-        <div id="chat" class="d-flex flex-column h-50">
+        <div id="chat" class="d-flex flex-column h-100 h-md-50">
             <ul id="messages" class="msglist">
                 {% for msg in chat_history %}
                 <li>{{ msg }}</li>

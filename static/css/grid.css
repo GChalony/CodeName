@@ -2,6 +2,9 @@ html, body {
   height: auto;
   margin: 0;
 }
+@media (min-width: 992px) {
+    html { font-size: 0.9em; }
+}
 body{ background: #005580; }
 h1
 {
@@ -78,13 +81,20 @@ h1
 }
 table
 {
-    margin-right: -2rem;
-    margin-left: -2rem;
-    width: calc(100% + 4rem);
+    width: 100%;
     table-layout: fixed ;
     border-collapse: initial;
-    border-spacing: 2rem;
+    border-spacing: 2px;
     font-family: AllertaStencil, Poppins;
+}
+@media (min-width: 992px) {
+    table{
+        border-spacing: 2rem;
+        margin-right: -2rem;
+        margin-left: -2rem;
+        width: calc(100% + 4rem);
+    }
+    td{ font-size: 1rem; }
 }
 td
 {
@@ -94,6 +104,7 @@ td
     padding: 1.5% 0;
     box-shadow: 0 1rem 3rem rgba(0,0,0,.5);
     transition: background 1s, opacity 1s;
+    font-size: 0.9rem;
 }
 td:hover
 {
@@ -128,7 +139,6 @@ td[data-code="3"]
     font: bold;
 }
 
-
 /* Right part: events and chat */
 #chats
 {
@@ -136,10 +146,16 @@ td[data-code="3"]
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 80vh;  /* Don't really like that */
+    height: 50vh;
     align-self: center;
-    width: 14%;
     font-size: 0.9rem;
+}
+@media (min-width: 992px) {
+    #chats{
+        width: 14%;
+        height: 80vh;  /* Don't really like that */
+    }
+
 }
 .msglist
 {
@@ -158,12 +174,10 @@ td[data-code="3"]
 .msglist li:nth-child(odd) { background: #eee; }
 #events
 {
-    height: 40%;
     background: #eee;
 }
 #chat
 {
-    height: 50%;
     background: #eee;
 }
 #messages {
