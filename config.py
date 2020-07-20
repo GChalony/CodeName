@@ -4,6 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class AppConfig:
+    FLASK_ENVIRON = os.environ.get("FLASK_ENV")
     SECRET_KEY = os.environ.get("SECRET_KEY", "309D16F75DE58E676159E641BE92AA5C6CBF131EC73B89CE")
     # Mail config
     MAIL_SERVER = "smtp.gmail.com"
@@ -15,7 +16,7 @@ class AppConfig:
     DEFAULT_MAIL_MONITOR = "enigma.heroku.monitor@gmail.com"
     # Session config
     SESSION_TYPE = "sqlalchemy"
-    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = False if FLASK_ENVIRON == "DEV" else True
     SESSION_USE_SIGNER = True
     # DB
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///" +
