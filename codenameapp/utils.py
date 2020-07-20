@@ -5,6 +5,7 @@ import multiprocessing as mp
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Iterable
+from urllib.parse import unquote
 
 import numpy as np
 from colorama import Fore, Style
@@ -91,10 +92,11 @@ def read_and_store_avatar_params(resp, user_id):
     data_to_store = dict(user_id=user_id, pseudo=pseudo, avatar_src=avatar_src)
     expire_date = datetime.datetime.now() + datetime.timedelta(30)  # 30 days ahead
     for key, val in data_to_store.items():
-        session[key] = val
+        session[key] = unquote(val)
         resp.set_cookie(key, val, expires=expire_date)
 
     return pseudo, avatar_src
+
 
 emoji_to_unicode = {
     ":)": "\U0001F60A",

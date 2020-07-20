@@ -7,7 +7,7 @@ function getCookie(key, default_val){
 }
 
 var pseudo = getCookie("pseudo", "");
-document.getElementById("inputPseudo").value = pseudo;
+document.getElementById("inputPseudo").value = decodeURI(pseudo);
 
 // Avatar handling
 var index = 0;

@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import unquote
 
 from flask import render_template, request
 
@@ -19,7 +20,8 @@ class RouteManager:
         app.add_url_rule('/contact/post_words', view_func=send_words_in_email, methods=["POST"])
 
     def get_home(self):
-        avatar_path = request.cookies["avatar_src"] if "avatar_src" in request.cookies else \
+        avatar_path = unquote(request.cookies["avatar_src"]) if "avatar_src" in request.cookies \
+            else \
             AvatarManager.choose_random_avatar_img().as_posix()
         return render_template("home.html",
                                target_room_id=request.args.get("target_room_id"),

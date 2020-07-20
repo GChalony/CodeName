@@ -27,19 +27,13 @@ class RoomManager(Namespace):
     def create_new_room(self):
         room_id = uuid4().hex
         logger.debug(f"Creating new room {room_id}")
-        user_id = session.get("user_id", uuid4().hex)  # Create new user_id if not already stored
-
-        resp = redirect(f"{room_id}/room")
-        try:
-            read_and_store_avatar_params(resp, user_id=user_id)
-        except ValueError as e:
-            logger.error(f"Missing parameter to create room: {e}")
-            return "Missing parameters", 400
-        return resp
+        return self._join_room(room_id)
 
     def join_room(self):
-        # Basically the same as create room, except that it gets its room_id from request params
         room_id = request.args["room_id"]
+        return self._join_room(room_id)
+
+    def _join_room(self, room_id):
         resp = redirect(f"{room_id}/room")
         user_id = session.get("user_id", uuid4().hex)  # Create new user_id if not already stored
         try:
@@ -55,6 +49,7 @@ class RoomManager(Namespace):
         room_session.started = False
 
     def get_room(self, room_id):
+        logger.debug("session: %s", session)
         if "pseudo" not in session or "user_id" not in session:
             return redirect(url_for("get_home", target_room_id=room_id))
 
