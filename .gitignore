@@ -32,3 +32,6 @@ static/ressources
 
 generated
 !generated/.gitkeep
+
+# Dev
+app.db
