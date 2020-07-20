@@ -24,6 +24,7 @@ class AvatarManager:
 
     @staticmethod
     def choose_random_avatar_img() -> Path:
+        """Returns a path to download the img, relative to the static folder."""
         files, weights = [], []
         for folder, weight in AVATAR_FOLDER_WEIGHTS.items():
             paths = list(folder.glob("*.svg"))
@@ -31,13 +32,12 @@ class AvatarManager:
             weights += [weight] * len(paths)
         weights = np.array(weights) / sum(weights)
         img = np.random.choice(files, p=weights)
-        return img
+        return "/avatar/download/" + img.relative_to('static').as_posix()
 
     def get_random_avatar_img(self):
-        img_path = self.choose_random_avatar_img()
-        logger.debug(f"Path to img: {img_path.relative_to('static').as_posix()}")
-        resp = make_response({"id": img_path.relative_to("static/icons").as_posix(),
-                                "url": img_path.relative_to('.').as_posix()})
+        relative_path = self.choose_random_avatar_img()
+        logger.debug(f"Path to img: {relative_path}")
+        resp = make_response({"url": relative_path})
         resp.cache_control.no_cache = True  # Disable caching
         return resp
 
@@ -49,4 +49,4 @@ class AvatarManager:
         img_path = icons_folder / img_path.resolve().relative_to(icons_folder)
         resp = send_from_directory("static", img_path.relative_to(icons_folder.parent).as_posix())
         resp.cache_control.public = True  # Allow caching
-        return
+        return resp

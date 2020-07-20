@@ -22,7 +22,7 @@ class RouteManager:
     def get_home(self):
         avatar_path = unquote(request.cookies["avatar_src"]) if "avatar_src" in request.cookies \
             else \
-            AvatarManager.choose_random_avatar_img().as_posix()
+            AvatarManager.choose_random_avatar_img()
         return render_template("home.html",
                                target_room_id=request.args.get("target_room_id"),
                                avatar_src=avatar_path)

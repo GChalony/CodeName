@@ -13,7 +13,7 @@ document.getElementById("inputPseudo").value = decodeURI(pseudo);
 var index = 0;
 var avatar = document.getElementById("avatar");
 
-var imagesUrls = [avatar.src];
+var imagesUrls = [avatar.attributes['src'].value];
 
 function updateImg(){
     avatar.src = imagesUrls[index];
@@ -29,6 +29,7 @@ function prevImg(){
 
 // Preload images
 function preloadImg(){
+    // Doesn't really preload the images, just the urls
     var req = new XMLHttpRequest();
     req.open('GET', '/avatar/random?t=' + Date.now());
     req.addEventListener('readystatechange', function() {
