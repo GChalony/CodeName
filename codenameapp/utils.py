@@ -13,6 +13,7 @@ from flask import current_app, request, session
 
 logger = logging.getLogger(__name__)
 
+
 def generate_random_words(path_to_words="static/ressources/words.csv"):
     with open(path_to_words, encoding="utf8") as words_file:
         words = words_file.readlines()
@@ -61,7 +62,10 @@ def send_email(subject, text_body, html_body):
     msg.attach(html)
 
     ctx = mp.get_context("spawn")
-    p = ctx.Process(target=send_async_email, args=(current_app.config, msg))
+    conf = {k: current_app.config[k] for k in ["MAIL_SERVER", "MAIL_PORT", "MAIL_PASSWORD",
+                                               "MAIL_USERNAME", "DEFAULT_MAIL_SENDER",
+                                               "DEFAULT_MAIL_MONITOR"]}
+    p = ctx.Process(target=send_async_email, args=(conf, msg))
     p.start()
 
 
@@ -71,7 +75,7 @@ def send_async_email(config, msg):
     logger.info(f"Sending async email")
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL(config["MAIL_SERVER"], config["MAIL_PORT"], context=context) as server:
-        server.login(config["DEFAULT_MAIL_SENDER"], config["MAIL_PASSWORD"])
+        server.login(config["MAIL_USERNAME"], config["MAIL_PASSWORD"])
         server.sendmail(config["DEFAULT_MAIL_SENDER"], [config["DEFAULT_MAIL_MONITOR"]],
                         msg.as_string())
     logger.debug("Done sending mail")
