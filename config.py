@@ -16,7 +16,7 @@ class AppConfig:
     DEFAULT_MAIL_MONITOR = "enigma.heroku.monitor@gmail.com"
     # Session config
     SESSION_TYPE = "sqlalchemy"
-    SESSION_COOKIE_SECURE = False if FLASK_ENVIRON == "DEV" else True
+    SESSION_COOKIE_SECURE = False  # TODO could be true on Heroku with HTTPS
     SESSION_USE_SIGNER = True
     # DB
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///" +
