@@ -22,6 +22,21 @@ class AppConfig:
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///" +
                                              os.path.join(basedir, "app.db"))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Talisman
+    TALISMAN_FORCE_HTTPS = False if FLASK_ENVIRON == "DEV" else True
+    TALISMAN_SESSION_COOKIE_SECURE = SESSION_COOKIE_SECURE
+    trusted_ressources = [
+        "'self'",
+        "cdnjs.cloudflare.com",
+        "code.jquery.com",
+        "cdn.jsdelivr.net",
+        "cdn.rawgit.com",
+        "stackpath.bootstrapcdn.com"
+    ]
+    TALISMAN_CONTENT_SECURITY_POLICY = {
+        "default-src": trusted_ressources,
+        "script-src": trusted_ressources + ["'unsafe-inline'"]
+    }
 
 
 default_config = AppConfig()

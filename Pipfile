@@ -18,6 +18,7 @@ flask-wtf = "*"
 colorama = "*"
 flask-sqlalchemy = "*"
 psycopg2 = "*"
+flask-talisman = "*"
 
 [requires]
 python_version = "3.7"

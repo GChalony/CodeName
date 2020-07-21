@@ -155,3 +155,17 @@ class ColorFormatter(logging.Formatter):
         color = self.levels_colors.get(record.levelno, "")
         message = Style.BRIGHT + color + self._fmt % record.__dict__ + Fore.RESET + Style.RESET_ALL
         return message
+
+
+def parse_config_to_talisman_kwargs(config):
+    """Parses all keys starting with TALISMAN_ in config dict to pass to Talisman constructor.
+    For example, config = {"TALISMAN_FORCE_HTTPS": True} would return {"force_https": True}.
+    """
+    prefix = "TALISMAN_"
+    kwargs = {}
+    for k, v in config.items():
+        if prefix in k:
+            i = k.index(prefix) + len(prefix)
+            key = k[i:].lower()
+            kwargs[key] = v
+    return kwargs
