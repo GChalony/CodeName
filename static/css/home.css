@@ -17,17 +17,9 @@ h1 {
 }
 #avatar-container
 {
-    width: 50%;
-    margin: auto;
-}
-@media (min-width: 992px) {
-    #avatar-container{
-        width: 15%;
-    }
-}
-#avatar-container img{
+    height: 25vh;
     width: 100%;
-    height: auto;
+    margin: auto;
 }
 #join-game-url
 {
