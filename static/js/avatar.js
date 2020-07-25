@@ -16,6 +16,7 @@ var avatar = document.getElementById("avatar");
 var imagesUrls = [avatar.attributes['src'].value];
 
 function updateImg(){
+    // Could directly use _images array, but I like not to rely on it
     avatar.src = imagesUrls[index];
 }
 function nextImg(){
@@ -27,21 +28,30 @@ function prevImg(){
     updateImg();
 }
 
-// Preload images
-function preloadImg(){
-    // Doesn't really preload the images, just the urls
+function getImagesURLs(n){
     var req = new XMLHttpRequest();
-    req.open('GET', '/avatar/random?t=' + Date.now());
+    req.open('GET', '/avatar/random?t=' + Date.now() + '&n='+n);
     req.addEventListener('readystatechange', function() {
         if (req.readyState === XMLHttpRequest.DONE) {
             var resp = JSON.parse(req.responseText);
-            imagesUrls.push(resp.url);
+            console.log(resp);
+            resp.forEach(function(val, i){
+                imagesUrls.push(val.url);
+                cacheImg(val.url);
+            });
         }
     });
     req.send(null);
 }
 
+function cacheImg(url){
+    var img = new Image();
+    img.src = url;
+    img.onload = () => console.log(url + " cached ?");
+}
+
+var N_PRELOAD = 10;
+
 $(function(){
-    var n_preload = 10;
-    for (var i=0; i<n_preload; i++){ preloadImg() }
+    getImagesURLs(N_PRELOAD);
 });
