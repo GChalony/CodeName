@@ -36,7 +36,8 @@
     </div>
 </div>
 <div id="start" class="pd-md-3">
-    <button class="btn btn-default p-md-2 m-md-2" type="submit" id="home">Retour à l'accueil</button>
+    <button class="btn btn-default p-md-2 m-md-2" type="submit" id="home" onclick="window.location.href='/';">
+        Retour à l'accueil</button>
     {% if is_creator %}
     <button class="btn btn-success p-md-2 m-md-2" type="submit" id="go" disabled>Commencer la partie</button>
     {% endif %}
