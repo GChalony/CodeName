@@ -67,6 +67,9 @@ class RoomManager(Namespace):
 
     def on_connect(self):
         logger.debug(f"User {session['pseudo']} connected! (sid={request.sid})")
+        if not hasattr(room_session, "teams"):
+            logging.warning("No teams in room_session -> ignoring connect event")
+            return
         # Initialize teams if first connection
         join_room(get_room_id())
         # Assign user to some position / team
