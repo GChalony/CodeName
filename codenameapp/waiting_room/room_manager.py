@@ -49,7 +49,6 @@ class RoomManager(Namespace):
         room_session.started = False
 
     def get_room(self, room_id):
-        logger.debug("session: %s", session)
         if "pseudo" not in session or "user_id" not in session:
             return redirect(url_for("get_home", target_room_id=room_id))
 
@@ -64,29 +63,30 @@ class RoomManager(Namespace):
         # Send event in room about new teams (or changes only ?)
         emit_in_room("teams_changed", {i: t.to_json() for i, t in enumerate(room_session.teams)},
                      broadcast=True)
-        emit_in_room("toggle_start", self._are_teams_ready())
+        emit_in_room("toggle_start", self._are_teams_ready(), broadcast=True)
 
     def on_connect(self):
         logger.debug(f"User {session['pseudo']} connected! (sid={request.sid})")
         # Initialize teams if first connection
         join_room(get_room_id())
         # Assign user to some position / team
-        user = User(session["user_id"], session["pseudo"], session["avatar_src"])
-        if not hasattr(room_session, "teams"):
-            logging.warning("No teams in room_session -> ignoring connect event")
+        user_id = session["user_id"]
+        if self._get_user_by_id(user_id) is not None:
+            logger.warning(f"Connection of user {user_id} ignored because he already belongs to a "
+                           f"team: {room_session.teams}")
             return
-        if self._get_user_by_id(session["user_id"]) is None:
-            self._add_to_available_position(user)
+        user = User(user_id, session["pseudo"], session["avatar_src"])
+        self._add_to_available_position(user)
         # Notify team change
         self.notify_team_change()
 
     def on_disconnect(self):
-        # Check if disconnected because of game starting or smth else
+        # Check if disconnected because of game starting
         if not hasattr(room_session, "teams"):
             logging.warning("No teams in room_session -> ignoring disconnect event")
             return
         if not room_session.started:
-            # If creator is disconnected, no one can start the game
+            # Note: If creator is disconnected, no one can start the game
             # Remove user from team
             user_id = session["user_id"]
             self._pop_user_by_id(user_id)
@@ -97,10 +97,14 @@ class RoomManager(Namespace):
         new_pos = int(new_pos)
         # new_pos: 0: team red, spy - 1: team red, guesser -
         #           2: team blue, spy - 3: team blue, guesser
-        (tred, tblue) = room_session.teams
         logger.debug(f"Teams={room_session.teams}")
+        tred, tblue = room_session.teams
         user_id = session["user_id"]
         user = self._get_user_by_id(user_id)
+        if user is None:
+            logger.warning("User %s wants to change to position %s but doesn't belong to any "
+                           "team: %s", user_id, new_pos, room_session.teams)
+            return
         logger.debug(f"Changing pos to {new_pos} for user {user}")
         # Check that position is available before changing (though should never happen that not)
         if new_pos == 0:
@@ -134,6 +138,7 @@ class RoomManager(Namespace):
             room_session.started = True
             url = request.environ["HTTP_REFERER"]  # Access to request context
             grid_url = url.replace("room", "grid")
+            # Create Game instance
             game = Game([team.get_ids_list() for team in room_session.teams])
             room_session.game = game
             emit_in_room("url_redirection", {"url": grid_url}, broadcast=True)
@@ -152,6 +157,9 @@ class RoomManager(Namespace):
             tblue.guessers.append(user)
 
     def _get_user_by_id(self, user_id):
+        if not hasattr(room_session, "teams"):
+            logging.warning("No teams in room_session -> ignoring connect event")
+            return
         for i, team in enumerate(room_session.teams):
             if team.spy is not None and team.spy.id == user_id:
                 return team.spy
@@ -169,6 +177,8 @@ class RoomManager(Namespace):
                 if u.id == user_id:
                     team.guessers.remove(u)
                     return u
+        logger.warning(f"Popping player {user_id} that doesn't belong to a team: "
+                       f"{room_session.teams}")
 
     def _are_teams_ready(self):
         # Check have spies and at least one guesser per team
