@@ -24,7 +24,7 @@ class AvatarManager:
         app.add_url_rule("/avatar/download/<path:rel_path>", view_func=self.download_avatar_img)
 
     @staticmethod
-    def choose_random_avatar_img(n) -> List[Path]:
+    def choose_random_avatar_img(n=1) -> List[Path]:
         """Returns n path to download the img, relative to the static folder."""
         files, weights = [], []
         for folder, weight in AVATAR_FOLDER_WEIGHTS.items():
