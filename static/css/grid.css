@@ -144,7 +144,6 @@ td[data-code="3"]
 {
     flex: 1 0 auto;
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
     height: 50vh;
     align-self: center;
