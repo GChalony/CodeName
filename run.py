@@ -17,7 +17,8 @@ from codenameapp.waiting_room.room_manager import RoomManager
 from codenameapp.database import db
 
 logging.basicConfig(level=logging.WARNING)
-logging.root.handlers[0].setFormatter(ColorFormatter("%(asctime)s - %(levelname)s - %(name)s - %(message)s"))
+logging.root.handlers[0].setFormatter(ColorFormatter("app - %(asctime)s - %(levelname)s - "
+                                                     "%(name)s - %(message)s"))
 logger = logging.getLogger(__name__)
 logging.getLogger("codenameapp").setLevel(logging.DEBUG)
 logger.info("Starting app!")
