@@ -1,4 +1,5 @@
 import datetime
+import html
 import json
 import logging
 import multiprocessing as mp
@@ -93,6 +94,8 @@ def read_and_store_avatar_params(resp, user_id):
     if pseudo is None or avatar_src is None:
         raise ValueError("Missing parameter")
 
+    # Sanitize
+    pseudo = html.escape(pseudo)
     # Add cookies and store data in session
     data_to_store = dict(user_id=user_id, pseudo=pseudo, avatar_src=avatar_src)
     logger.debug("data_to_store: %s", data_to_store)

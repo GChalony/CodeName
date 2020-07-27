@@ -6,12 +6,12 @@ function initGrid(){
 
     socket.on('disconnect', function(){
         console.log('Disconnected');
-        toastContent.innerText = "Déconnecté";
+        toastContent.textContent = "Déconnecté";
         $('#toast').toast('show');
     });
     socket.on('connect', function(){
         console.log('Connected');
-        toastContent.innerText = "Connecté";
+        toastContent.textContent = "Connecté";
         $('#toast').toast('show');
     });
 

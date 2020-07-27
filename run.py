@@ -35,7 +35,7 @@ app.config.from_object(config.default_config)
 
 # DataBase
 db.init_app(app)
-app.config["SESSION_SQLALCHEMY"] = db
+app.config["SESSION_SQLALCHEMY"] = db  # required for flask-session
 
 
 @app.cli.command()
@@ -49,8 +49,9 @@ Talisman(app, **talisman_kwargs)
 
 # Session
 Session(app)
-socketio = SocketIO(app, manage_session=False)
 
+# SocketIO
+socketio = SocketIO(app, manage_session=False)
 
 room_manager = RoomManager('/room')
 room_manager.init_routes(app)

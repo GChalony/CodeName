@@ -19,7 +19,7 @@ function createButton(pos){
     var b = document.createElement("button");
     b.classList.add("btn"); b.classList.add("btn-default"); b.classList.add("join-btn");
     b.dataset.pos = pos;
-    b.innerHTML = "Rejoindre";
+    b.textContent = "Rejoindre";
     return b;
 }
 
@@ -30,7 +30,7 @@ function createPseudoDiv(user){
     av.classList.add("icon");
     av.src = user.avatar_src
     d.append(av);
-    d.innerHTML += user.pseudo;
+    d.textContent += user.pseudo;
     return d;
 }
 
