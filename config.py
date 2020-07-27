@@ -31,7 +31,8 @@ class AppConfig:
         "code.jquery.com",
         "cdn.jsdelivr.net",
         "cdn.rawgit.com",
-        "stackpath.bootstrapcdn.com"
+        "stackpath.bootstrapcdn.com",
+        "data:"
     ]
     TALISMAN_CONTENT_SECURITY_POLICY = {
         "default-src": trusted_ressources,
