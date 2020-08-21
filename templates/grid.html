@@ -36,7 +36,7 @@
                     class="rounded"
                     data-votedfor="{%if votes_history[cell] is defined %}true{% else %}false{% endif %}"
                     data-code="{% if is_spy %}{{ answers[r][c] }}{% elif votes_history[cell] is defined %}{{ votes_history[cell] }}{% else %}-1{% endif %}"
-                    data-enabled="false"
+                    data-enabled="{% if is_enabled_guesser %}true{% else %}false{% endif %}"
                 >
                     {{words[r, c]}} </td>
                 {% endfor %}
