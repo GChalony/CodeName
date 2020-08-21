@@ -30,7 +30,7 @@ function createPseudoDiv(user){
     av.classList.add("icon");
     av.src = user.avatar_src
     d.append(av);
-    d.textContent += user.pseudo;
+    d.append(document.createTextNode(user.pseudo));
     return d;
 }
 
