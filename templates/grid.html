@@ -65,14 +65,14 @@
 
     <!-- Right panel : events and chat  -->
     <div id="chats" class="mx-3 flex-row flex-md-column my-2 my-md-0">
-        <div id="events" class="h-50 mb-md-3 mr-2 mr-md-0 h-100 h-md-50">
+        <div id="events" class="h-50 mb-md-3 mr-2 mr-md-0">
             <ul id="events_msglist" class="msglist">
                 {% for msg in events_history %}
                 <li>{{ msg }}</li>
                 {% endfor %}
             </ul>
         </div>
-        <div id="chat" class="d-flex flex-column h-100 h-md-50">
+        <div id="chat" class="d-flex flex-column">
             <ul id="messages" class="msglist">
                 {% for msg in chat_history %}
                 <li>{{ msg }}</li>

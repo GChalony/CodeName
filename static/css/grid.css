@@ -154,7 +154,6 @@ td[data-code="3"]
         width: 14%;
         height: 80vh;  /* Don't really like that */
     }
-
 }
 .msglist
 {
@@ -179,6 +178,10 @@ td[data-code="3"]
 {
     background: #eee;
 }
+@media (max-width: 992px) {
+    #events, #chat {height: 100%}
+}
+
 #messages {
     margin: 0;
     height: 90%;
