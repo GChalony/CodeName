@@ -3,9 +3,10 @@ from collections import Counter
 from random import shuffle
 
 import numpy as np
-from flask import url_for
+from flask import url_for, session
 
 from codenameapp.utils import generate_random_words, generate_response_grid, parse_cell_code
+from codenameapp.frontend_config import BLUE, RED
 
 logger = logging.getLogger(__name__)
 
@@ -134,6 +135,57 @@ class Game:
 
     def is_good_answer(self, value):
         return value == self.current_team_idx + 1
+
+
+class GameState:
+    """This class stores any state relative to the current game being played,
+    and provides convenient properties to extract state for specific user."""
+
+    def __init__(self, game_instance, teams):
+        self.game_instance = game_instance
+        self.teams = teams
+        self.has_started = False
+        self.chat_history = []
+        self.events_history = []
+        self.votes_history = {}
+        self.socketio_id_from_user_id = {}
+        self.game_title = None
+
+    def init(self):
+        logger.info("Initiating game session")
+        self.has_started = True
+        self.game_title = f"Equipe {self.game_instance.current_team_name}"
+
+    @property
+    def user_id(self):
+        return session["user_id"]
+
+    @property
+    def is_spy(self):
+        return self.user_id in self.game_instance.spies
+
+    def is_enabled_spy(self):
+        return self.user_id == self.game_instance.current_spy \
+               and not self.game_instance.guessers_enabled
+
+    @property
+    def answers(self):
+        if self.is_spy:
+            return self.game_instance.answers
+        else:
+            # Forge answers dict with -1 if values not yet discovered
+            answers = {f'r{r}c{c}': -1 for r in range(5) for c in range(5)}
+            for cell in self.votes_history:
+                answers[cell] = self.game_instance.answers[cell]
+            return answers
+
+    @property
+    def is_enabled_guesser(self):
+        return self.user_id in self.game_instance.guessers_enabled_list
+
+    @property
+    def title_color(self):
+        return BLUE if self.game_instance.current_team_idx else RED
 
 
 if __name__ == "__main__":
