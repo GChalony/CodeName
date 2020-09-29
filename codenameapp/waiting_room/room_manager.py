@@ -7,7 +7,7 @@ from flask_socketio import join_room
 from flask_socketio import Namespace
 from werkzeug.utils import redirect
 
-from codenameapp.game.game import Game
+from codenameapp.game.game import Game, GameState
 from codenameapp.models import User, Team
 from codenameapp.room_session import room_session, emit_in_room, get_room_id
 from codenameapp.utils import read_and_store_avatar_params
@@ -143,7 +143,9 @@ class RoomManager(Namespace):
             grid_url = url.replace("room", "grid")
             # Create Game instance
             game = Game([team.get_ids_list() for team in room_session.teams])
-            room_session.game = game
+            room_session.game = game  # Could remove ?
+            game_state = GameState(game, room_session.teams)
+            room_session.game_state = game_state
             emit_in_room("url_redirection", {"url": grid_url}, broadcast=True)
         else:
             logger.warning("Teams not ready yet")
