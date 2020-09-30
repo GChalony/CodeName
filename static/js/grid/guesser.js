@@ -1,15 +1,16 @@
-function initGuesser(){
-    function voteCell(event){
-        console.log(event);
-        if (vote_enabled){
-            socket.emit('vote_cell', event.target.id);
-        }
+function voteCell(event){
+    console.log(event);
+    var cell = event.target;
+    if (cell.dataset.enabled){
+        socket.emit('vote_cell', cell.id);
     }
+}
 
+function initGuesser(){
     var cells = document.getElementsByTagName("td"),
         ncells = cells.length;
 
-    for (var i=0; i<ncells; i++){
+    for (var i=0; i < ncells; i++){
         var cell = cells[i];
         cell.addEventListener('click', voteCell);
     }
@@ -21,9 +22,7 @@ function initGuesser(){
         }
     });
 
-
     // Votes
-    var vote_enabled = false;
     var table = document.getElementById('table');
     socket.on('enable_vote', function(){
         console.log("Enabling vote")
@@ -32,7 +31,6 @@ function initGuesser(){
             var cell = cells[i];
             cell.dataset.enabled = "true";
         }
-        vote_enabled = true;
         pass.disabled = false;
     });
 
@@ -42,7 +40,6 @@ function initGuesser(){
             var cell = cells[i];
             cell.dataset.enabled = "false";
         }
-        vote_enabled = false;
         pass.disabled = true;
     });
 }
