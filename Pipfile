@@ -17,8 +17,8 @@ flask-Session = "*"
 flask-wtf = "*"
 colorama = "*"
 flask-sqlalchemy = "*"
-psycopg2 = "*"
 flask-talisman = "*"
+psycopg2 = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
