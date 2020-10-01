@@ -17,7 +17,7 @@ function initGuesser(){
 
     var pass = document.getElementById("pass");
     pass.addEventListener('click', function(e){
-        if (vote_enabled){
+        if (!pass.disabled){
             socket.emit('vote_cell', 'none');
         }
     });
