@@ -15,7 +15,7 @@
             <span
                     id="{{ player.id }}"
                     data-team="{{ ''~i }}"
-                    class="pseudo{% if player.id in game_state.game_instance.current_players %} current-player{% endif %} d-flex">
+                    class="pseudo d-flex{% if player.id in game_state.game_instance.current_players %} current-player{% endif %}">
                 <img src="{{ player.avatar_src }}" class="icon"/>
                 {{ player.pseudo }}
             </span>
@@ -25,7 +25,9 @@
 
     <!-- Center panel : grid and controls -->
     <div id="center" class="">
-        <h1 id="toptitle" class="mt-md-2 mt-0" style="color: {{ game_state.title_color}}">{{ game_state.game_title|safe }}</h1>
+        <h1 id="toptitle" class="mt-md-2 mt-0" style="color: {{ game_state.title_color}}">
+            {{ game_state.game_title|safe }}
+        </h1>
 
         <table id="table" class="mb-3">
             {% for r in range(5) %}
@@ -34,8 +36,8 @@
                 {% set cell = 'r'~r~'c'~c %}
                 <td id="{{ cell }}"
                     class="rounded"
-                    data-votedfor="{%if game_state.votes_history[cell] is defined %}true{% else %}false{% endif %}"
-                    data-code="{{ game_state.answers[r][c] }}"
+                    data-votedfor="{%if game_state.game_instance.current_mask[r, c] == 1 %}true{% else %}false{% endif %}"
+                    data-code="{{ game_state.answers[r, c] }}"
                     data-enabled="{% if game_state.is_enabled_guesser %}true{% else %}false{% endif %}"
                 >
                     {{words[r, c]}} </td>
@@ -47,12 +49,12 @@
         <div id="control_panel">
             {% if game_state.is_spy %}
             <form id="controls" class="form-inline flex-nowrap justify-content-center">
-                <input id="hint" class="form-control form-control-sm" type="text">
+                <input id="hint" class="form-control form-control-sm" type="text" autocomplete="off">
                 <select id="n" class="form-control form-control-sm mx-5">
                     {% for i in range(10) %}<option value="{{i}}">{{i}}</option>{% endfor %}
                 </select>
-                <input id="send-hint" class="btn btn-success form-control-sm"
-                       type="submit" autocomplete="off" maxlength="20" {% if not game_state.is_enabled_spy %}disabled{% endif %}>
+                <input id="send-hint" class="btn btn-success form-control-sm" value="envoyer"
+                       type="submit" maxlength="20" {% if not game_state.is_enabled_spy %}disabled{% endif %}>
             </form>
             {% else %}
             <div class="d-flex justify-content-center">
@@ -67,14 +69,14 @@
     <div id="chats" class="mx-3 flex-row flex-md-column my-2 my-md-0">
         <div id="events" class="h-50 mb-md-3 mr-2 mr-md-0">
             <ul id="events_msglist" class="msglist">
-                {% for msg in events_history %}
+                {% for msg in game_state.events_history %}
                 <li>{{ msg }}</li>
                 {% endfor %}
             </ul>
         </div>
         <div id="chat" class="d-flex flex-column">
             <ul id="messages" class="msglist">
-                {% for msg in chat_history %}
+                {% for msg in game_state.chat_history %}
                 <li>{{ msg }}</li>
                 {% endfor %}
             </ul>
@@ -94,7 +96,7 @@
 <!--  Scripts  -->
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/grid/grid_controls.js') }}"></script>
-{% if is_spy %}<script src="{{ url_for('static', filename='js/grid/spy.js') }}"></script>
+{% if game_state.is_spy %}<script src="{{ url_for('static', filename='js/grid/spy.js') }}"></script>
 {% else %}<script src="{{ url_for('static', filename='js/grid/guesser.js') }}"></script>{% endif %}
 
 {% endblock %}
