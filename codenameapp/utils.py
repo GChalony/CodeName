@@ -124,7 +124,7 @@ emoji_to_unicode = {
 }
 
 swear_words = [
-    "bite", "connard", "con", "couille", "encule", "niquer", "pute", "salaud", "fdp", "salaud"
+    "bite", "connard", "con", "couille", "encule", "niquer", "pute", "salaud", "fdp"
 ]
 
 

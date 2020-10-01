@@ -3,12 +3,14 @@ from collections import Counter
 from random import shuffle
 
 import numpy as np
-from flask import url_for, session
+from flask import session
 
+from codenameapp.frontend_config import RED
 from codenameapp.utils import generate_random_words, generate_response_grid, parse_cell_code
-from codenameapp.frontend_config import BLUE, RED
 
 logger = logging.getLogger(__name__)
+
+CELLS = np.array([[f'r{r}c{c}' for c in range(5)] for r in range(5)])
 
 
 class Game:
@@ -24,11 +26,13 @@ class Game:
         self.answers = generate_response_grid()
         self.current_mask = np.zeros((5, 5))
 
+        self.waiting_for_hint = True
+
         self.current_team_idx = 0
 
-        self.guessers_enabled_list = []
+        self.guessers_enabled_list = set()
 
-        self.votes = {}
+        self.current_votes = {}
 
     def __str__(self):
         return f"Team {self.current_team_idx} - spy {self.current_spy} is spy."
@@ -71,30 +75,29 @@ class Game:
 
     @property
     def guessers_enabled(self):
-        return len(self.guessers_enabled_list) > 0
+        return not self.waiting_for_hint
 
     @property
     def current_players(self):
         return self.current_guessers if self.guessers_enabled else [self.current_spy]
 
     def get_votes_counts(self):
-        count = Counter(list(self.votes.values()))
+        count = Counter(list(self.current_votes.values()))
         votes_counts = {cell: n for cell, n in count.most_common() if cell != "none"}
         return votes_counts
 
-    def send_hint(self, hint, number):
+    def hint(self, hint, number):
         # Receive spy's hint (and do nothing with it)
-        self.guessers_enabled_list = self.current_guessers.copy()
+        self.waiting_for_hint = False
 
     def vote(self, user_id, code):
         if user_id not in self.guessers_enabled_list:
             raise PermissionError(f"Votes not allowed for user {user_id}")
         logger.debug(f"User {user_id} is voting {code}")
-        self.guessers_enabled_list.remove(user_id)
-        self.votes[user_id] = code
+        self.current_votes[user_id] = code
 
     def is_voting_done(self):
-        return len(self.votes) == len(self.current_team) - 1
+        return len(self.current_votes) == len(self.current_team) - 1
 
     def is_game_over(self):
         # Check black
@@ -106,19 +109,32 @@ class Game:
         n_red, n_blue = (vals_left == 1).sum(), (vals_left == 2).sum()
         return n_red == 0 or n_blue == 0
 
+    def winner(self):
+        assert self.is_game_over()
+        if np.where(1-self.current_mask):
+            return self.other_team_idx
+        else:
+            return self.current_team_idx
+
     def get_team_vote(self):
-        vals = [v for v in self.votes.values() if v != "none"]
+        vals = [v for v in self.current_votes.values() if v != "none"]
         shuffle(vals)  # Shuffle to be random in case equal counts
         c = Counter(vals).most_common(1)
         most_voted = c[0][0] if len(c) else None
         logger.debug(f"Team vote: {most_voted}")
         return most_voted
 
+    def enable_guesser(self, user):
+        self.guessers_enabled_list.add(user)
+
+    def disable_guesser(self, user):
+        logger.debug("Disabling %s from %s", user, self.guessers_enabled_list)
+        self.guessers_enabled_list.remove(user)
+
     def end_votes(self):
         logger.debug("Ending votes")
         voted = self.get_team_vote()
-        self.votes = {}
-        self.guessers_enabled_list = self.current_guessers.copy()
+        self.current_votes = {}
         logger.debug(f"End votes: {self.guessers}")
         if voted is None:
             return None, None
@@ -131,10 +147,10 @@ class Game:
 
     def switch_teams(self):
         self.current_team_idx = self.other_team_idx
-        self.guessers_enabled_list = []
+        self.guessers_enabled_list = set()
 
     def is_good_answer(self, value):
-        return value == self.current_team_idx + 1
+        return value is not None and value == self.current_team_idx + 1
 
 
 class GameState:
@@ -142,19 +158,20 @@ class GameState:
     and provides convenient properties to extract state for specific user."""
 
     def __init__(self, game_instance, teams):
-        self.game_instance = game_instance
+        self.game_instance: Game = game_instance
         self.teams = teams
         self.has_started = False
         self.chat_history = []
         self.events_history = []
-        self.votes_history = {}
         self.socketio_id_from_user_id = {}
         self.game_title = None
+        self.title_color = None
 
     def init(self):
         logger.info("Initiating game session")
         self.has_started = True
         self.game_title = f"Equipe {self.game_instance.current_team_name}"
+        self.title_color = RED
 
     @property
     def user_id(self):
@@ -164,9 +181,10 @@ class GameState:
     def is_spy(self):
         return self.user_id in self.game_instance.spies
 
+    @property
     def is_enabled_spy(self):
         return self.user_id == self.game_instance.current_spy \
-               and not self.game_instance.guessers_enabled
+               and self.game_instance.waiting_for_hint
 
     @property
     def answers(self):
@@ -175,17 +193,15 @@ class GameState:
         else:
             # Forge answers dict with -1 if values not yet discovered
             answers = {f'r{r}c{c}': -1 for r in range(5) for c in range(5)}
-            for cell in self.votes_history:
-                answers[cell] = self.game_instance.answers[cell]
+            for r in range(5):
+                for c in range(5):
+                    cell = f'r{r}c{c}'
+                    answers[cell] = self.game_instance.answers[r, c]
             return answers
 
     @property
     def is_enabled_guesser(self):
         return self.user_id in self.game_instance.guessers_enabled_list
-
-    @property
-    def title_color(self):
-        return BLUE if self.game_instance.current_team_idx else RED
 
 
 if __name__ == "__main__":
